@@ -1,4 +1,4 @@
-package hospital;
+package hospital.commands;
 
 public interface Command {
 

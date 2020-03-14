@@ -1,4 +1,4 @@
-package hospital;
+package hospital.staff;
 
 public class Appointment {
 

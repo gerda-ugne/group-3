@@ -1,5 +1,8 @@
 package hospital;
 
+import hospital.commands.Command;
+import hospital.staff.Professional;
+
 public class Menu {
 
 	private Set<Professional> staff;
