@@ -1,10 +1,7 @@
 package hospital.staff;
 
 import java.time.DayOfWeek;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Professional {
 
@@ -68,7 +65,7 @@ public class Professional {
 	 * @param to
 	 * @param duration
 	 */
-	public Set<Appointment> searchAvailability(long from, long to, int duration) {
+	public Set<Appointment> searchAvailability(Date from, Date to, int duration) {
 		// TODO - implement Professional.searchAvailability
 		return null;
 	}
@@ -80,7 +77,7 @@ public class Professional {
 	 * @param room
 	 * @param treatmentType
 	 */
-	public Appointment addAppointment(long startTime, long endTime, String room, String treatmentType) {
+	public Appointment addAppointment(Date startTime, Date endTime, String room, String treatmentType) {
 		// TODO - implement Professional.addAppointment
 		return null;
 	}
@@ -92,7 +89,7 @@ public class Professional {
 	 * @param room
 	 * @param treatmentType
 	 */
-	public Appointment editAppointment(long startTime, long endTime, String room, String treatmentType) {
+	public Appointment editAppointment(Date startTime, Date endTime, String room, String treatmentType) {
 		// TODO - implement Professional.editAppointment
 		return null;
 	}

@@ -1,31 +1,32 @@
 package hospital.staff;
 
 import java.time.DayOfWeek;
+import java.util.Date;
 
 public class WorkingHours {
 
-	private long startHour;
+	private Date startHour;
 
-	private long endHour;
+	private Date endHour;
 
-	public WorkingHours(DayOfWeek day, long startHour, long endHour) {
+	public WorkingHours(DayOfWeek day, Date startHour, Date endHour) {
 		this.startHour = startHour;
 		this.endHour = endHour;
 	}
 
-	public long getStartHour() {
+	public Date getStartHour() {
 		return startHour;
 	}
 
-	public void setStartHour(long startHour) {
+	public void setStartHour(Date startHour) {
 		this.startHour = startHour;
 	}
 
-	public long getEndHour() {
+	public Date getEndHour() {
 		return endHour;
 	}
 
-	public void setEndHour(long endHour) {
+	public void setEndHour(Date endHour) {
 		this.endHour = endHour;
 	}
 }

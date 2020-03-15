@@ -1,5 +1,6 @@
 package hospital.staff;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -36,7 +37,7 @@ public class Staff {
 	 * @param to
 	 * @param duration
 	 */
-	public Set<Appointment> searchAvailability(List<Long> professionals, long from, long to, int duration) {
+	public Set<Appointment> searchAvailability(List<Long> professionals, Date from, Date to, int duration) {
 		// TODO - implement Staff.searchAvailability
 		return null;
 	}
@@ -49,7 +50,7 @@ public class Staff {
 	 * @param room
 	 * @param treatmentType
 	 */
-	public Appointment bookAppointment(List<Long> professionals, long startTime, long endTime, String room, String treatmentType) {
+	public Appointment bookAppointment(List<Long> professionals, Date startTime, Date endTime, String room, String treatmentType) {
 		// TODO - implement Staff.bookAppointment
 		return null;
 	}

@@ -1,6 +1,7 @@
 package hospital.staff;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Appointment {
@@ -9,9 +10,9 @@ public class Appointment {
 
 	private long id;
 
-	private long startTime;
+	private Date startTime;
 
-	private long endTime;
+	private Date endTime;
 
 	private String room;
 
@@ -21,8 +22,8 @@ public class Appointment {
 
 	public Appointment() {
 		this.id = counter++;
-		this.startTime = -1;
-		this.endTime = -1;
+		this.startTime = null;
+		this.endTime = null;
 		this.room = "<undefined>";
 		this.treatmentType = "<undefined>";
 		this.professionals = new ArrayList<>();
@@ -32,19 +33,19 @@ public class Appointment {
 		return id;
 	}
 
-	public long getStartTime() {
+	public Date getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(long startTime) {
+	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
 	}
 
-	public long getEndTime() {
+	public Date getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(long endTime) {
+	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
 	}
 
