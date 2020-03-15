@@ -1,5 +1,7 @@
 package hospital.staff;
 
+import java.util.List;
+
 public class ElectronicDiary {
 
 	private List<Appointment> appointments;
@@ -14,7 +16,7 @@ public class ElectronicDiary {
 	 */
 	public boolean addAppointment(Appointment newAppointment) {
 		// TODO - implement ElectronicDiary.addAppointment
-		
+		return false;
 	}
 
 	/**
@@ -23,7 +25,7 @@ public class ElectronicDiary {
 	 */
 	public boolean deleteAppointment(Appointment appointment) {
 		// TODO - implement ElectronicDiary.deleteAppointment
-		
+		return false;
 	}
 
 	/**
@@ -32,7 +34,7 @@ public class ElectronicDiary {
 	 */
 	public Appointment getAppointment(long appointmentId) {
 		// TODO - implement ElectronicDiary.getAppointment
-		
+		return null;
 	}
 
 }

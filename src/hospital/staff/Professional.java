@@ -1,5 +1,9 @@
 package hospital.staff;
 
+import javax.management.relation.Role;
+import java.util.List;
+import java.util.Set;
+
 public class Professional {
 
 	private long id;
@@ -10,7 +14,7 @@ public class Professional {
 
 	private String office;
 
-	private Role role;
+	private String role;
 
 	private ElectronicDiary diary;
 
@@ -62,7 +66,7 @@ public class Professional {
 	 */
 	public Set<Appointment> searchAvailability(long from, long to, int duration) {
 		// TODO - implement Professional.searchAvailability
-		
+		return null;
 	}
 
 	/**
@@ -74,7 +78,7 @@ public class Professional {
 	 */
 	public Appointment addAppointment(long startTime, long endTime, String room, String treatmentType) {
 		// TODO - implement Professional.addAppointment
-		
+		return null;
 	}
 
 	/**
@@ -86,7 +90,7 @@ public class Professional {
 	 */
 	public Appointment editAppointment(long startTime, long endTime, String room, String treatmentType) {
 		// TODO - implement Professional.editAppointment
-		
+		return null;
 	}
 
 	/**
@@ -95,7 +99,7 @@ public class Professional {
 	 */
 	public boolean deleteAppointment(long appointmentId) {
 		// TODO - implement Professional.deleteAppointment
-		
+		return false;
 	}
 
 	public String getOffice() {
@@ -110,7 +114,7 @@ public class Professional {
 		this.office = office;
 	}
 
-	public Role getRole() {
+	public String getRole() {
 		return this.role;
 	}
 
@@ -118,7 +122,7 @@ public class Professional {
 	 * 
 	 * @param role
 	 */
-	public void setRole(Role role) {
+	public void setRole(String role) {
 		this.role = role;
 	}
 

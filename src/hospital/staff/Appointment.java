@@ -1,5 +1,7 @@
 package hospital.staff;
 
+import java.util.List;
+
 public class Appointment {
 
 	private long id;
@@ -8,10 +10,10 @@ public class Appointment {
 
 	private long endTime;
 
-	private Room room;
+	private String room;
 
 	private String treatmentType;
 
-	private List<Professionals> professionals;
+	private List<Professional> professionals;
 
 }

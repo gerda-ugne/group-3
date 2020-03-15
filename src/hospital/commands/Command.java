@@ -1,6 +1,6 @@
 package hospital.commands;
 
-public interface Command {
+public interface Command<T> {
 
 	void execute();
 

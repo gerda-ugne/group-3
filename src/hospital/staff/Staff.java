@@ -1,5 +1,8 @@
 package hospital.staff;
 
+import java.util.List;
+import java.util.Set;
+
 public class Staff {
 
 	private Set<Professional> staff;
@@ -31,7 +34,7 @@ public class Staff {
 	 */
 	public Set<Appointment> searchAvailability(List<Long> professionals, long from, long to, int duration) {
 		// TODO - implement Staff.searchAvailability
-		
+		return null;
 	}
 
 	/**
@@ -44,7 +47,7 @@ public class Staff {
 	 */
 	public Appointment bookAppointment(List<Long> professionals, long startTime, long endTime, String room, String treatmentType) {
 		// TODO - implement Staff.bookAppointment
-		
+		return null;
 	}
 
 	/**
@@ -54,7 +57,7 @@ public class Staff {
 	 */
 	public Set<Appointment> editAppointment(long professionalId, long appointmentId) {
 		// TODO - implement Staff.editAppointment
-		
+		return null;
 	}
 
 	/**
@@ -64,7 +67,7 @@ public class Staff {
 	 */
 	public boolean deleteAppointment(long professionalId, long appointmentId) {
 		// TODO - implement Staff.deleteAppointment
-		
+		return false;
 	}
 
 	public void undo() {

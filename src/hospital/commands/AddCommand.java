@@ -1,9 +1,21 @@
 package hospital.commands;
 
-import hospital.staff.Appointment;
+public class AddCommand<T> implements Command<T> {
 
-public class AddCommand implements Command {
+	private T addedObject;
 
-	private Appointment addedAppointment;
+	@Override
+	public void execute() {
+		// TODO implement method
+	}
 
+	@Override
+	public void undo() {
+		// TODO implement method
+	}
+
+	@Override
+	public void redo() {
+		// TODO implement method
+	}
 }

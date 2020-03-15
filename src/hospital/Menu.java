@@ -1,15 +1,22 @@
 package hospital;
 
 import hospital.commands.Command;
+import hospital.staff.Appointment;
 import hospital.staff.Professional;
 
+import java.util.Set;
+import java.util.Stack;
+
+/**
+ * Represents the menu in the
+ */
 public class Menu {
 
 	private Set<Professional> staff;
 
 	private Professional activeUser;
 
-	private Stack<Command> commands;
+	private Stack<Command<Appointment>> commands;
 
 	public void displayDiary() {
 		// TODO - implement Menu.displayDiary
