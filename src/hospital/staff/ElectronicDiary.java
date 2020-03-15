@@ -1,10 +1,15 @@
 package hospital.staff;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ElectronicDiary {
 
 	private List<Appointment> appointments;
+
+	public ElectronicDiary() {
+		appointments = new ArrayList<>();
+	}
 
 	public List<Appointment> getAppointments() {
 		return this.appointments;
@@ -21,9 +26,9 @@ public class ElectronicDiary {
 
 	/**
 	 * 
-	 * @param appointment
+	 * @param appointmentId
 	 */
-	public boolean deleteAppointment(Appointment appointment) {
+	public boolean deleteAppointment(long appointmentId) {
 		// TODO - implement ElectronicDiary.deleteAppointment
 		return false;
 	}

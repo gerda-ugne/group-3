@@ -1,10 +1,14 @@
 package hospital.staff;
 
-import javax.management.relation.Role;
+import java.time.DayOfWeek;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class Professional {
+
+	private static long counter = 0;
 
 	private long id;
 
@@ -18,20 +22,20 @@ public class Professional {
 
 	private ElectronicDiary diary;
 
-	private List<WorkingHours> workingHours;
+	private Map<DayOfWeek, WorkingHours> workingHours;
 
-	private List<WorkingHours> holidays;
+	public Professional(String firstName, String lastName, String role) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.office = "<undefined>";
+		this.role = role;
+		this.diary = null;
+		workingHours = new HashMap<>(7);
+		this.id = counter++;
+	}
 
 	public long getId() {
 		return this.id;
-	}
-
-	/**
-	 * 
-	 * @param id
-	 */
-	public void setId(long id) {
-		this.id = id;
 	}
 
 	public String getFirstName() {

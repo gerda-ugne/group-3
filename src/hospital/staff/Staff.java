@@ -7,6 +7,10 @@ public class Staff {
 
 	private Set<Professional> staff;
 
+	public Staff() {
+
+	}
+
 	/**
 	 * 
 	 * @param newMember
@@ -68,16 +72,6 @@ public class Staff {
 	public boolean deleteAppointment(long professionalId, long appointmentId) {
 		// TODO - implement Staff.deleteAppointment
 		return false;
-	}
-
-	public void undo() {
-		// TODO - implement Staff.undo
-		
-	}
-
-	public void redo() {
-		// TODO - implement Staff.redo
-		
 	}
 
 }

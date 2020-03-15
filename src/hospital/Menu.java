@@ -3,42 +3,65 @@ package hospital;
 import hospital.commands.Command;
 import hospital.staff.Appointment;
 import hospital.staff.Professional;
+import hospital.staff.Staff;
 
 import java.util.Set;
 import java.util.Stack;
 
 /**
- * Represents the menu in the
+ * Represents the menu in the Hospital Booking System.
  */
 public class Menu {
 
-	private Set<Professional> staff;
+	/**
+	 * The collection of employees in the hospital (doctors, nurses, etc.)
+	 */
+	private Staff staff;
 
+	/**
+	 * The staff member who currently using the system.
+	 */
 	private Professional activeUser;
 
+	/**
+	 * The stack of commands executed by the user, for undo/redo feature.
+	 */
 	private Stack<Command<Appointment>> commands;
 
-	public void displayDiary() {
+	public Menu() {
+
+	}
+
+	public static void main(String[] args) {
+
+	}
+
+	private void showMenu() {
+		// TODO - implement Menu.showMenu
+
+	}
+
+	private void displayDiary() {
 		// TODO - implement Menu.displayDiary
 		
 	}
 
-	public void searchAppointment() {
+	private void searchAppointment() {
 		// TODO - implement Menu.searchAppointment
 		
 	}
 
-	public void addAppointment() {
+	private void addAppointment() {
 		// TODO - implement Menu.addAppointment
 		
 	}
 
-	public void editAppointment() {
+	private void editAppointment() {
 		// TODO - implement Menu.editAppointment
 		
 	}
 
-	public void deleteAppointment() {
+	private void deleteAppointment() {
 		// TODO - implement Menu.deleteAppointment
 		
 	}
@@ -48,12 +71,12 @@ public class Menu {
 		
 	}
 
-	public void backupDiary() {
+	private void backupDiary() {
 		// TODO - implement Menu.backupDiary
 		
 	}
 
-	public void restoreDiary() {
+	private void restoreDiary() {
 		// TODO - implement Menu.restoreDiary
 		
 	}
@@ -62,17 +85,17 @@ public class Menu {
 	 * 
 	 * @param newProfessionalId
 	 */
-	public void changeUser(long newProfessionalId) {
+	private void changeUser(long newProfessionalId) {
 		// TODO - implement Menu.changeUser
 		
 	}
 
-	public void undo() {
+	private void undo() {
 		// TODO - implement Menu.undo
 		
 	}
 
-	public void redo() {
+	private void redo() {
 		// TODO - implement Menu.redo
 		
 	}
