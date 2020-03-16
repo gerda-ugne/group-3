@@ -20,7 +20,7 @@ public class ElectronicDiary {
 	 * @param newAppointment
 	 */
 	public boolean addAppointment(Appointment newAppointment) {
-		// TODO - implement ElectronicDiary.addAppointment
+		appointments.add(newAppointment);
 		return false;
 	}
 
@@ -29,7 +29,8 @@ public class ElectronicDiary {
 	 * @param appointmentId
 	 */
 	public boolean deleteAppointment(long appointmentId) {
-		// TODO - implement ElectronicDiary.deleteAppointment
+		Appointment appointmentToDelete=getAppointment(appointmentId);
+		if(appointmentToDelete!=null) appointments.remove(appointmentToDelete);
 		return false;
 	}
 
@@ -38,7 +39,11 @@ public class ElectronicDiary {
 	 * @param appointmentId
 	 */
 	public Appointment getAppointment(long appointmentId) {
-		// TODO - implement ElectronicDiary.getAppointment
+		for(Appointment appointment : appointments) {
+			if(appointment.getId().equals(appointmentId)) {
+				return appointment;
+			}
+		}
 		return null;
 	}
 
