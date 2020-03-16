@@ -60,7 +60,7 @@ public class Staff {
 	 * @param professionalId
 	 * @param appointmentId
 	 */
-	public Set<Appointment> editAppointment(long professionalId, long appointmentId) {
+	public Appointment editAppointment(long professionalId, long appointmentId, List<Long> professionals, Date startTime, Date endTime, String room, String treatmentType) {
 		// TODO - implement Staff.editAppointment
 		return null;
 	}
@@ -70,9 +70,22 @@ public class Staff {
 	 * @param professionalId
 	 * @param appointmentId
 	 */
-	public boolean deleteAppointment(long professionalId, long appointmentId) {
+	public Appointment deleteAppointment(long professionalId, long appointmentId) {
 		// TODO - implement Staff.deleteAppointment
-		return false;
+		return null;
 	}
 
+	/**
+	 *
+	 * @param appointment
+	 */
+	public Appointment deleteAppointment(Appointment appointment) {
+		// TODO - implement Staff.deleteAppointment
+		return null;
+	}
+
+	public Appointment searchAppointment(long id, long appointmentId) {
+		// TODO - implement Staff.searchAppointment
+		return null;
+	}
 }

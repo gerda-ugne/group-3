@@ -21,6 +21,7 @@ public class Appointment {
 	private List<Professional> professionals;
 
 	public Appointment() {
+		// TODO check for existing ids or make sure that counter is restored too with the appointments
 		this.id = counter++;
 		this.startTime = null;
 		this.endTime = null;
