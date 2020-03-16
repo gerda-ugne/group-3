@@ -5,6 +5,7 @@ import hospital.undo_redo.Action;
 import hospital.staff.Appointment;
 import hospital.staff.Professional;
 import hospital.staff.Staff;
+import hospital.undo_redo.UndoRedoHandler;
 
 import java.util.*;
 
@@ -19,17 +20,18 @@ public class Menu {
 	private Staff staff;
 
 	/**
-	 * The staff member who currently using the system.
+	 * The staff member who currently using the system. Null if nobody is logged in.
 	 */
 	private Professional activeUser;
 
-	/**
-	 * The stack of commands executed by the user, for undo/redo feature.
-	 */
-	private Stack<Action> actions;
+	private UndoRedoHandler undoRedoHandler;
 
 	public Menu() {
+		// TODO restore from save
+		staff = new Staff();
 
+		activeUser = null;
+		undoRedoHandler = new UndoRedoHandler();
 	}
 
 	public static void main(String[] args) {
@@ -61,7 +63,7 @@ public class Menu {
 		Appointment newAppointment = staff.bookAppointment(professionals, startTime, endTime, room, treatmentType);
 		if (newAppointment != null) {
 			try {
-				actions.add(new Action(
+				undoRedoHandler.addAction(new Action(
 						"Add appointment",
 						staff,
 						staff.getClass().getMethod("deleteAppointment", long.class, long.class),
@@ -88,7 +90,7 @@ public class Menu {
 		Appointment modifiedAppointment = staff.editAppointment(activeUser.getId(), appointmentId, professionals, startTime, endTime, room, treatmentType);
 		if (!modifiedAppointment.equals(oldAppointment)) {
 			try {
-				actions.add(new Action(
+				undoRedoHandler.addAction(new Action(
 						"Edit appointment",
 						staff,
 						staff.getClass().getMethod("editAppointment", long.class, long.class),
@@ -109,7 +111,7 @@ public class Menu {
 		Appointment deletedAppointment = staff.deleteAppointment(activeUser.getId(), appointmentId);
 		if (deletedAppointment != null) {
 			try {
-				actions.add(new DeleteAppointmentAction(
+				undoRedoHandler.addAction(new DeleteAppointmentAction(
 						"Delete appointment",
 						staff,
 						new Object[]{deletedAppointment.getProfessionals(), deletedAppointment.getStartTime(), deletedAppointment.getEndTime(), deletedAppointment.getRoom(), deletedAppointment.getTreatmentType()},
@@ -145,15 +147,4 @@ public class Menu {
 		// TODO - implement Menu.changeUser
 		
 	}
-
-	private void undo() {
-		// TODO - implement Menu.undo
-		
-	}
-
-	private void redo() {
-		// TODO - implement Menu.redo
-		
-	}
-
 }

@@ -82,14 +82,4 @@ public class Staff implements UndoRedoExecutor {
 		// TODO - implement Staff.searchAppointment
 		return null;
 	}
-
-	@Override
-	public void undo(Action action) {
-
-	}
-
-	@Override
-	public void redo(Action action) {
-
-	}
 }
