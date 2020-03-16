@@ -29,6 +29,15 @@ public class Appointment {
 		this.professionals = new ArrayList<>();
 	}
 
+	public Appointment(Date startTime, Date endTime, String room, String treatmentType, List<Professional> professionals) {
+		this.id = counter++;
+		this.startTime = startTime;
+		this.endTime = endTime;
+		this.room = room;
+		this.treatmentType = treatmentType;
+		this.professionals = professionals;
+	}
+
 	public long getId() {
 		return id;
 	}
