@@ -1,10 +1,13 @@
 package hospital.staff;
 
+import hospital.undo_redo.Action;
+import hospital.undo_redo.UndoRedoExecutor;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-public class Staff {
+public class Staff implements UndoRedoExecutor {
 
 	private Set<Professional> staff;
 
@@ -75,17 +78,18 @@ public class Staff {
 		return null;
 	}
 
-	/**
-	 *
-	 * @param appointment
-	 */
-	public Appointment deleteAppointment(Appointment appointment) {
-		// TODO - implement Staff.deleteAppointment
-		return null;
-	}
-
 	public Appointment searchAppointment(long id, long appointmentId) {
 		// TODO - implement Staff.searchAppointment
 		return null;
+	}
+
+	@Override
+	public void undo(Action action) {
+
+	}
+
+	@Override
+	public void redo(Action action) {
+
 	}
 }

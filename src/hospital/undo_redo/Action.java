@@ -1,24 +1,45 @@
 package hospital.undo_redo;
 
-public interface Action<T> {
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
-	void undo() throws UndoNotPossibleException;
+public class Action {
 
-	void redo() throws RedoNotPossibleException;
+	protected String actionName;
 
-	String getActionName();
+	protected UndoRedoExecutor executor;
 
-	class UndoNotPossibleException extends Exception {
+	protected Method undo;
+	protected Object[] undoArgs;
+	protected Method redo;
+	protected Object[] redoArgs;
 
-		public UndoNotPossibleException(String message) {
-			super(message);
+	public Action(String actionName, UndoRedoExecutor executor, Method undo, Object[] undoArgs, Method redo, Object[] redoArgs) {
+		this.actionName = actionName;
+		this.executor = executor;
+		this.undo = undo;
+		this.undoArgs = undoArgs;
+		this.redo = redo;
+		this.redoArgs = redoArgs;
+	}
+
+	public void undo() throws UndoNotPossibleException {
+		try {
+			undo.invoke(executor, undoArgs);
+		} catch (Exception e) {
+			throw new UndoNotPossibleException(e.getMessage());
 		}
 	}
 
-	class RedoNotPossibleException extends Exception {
-
-		public RedoNotPossibleException(String message) {
-			super(message);
+	public void redo() throws RedoNotPossibleException {
+		try {
+			redo.invoke(executor, redoArgs);
+		} catch (Exception e) {
+			throw new RedoNotPossibleException(e.getMessage());
 		}
+	}
+
+	public String getActionName() {
+		return this.actionName;
 	}
 }

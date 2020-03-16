@@ -1,6 +1,6 @@
 package hospital;
 
-import hospital.staff.AppointmentAction;
+import hospital.staff.DeleteAppointmentAction;
 import hospital.undo_redo.Action;
 import hospital.staff.Appointment;
 import hospital.staff.Professional;
@@ -26,7 +26,7 @@ public class Menu {
 	/**
 	 * The stack of commands executed by the user, for undo/redo feature.
 	 */
-	private Stack<Action<Staff>> actions;
+	private Stack<Action> actions;
 
 	public Menu() {
 
@@ -61,7 +61,7 @@ public class Menu {
 		Appointment newAppointment = staff.bookAppointment(professionals, startTime, endTime, room, treatmentType);
 		if (newAppointment != null) {
 			try {
-				actions.add(new AppointmentAction<>(
+				actions.add(new Action(
 						"Add appointment",
 						staff,
 						staff.getClass().getMethod("deleteAppointment", long.class, long.class),
@@ -88,7 +88,7 @@ public class Menu {
 		Appointment modifiedAppointment = staff.editAppointment(activeUser.getId(), appointmentId, professionals, startTime, endTime, room, treatmentType);
 		if (!modifiedAppointment.equals(oldAppointment)) {
 			try {
-				actions.add(new AppointmentAction<>(
+				actions.add(new Action(
 						"Edit appointment",
 						staff,
 						staff.getClass().getMethod("editAppointment", long.class, long.class),
@@ -109,13 +109,11 @@ public class Menu {
 		Appointment deletedAppointment = staff.deleteAppointment(activeUser.getId(), appointmentId);
 		if (deletedAppointment != null) {
 			try {
-				actions.add(new AppointmentAction<>(
+				actions.add(new DeleteAppointmentAction(
 						"Delete appointment",
 						staff,
-						staff.getClass().getMethod("bookAppointment", List.class, Date.class, Date.class, String.class, String.class),
 						new Object[]{deletedAppointment.getProfessionals(), deletedAppointment.getStartTime(), deletedAppointment.getEndTime(), deletedAppointment.getRoom(), deletedAppointment.getTreatmentType()},
-						staff.getClass().getMethod("deleteAppointment", Appointment.class),
-						new Object[] {}
+						new Object[] {activeUser.getId(), null}
 				));
 			} catch (NoSuchMethodException e) {
 				// TODO handle exception
