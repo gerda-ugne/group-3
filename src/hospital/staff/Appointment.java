@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Appointment {
+public class Appointment implements Comparable<Appointment> {
 
 	private static long counter = 0;
 
@@ -80,5 +80,10 @@ public class Appointment {
 
 	public void setProfessionals(List<Professional> professionals) {
 		this.professionals = professionals;
+	}
+
+	@Override
+	public int compareTo(Appointment o) {
+		return getStartTime().compareTo(o.getStartTime());
 	}
 }

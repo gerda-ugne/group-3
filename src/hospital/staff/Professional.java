@@ -21,12 +21,32 @@ public class Professional {
 
 	private Map<DayOfWeek, WorkingHours> workingHours;
 
-	public Professional(String firstName, String lastName, String role) {
+	/**
+	 * Default constructor for the professional classs
+	 */
+	public Professional() {
+
+		id = counter++;
+		firstName = "undefined";
+		lastName = "unfdefined";
+		office = "undefined";
+		role = "undefined";
+		diary = new ElectronicDiary();
+
+	}
+
+	/**
+	 * Default constructor for the Professional class
+	 * @param firstName - first name of the professional
+	 * @param lastName - last  name of the professional
+	 * @param role - role that professional takes
+	 */
+	public Professional(String firstName, String lastName, String role, String office) {
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.office = "<undefined>";
+		this.office = office;
 		this.role = role;
-		this.diary = null;
+		this.diary = new EletronicDiary();
 		workingHours = new HashMap<>(7);
 		this.id = counter++;
 	}
@@ -60,13 +80,69 @@ public class Professional {
 	}
 
 	/**
-	 * 
+	 * wip
 	 * @param from
 	 * @param to
 	 * @param duration
 	 */
-	public Set<Appointment> searchAvailability(Date from, Date to, int duration) {
+	public Set<Appointment> searchAvailability(Date from, Date to) {
 		// TODO - implement Professional.searchAvailability
+
+		//Get all the currently booked appointments sorted by date
+		Set<Appointment> bookedAppointments = diary.sortByDate();
+
+		//List to store available appointment times
+		Set<Appointment> availableTimes = new Set<Appointment>();
+		//List of empty slots to add when found
+		Set<Appointment> toAdd = new Set<Appointment>();
+		
+		//Set a pointer to search from the "FROM" date
+		Date currentDay = from;
+
+		Iterator iter = bookedAppointments.iterator();
+		Appointment marker = new Appointment();
+
+		//For each new appointment from the booked appointment list
+		//Until start is found
+		while (iter.hasNext()) {
+
+			if(bookedAppointments[iter].getStartTime =< from){
+
+				marker = bookedAppointments[iter];
+				break;
+			}
+		}
+
+		iter = bookedAppointments.iterator();
+		Appointment previous = null;
+		boolean found = false;
+
+		while (iter.hasNext()) {
+
+			if(bookedAppointments[iter].getStartTime =< from)
+			{
+				found = true;
+				break;
+			}
+
+			previous = bookedAppointments[iter];
+		}
+
+		if(!found) marker = previous;
+		//TO-DO: shorten the list to cut off the irrelevant appointments
+		// and compare appointmets by DAY in the loops
+
+		if()
+		{
+			availableTimes.addAll(toAdd);
+		}
+
+
+		//calendar.add(calendar.DATE, 1);
+		LocalDateTime.from(currentDay.toInstant()).plusDays(1);
+
+
+
 		return null;
 	}
 

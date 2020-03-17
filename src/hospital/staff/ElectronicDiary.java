@@ -47,4 +47,19 @@ public class ElectronicDiary {
 		return null;
 	}
 
+	/**
+	 * Sorts the appointments by date to easen the
+	 * search functionality in other methods.
+	 * @return sorted appointment list by date
+	 */
+	public Set<Appointment> sortByDate()
+	{
+		Set <Appointment> sorted = appointments;
+		Collections.sort(sorted);
+
+		return sorted;
+	}
+
+
+
 }

@@ -37,8 +37,25 @@ public class Staff {
 	 * @param to
 	 * @param duration
 	 */
-	public Set<Appointment> searchAvailability(List<Long> professionals, Date from, Date to, int duration) {
+	public Set<Appointment> searchAvailability(List<Professional> professionals, Date from, Date to) {
 		// TODO - implement Staff.searchAvailability
+
+		//Amount of professionals needed for appointment
+		int amountOfProfessionals = professionals.length();
+
+		//The set of appointments that are available for all professionals
+		Set <Appointment> finalAppointments = new Set<Appointment>();
+
+		//Local variable for holding personal appointents of one professional at a time
+		Set<Appointment> personalAppointments = new Set<Appointment>();
+
+		for(int i=0, i<amountOfProfessionals, i++)
+		{
+
+		}
+
+
+		personalAppointments = professionals[i].searchAvailability(from,to,duration);
 		return null;
 	}
 
