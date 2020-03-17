@@ -1,7 +1,6 @@
 package hospital.staff;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class ElectronicDiary {
 
@@ -40,7 +39,7 @@ public class ElectronicDiary {
 	 */
 	public Appointment getAppointment(long appointmentId) {
 		for(Appointment appointment : appointments) {
-			if(appointment.getId().equals(appointmentId)) {
+			if(appointment.getId() == (appointmentId)) {
 				return appointment;
 			}
 		}
@@ -52,12 +51,11 @@ public class ElectronicDiary {
 	 * search functionality in other methods.
 	 * @return sorted appointment list by date
 	 */
-	public Set<Appointment> sortByDate()
+	public List<Appointment> sortByDate()
 	{
-		Set <Appointment> sorted = appointments;
-		Collections.sort(sorted);
-
-		return sorted;
+		List<Appointment> copy = new ArrayList<>(List.copyOf(appointments));
+		Collections.sort(copy);
+		return copy;
 	}
 
 

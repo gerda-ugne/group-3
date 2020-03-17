@@ -2,6 +2,8 @@ package hospital.staff;
 
 import java.time.DayOfWeek;
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class Professional {
 
@@ -46,7 +48,7 @@ public class Professional {
 		this.lastName = lastName;
 		this.office = office;
 		this.role = role;
-		this.diary = new EletronicDiary();
+		this.diary = new ElectronicDiary();
 		workingHours = new HashMap<>(7);
 		this.id = counter++;
 	}
@@ -83,13 +85,38 @@ public class Professional {
 	 * wip
 	 * @param from
 	 * @param to
-	 * @param duration
 	 */
-	public Set<Appointment> searchAvailability(Date from, Date to) {
+	public List<Appointment> searchAvailability(Date from, Date to) {
 		// TODO - implement Professional.searchAvailability
 
+		// by Miklos
+		long startTime = from.getTime();
+		long endTime = from.getTime() + Appointment.TREATMENT_DURATION;
+		List<Appointment> availableSlots = new ArrayList<>();
+		while (endTime < to.getTime()) {
+			availableSlots.add(new Appointment(new Date(startTime), new Date(endTime)));
+			startTime = endTime;
+			endTime = startTime + Appointment.TREATMENT_DURATION;
+		}
+
+		// Check if an appointment is in the given time-range
+		Predicate<Appointment> checkTimeRange = appointment -> {
+			Date start = appointment.getStartTime();
+			Date end = appointment.getEndTime();
+			if (start.compareTo(from) <= 0 && start.compareTo(to) >= 0 &&
+					end.compareTo(from) >= 0 && end.compareTo(to) <= 0) return true;
+			else return false;
+		};
+
+		List<Appointment> bookedAppointments = diary.sortByDate()
+				.stream()
+				.filter(checkTimeRange)
+				.sorted()
+				.collect(Collectors.toList());
+		//end by Miklos
+
 		//Get all the currently booked appointments sorted by date
-		Set<Appointment> bookedAppointments = diary.sortByDate();
+		List<Appointment> bookedAppointments = diary.sortByDate();
 
 		//List to store available appointment times
 		Set<Appointment> availableTimes = new Set<Appointment>();

@@ -6,6 +6,11 @@ import java.util.List;
 
 public class Appointment implements Comparable<Appointment> {
 
+	/**
+	 * Treatment duration in milliseconds
+	 */
+	public static final int TREATMENT_DURATION = 3600000;
+
 	private static long counter = 0;
 
 	private long id;
@@ -21,12 +26,11 @@ public class Appointment implements Comparable<Appointment> {
 	private List<Professional> professionals;
 
 	public Appointment() {
-		this.id = counter++;
-		this.startTime = null;
-		this.endTime = null;
-		this.room = "<undefined>";
-		this.treatmentType = "<undefined>";
-		this.professionals = new ArrayList<>();
+		this(null, null, "<undefined>", "<undefined>", new ArrayList<>());
+	}
+
+	public Appointment(Date startTime, Date endTime) {
+		this(startTime, endTime, "<undefined>", "<undefined>", new ArrayList<>());
 	}
 
 	public Appointment(Date startTime, Date endTime, String room, String treatmentType, List<Professional> professionals) {
