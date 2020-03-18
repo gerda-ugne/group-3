@@ -30,7 +30,7 @@ public class Professional {
 
 		id = counter++;
 		firstName = "undefined";
-		lastName = "unfdefined";
+		lastName = "undefined";
 		office = "undefined";
 		role = "undefined";
 		diary = new ElectronicDiary();
@@ -82,19 +82,35 @@ public class Professional {
 	}
 
 	/**
-	 * wip
-	 * @param from
-	 * @param to
+	 * Finds available slots for a possible appointment
+	 * and returns a List of available appointment dates.
+	 *
+	 * The returned list only contains Appointments with only
+	 * data of start and end time.
+	 *
+	 * @param from data range to search from
+	 * @param to data range to search to
 	 */
 	public List<Appointment> searchAvailability(Date from, Date to) {
-		// TODO - implement Professional.searchAvailability
 
 		// by Miklos
+
+		//Start time is converted into seconds
 		long startTime = from.getTime();
+
+		//End time of an appointment is calculated
 		long endTime = from.getTime() + Appointment.TREATMENT_DURATION;
+
+		//New list for empty available slots is created
 		List<Appointment> availableSlots = new ArrayList<>();
+
+		//While there is more time to add empty appointments
 		while (endTime < to.getTime()) {
+
+			//Add an empty appointment with defined start and end time
 			availableSlots.add(new Appointment(new Date(startTime), new Date(endTime)));
+
+			//Adjust the time for the next instance
 			startTime = endTime;
 			endTime = startTime + Appointment.TREATMENT_DURATION;
 		}
@@ -108,6 +124,7 @@ public class Professional {
 			else return false;
 		};
 
+		//Appointments are filtered to be in the provided time range
 		List<Appointment> bookedAppointments = diary.sortByDate()
 				.stream()
 				.filter(checkTimeRange)
@@ -115,59 +132,24 @@ public class Professional {
 				.collect(Collectors.toList());
 		//end by Miklos
 
-		//Get all the currently booked appointments sorted by date
-		List<Appointment> bookedAppointments = diary.sortByDate();
+		//Clear other data of booked appointments to make the list comparable to available slots
+		for (Appointment i: bookedAppointments
+			 ) {
 
-		//List to store available appointment times
-		Set<Appointment> availableTimes = new Set<Appointment>();
-		//List of empty slots to add when found
-		Set<Appointment> toAdd = new Set<Appointment>();
+			Date start = i.getStartTime();
+			Date end = i.getEndTime();
+
+			i = new Appointment(start,end);
+		}
 		
-		//Set a pointer to search from the "FROM" date
-		Date currentDay = from;
+		//Leaves the available slots to be empty
+		try {
+			availableSlots.removeAll(bookedAppointments);
+			return availableSlots;
 
-		Iterator iter = bookedAppointments.iterator();
-		Appointment marker = new Appointment();
-
-		//For each new appointment from the booked appointment list
-		//Until start is found
-		while (iter.hasNext()) {
-
-			if(bookedAppointments[iter].getStartTime =< from){
-
-				marker = bookedAppointments[iter];
-				break;
-			}
+		} catch (NullPointerException e) {
+			System.out.println("Null element found, searching for availability could not be completed.");
 		}
-
-		iter = bookedAppointments.iterator();
-		Appointment previous = null;
-		boolean found = false;
-
-		while (iter.hasNext()) {
-
-			if(bookedAppointments[iter].getStartTime =< from)
-			{
-				found = true;
-				break;
-			}
-
-			previous = bookedAppointments[iter];
-		}
-
-		if(!found) marker = previous;
-		//TO-DO: shorten the list to cut off the irrelevant appointments
-		// and compare appointmets by DAY in the loops
-
-		if()
-		{
-			availableTimes.addAll(toAdd);
-		}
-
-
-		//calendar.add(calendar.DATE, 1);
-		LocalDateTime.from(currentDay.toInstant()).plusDays(1);
-
 
 
 		return null;
@@ -182,6 +164,7 @@ public class Professional {
 	 */
 	public Appointment addAppointment(Date startTime, Date endTime, String room, String treatmentType) {
 		// TODO - implement Professional.addAppointment
+
 		Appointment tempAppointment = new Appointment(startTime, endTime, room, treatmentType);
 		diary.addAppointment(tempAppointment);
 		return null;

@@ -90,4 +90,6 @@ public class Appointment implements Comparable<Appointment> {
 	public int compareTo(Appointment o) {
 		return getStartTime().compareTo(o.getStartTime());
 	}
+
+
 }

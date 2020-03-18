@@ -47,7 +47,7 @@ public class ElectronicDiary {
 	}
 
 	/**
-	 * Sorts the appointments by date to easen the
+	 * Sorts the appointments by date to ease the
 	 * search functionality in other methods.
 	 * @return sorted appointment list by date
 	 */
