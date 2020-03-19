@@ -91,7 +91,7 @@ public class Professional {
 	 * @param from data range to search from
 	 * @param to data range to search to
 	 */
-	public List<Appointment> searchAvailability(Date from, Date to) {
+	public List<Appointment>  searchAvailability(Date from, Date to) {
 
 		// by Miklos
 

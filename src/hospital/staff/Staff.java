@@ -47,12 +47,16 @@ public class Staff {
 
 	/**
 	 * Finds all common available slots in a list of provided professionals.
+	 * Time taken to search the diaries is recorded and displayed to the user.
 	 *
 	 * @param professionals list of professionals needed for the appointment
 	 * @param from searching data range from
 	 * @param to searching data range to
 	 */
 	public Set<Appointment> searchAvailability(List<Professional> professionals, Date from, Date to) {
+
+		//Records current time to calculate time taken to search availability
+		Date startSearchTime = new Date();
 
 		//Local variable for holding personal appointments of one professional at a time
 		List <Appointment> personalFreeSlots = new ArrayList<Appointment>();
@@ -73,6 +77,12 @@ public class Staff {
 			allAppointments.retainAll(professional.searchAvailability(from,to));
 
 		}
+
+		Date endSearchTime = new Date();
+
+		//Calculates the total time taken to search the free appointment slots
+		long totalTimeTaken = endSearchTime.getTime() - startSearchTime.getTime();
+		System.out.println("Search took " + totalTimeTaken/1000 + "seconds.");
 
 		return allAppointments;
 	}
