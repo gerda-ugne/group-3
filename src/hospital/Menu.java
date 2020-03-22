@@ -24,8 +24,15 @@ public class Menu {
 	 */
 	private Professional activeUser;
 
+	/**
+	 * The handler which responsible for the undo/redo function of the system.
+	 * Every action which needs to be undoable have to be registered by this handler.
+	 */
 	private UndoRedoHandler undoRedoHandler;
 
+	/**
+	 * TODO
+	 */
 	public Menu() {
 		// TODO restore from save
 		staff = new Staff();
@@ -34,25 +41,41 @@ public class Menu {
 		undoRedoHandler = new UndoRedoHandler();
 	}
 
+	/**
+	 * TODO
+	 * @param args
+	 */
 	public static void main(String[] args) {
 
 	}
 
+	/**
+	 * TODO
+	 */
 	private void showMenu() {
 		// TODO - implement Menu.showMenu
 
 	}
 
+	/**
+	 * TODO
+	 */
 	private void displayDiary() {
 		// TODO - implement Menu.displayDiary
 		
 	}
 
+	/**
+	 * TODO
+	 */
 	private void searchAppointment() {
 		// TODO - implement Menu.searchAppointment
 		
 	}
 
+	/**
+	 * Get inputs from the user for a new appointment, verify it and adds it to the database.
+	 */
 	private void addAppointment() {
 		List<Long> professionals = new ArrayList<>();
 		Date startTime = new Date();
@@ -78,6 +101,9 @@ public class Menu {
 		}
 	}
 
+	/**
+	 * Get inputs from a user for editing an existing appointment and modify it after verification.
+	 */
 	private void editAppointment() {
 		long appointmentId = 0;
 		List<Long> professionals = new ArrayList<>();
@@ -105,6 +131,10 @@ public class Menu {
 		}
 	}
 
+	/**
+	 * Gets and ID from the user to delete one of their appointment.
+	 * After verification, deletes it.
+	 */
 	private void deleteAppointment() {
 		long appointmentId = 0;
 		// TODO - implement Menu.deleteAppointment
@@ -114,8 +144,7 @@ public class Menu {
 				undoRedoHandler.addAction(new DeleteAppointmentAction(
 						"Delete appointment",
 						staff,
-						new Object[]{deletedAppointment.getProfessionals(), deletedAppointment.getStartTime(), deletedAppointment.getEndTime(), deletedAppointment.getRoom(), deletedAppointment.getTreatmentType()},
-						new Object[] {activeUser.getId(), null}
+						deletedAppointment
 				));
 			} catch (NoSuchMethodException e) {
 				// TODO handle exception
@@ -124,26 +153,35 @@ public class Menu {
 		}
 	}
 
+	/**
+	 * TODO
+	 */
 	public void logRunningTime() {
 		// TODO - implement Menu.logRunningTime
 		
 	}
 
+	/**
+	 * TODO
+	 */
 	private void backupDiary() {
 		// TODO - implement Menu.backupDiary
 		
 	}
 
+	/**
+	 * TODO
+	 */
 	private void restoreDiary() {
 		// TODO - implement Menu.restoreDiary
 		
 	}
 
 	/**
-	 * 
-	 * @param newProfessionalId
+	 * Gets the professional ID of the user who would like to use the system.
+	 * After verification the professional will be able to make changes to their electronic diary.
 	 */
-	private void changeUser(long newProfessionalId) {
+	private void changeUser() {
 		// TODO - implement Menu.changeUser
 		
 	}
