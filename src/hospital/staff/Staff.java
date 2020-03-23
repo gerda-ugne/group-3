@@ -78,6 +78,7 @@ public class Staff {
 
 		}
 
+
 		Date endSearchTime = new Date();
 
 		//Calculates the total time taken to search the free appointment slots

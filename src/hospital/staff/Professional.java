@@ -21,6 +21,8 @@ public class Professional {
 
 	private ElectronicDiary diary;
 
+	private TaskList tasks;
+
 	private Map<DayOfWeek, WorkingHours> workingHours;
 
 	/**
@@ -34,6 +36,7 @@ public class Professional {
 		office = "undefined";
 		role = "undefined";
 		diary = new ElectronicDiary();
+		tasks = new TaskList();
 
 	}
 
@@ -49,6 +52,7 @@ public class Professional {
 		this.office = office;
 		this.role = role;
 		this.diary = new ElectronicDiary();
+		this.tasks = new TaskList();
 		workingHours = new HashMap<>(7);
 		this.id = counter++;
 	}
@@ -190,6 +194,43 @@ public class Professional {
 		// TODO - implement Professional.deleteAppointment
 		return false;
 	}
+
+	/**
+	 * A new task is added to the personal task list.
+	 * @param taskName - name of the task
+	 * @param description - description of the task
+	 * @param dueBy - date when the task is due by
+	 * @return true or false whether the addition was successful
+	 */
+	public boolean addTask(String taskName, String description, Date dueBy)
+	{
+		Task toAdd = new Task(taskName, description, dueBy);
+		return tasks.addTask(toAdd);
+	}
+
+	/**
+	 * Task is deleted off the personal task list.
+	 * @param taskName task name to delete
+	 * @return the deleted task
+	 */
+	public Task deleteTask(String taskName)
+	{
+		Task toDelete = new Task();
+		toDelete.setTaskName(taskName);
+
+		//Finds a task with the same task name in the list
+		//Copies the content of the found task onto the
+		//toDelete node
+		for (Task task : tasks.getTaskList()) {
+			if (task.getTaskName().equals(taskName)) {
+				toDelete = task;
+
+			}
+		}
+
+		return tasks.deleteTask(toDelete);
+	}
+
 
 	public String getOffice() {
 		return this.office;
