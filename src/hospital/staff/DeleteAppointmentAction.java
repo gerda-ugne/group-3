@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
  */
 public class DeleteAppointmentAction extends Action {
 
+	// TODO test this too
+
 	/**
 	 * Base constructor of the class.
 	 *
@@ -25,7 +27,7 @@ public class DeleteAppointmentAction extends Action {
 			throws NoSuchMethodException {
 		super(actionName,
 				staff,
-				// For undo readd the appointment (it will have a different ID)
+				// For undo re-add the appointment (it will have a different ID)
 				Staff.class.getMethod("bookAppointment", List.class, Date.class, Date.class, String.class, String.class),
 				new Object[]{
 						// Get the required arguments for the bookAppointment() method from the appointment
@@ -46,21 +48,23 @@ public class DeleteAppointmentAction extends Action {
 	/**
 	 * Undo the deletion of the appointment.
 	 *
+	 * @return The re-added appointment (with a new unique ID)
 	 * @throws UndoNotPossibleException if the undo is not possible.
 	 */
 	@Override
-	public void undo() throws UndoNotPossibleException {
+	public Appointment undo() throws UndoNotPossibleException {
 		try {
 			// Add the appointment again
 			Appointment reAddedAppointment = (Appointment) undo.invoke(executor, undoArgs);
 			if (reAddedAppointment != null) {
 				// Modify the arguments of the redo (deleteAppointment()) with the newly generated appointment ID
 				redoArgs[1] = reAddedAppointment.getId();
+				return reAddedAppointment;
 			} else {
 				throw new UndoNotPossibleException("Could not find the undeleted appointment");
 			}
 		} catch (Exception e) {
-			throw new UndoNotPossibleException(e.getMessage());
+			throw new UndoNotPossibleException(e.getMessage(), e);
 		}
 	}
 }

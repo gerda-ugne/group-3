@@ -137,7 +137,7 @@ public class Menu {
 	 */
 	private void deleteAppointment() {
 		long appointmentId = 0;
-		// TODO - implement Menu.deleteAppointment
+		// TODO get input from user
 		Appointment deletedAppointment = staff.deleteAppointment(activeUser.getId(), appointmentId);
 		if (deletedAppointment != null) {
 			try {

@@ -43,32 +43,40 @@ public class UndoRedoHandler {
      * Undoes the last action registered in this handler.
      * Adds the action to the top of the redoable actions stack, so it can be redo later.
      * If there is no action to undo, it does nothing.
+     *
+     * @return the returned object from the method used to redo the action.
      */
-    public void undo() {
+    public Object undo() throws UndoNotPossibleException {
+        Object returned = null;
         if (!doneActions.isEmpty()) {
             Action lastAction = doneActions.pop();
-            try {
-                lastAction.undo();
-                undoneActions.add(lastAction);
-            } catch (UndoNotPossibleException e) {
-                // TODO handle exception
-            }
+            returned = lastAction.undo();
+            undoneActions.add(lastAction);
         }
+        return returned;
     }
 
     /**
      * Redoes the last undone action registered in this handler.
      * Adds the action to the top of the undoable actions stack.
+     *
+     * @return the returned object from the method used to redo the action.
      */
-    public void redo() {
+    public Object redo() throws RedoNotPossibleException {
+        Object returned = null;
         if (!undoneActions.isEmpty()) {
             Action lastUndone = undoneActions.pop();
-            try {
-                lastUndone.redo();
-                doneActions.add(lastUndone);
-            } catch (RedoNotPossibleException e) {
-                // TODO handle exception
-            }
+            returned = lastUndone.redo();
+            doneActions.add(lastUndone);
         }
+        return returned;
+    }
+
+    /**
+     * Clears the whole undo and redo history.
+     */
+    public void clearHistory() {
+        undoneActions.clear();
+        doneActions.clear();
     }
 }
