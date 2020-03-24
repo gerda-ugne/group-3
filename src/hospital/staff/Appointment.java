@@ -50,12 +50,16 @@ public class Appointment {
 	 */
 	public Appointment() {
 		// TODO check for existing ids or make sure that counter is restored too with the appointments (from save)
+		this(null, null, "undefined", "undefined", new ArrayList<>());
+	}
+
+	public Appointment(Date startTime, Date endTime, String room, String treatmentType, List<Professional> professionals) {
 		this.id = counter++;
-		this.startTime = null;
-		this.endTime = null;
-		this.room = "<undefined>";
-		this.treatmentType = "<undefined>";
-		this.professionals = new ArrayList<>();
+		this.startTime = startTime;
+		this.endTime = endTime;
+		this.room = room;
+		this.treatmentType = treatmentType;
+		this.professionals = professionals;
 	}
 
 	/**

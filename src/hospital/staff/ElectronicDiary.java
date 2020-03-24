@@ -35,7 +35,8 @@ public class ElectronicDiary {
 	 * @param newAppointment The appointment to add into the diary
 	 */
 	public boolean addAppointment(Appointment newAppointment) {
-		// TODO - implement ElectronicDiary.addAppointment
+		// TODO check for conflicts
+		appointments.add(newAppointment);
 		return false;
 	}
 
@@ -45,7 +46,10 @@ public class ElectronicDiary {
 	 * @param appointmentId the ID of the appointment to delete.
 	 */
 	public boolean deleteAppointment(long appointmentId) {
-		// TODO - implement ElectronicDiary.deleteAppointment
+		Appointment appointmentToDelete = getAppointment(appointmentId);
+		if (appointmentToDelete != null) {
+			return appointments.remove(appointmentToDelete);
+		}
 		return false;
 	}
 
@@ -55,7 +59,11 @@ public class ElectronicDiary {
 	 * @param appointmentId The ID of the appointment to retrieve.
 	 */
 	public Appointment getAppointment(long appointmentId) {
-		// TODO - implement ElectronicDiary.getAppointment
+		for(Appointment appointment : appointments) {
+			if(appointment.getId() == (appointmentId)) {
+				return appointment;
+			}
+		}
 		return null;
 	}
 
