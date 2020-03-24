@@ -16,31 +16,34 @@ public class ElectronicDiary {
 	}
 
 	/**
-	 * 
+	 * TODO
 	 * @param newAppointment
 	 */
 	public boolean addAppointment(Appointment newAppointment) {
+		// TODO check for conflicts
 		appointments.add(newAppointment);
 		return false;
 	}
 
 	/**
-	 * 
+	 * TODO
 	 * @param appointmentId
 	 */
 	public boolean deleteAppointment(long appointmentId) {
-		Appointment appointmentToDelete=getAppointment(appointmentId);
-		if(appointmentToDelete!=null) appointments.remove(appointmentToDelete);
+		Appointment appointmentToDelete = getAppointment(appointmentId);
+		if (appointmentToDelete != null) {
+			return appointments.remove(appointmentToDelete);
+		}
 		return false;
 	}
 
 	/**
-	 * 
+	 * TODO
 	 * @param appointmentId
 	 */
 	public Appointment getAppointment(long appointmentId) {
 		for(Appointment appointment : appointments) {
-			if(appointment.getId().equals(appointmentId)) {
+			if(appointment.getId() == (appointmentId)) {
 				return appointment;
 			}
 		}

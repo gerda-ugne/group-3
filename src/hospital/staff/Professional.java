@@ -40,7 +40,7 @@ public class Professional {
 	}
 
 	/**
-	 * 
+	 * TODO
 	 * @param firstName
 	 */
 	public void setFirstName(String firstName) {
@@ -52,7 +52,7 @@ public class Professional {
 	}
 
 	/**
-	 * 
+	 * TODO
 	 * @param lastName
 	 */
 	public void setLastName(String lastName) {
@@ -60,7 +60,7 @@ public class Professional {
 	}
 
 	/**
-	 * 
+	 * TODO
 	 * @param from
 	 * @param to
 	 * @param duration
@@ -71,7 +71,7 @@ public class Professional {
 	}
 
 	/**
-	 * 
+	 * TODO
 	 * @param startTime
 	 * @param endTime
 	 * @param room
@@ -85,7 +85,7 @@ public class Professional {
 	}
 
 	/**
-	 * 
+	 * TODO
 	 * @param startTime
 	 * @param endTime
 	 * @param room
@@ -97,7 +97,7 @@ public class Professional {
 	}
 
 	/**
-	 * 
+	 * TODO
 	 * @param appointmentId
 	 */
 	public boolean deleteAppointment(long appointmentId) {
