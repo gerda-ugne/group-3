@@ -4,12 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class Appointment implements Comparable<Appointment> {
-
-	/**
-	 * Treatment duration in milliseconds
-	 */
-	public static final int TREATMENT_DURATION = 3600000;
+public class Appointment {
 
 	private static long counter = 0;
 
@@ -26,11 +21,7 @@ public class Appointment implements Comparable<Appointment> {
 	private List<Professional> professionals;
 
 	public Appointment() {
-		this(null, null, "<undefined>", "<undefined>", new ArrayList<>());
-	}
-
-	public Appointment(Date startTime, Date endTime) {
-		this(startTime, endTime, "<undefined>", "<undefined>", new ArrayList<>());
+		this(null, null, "undefined", "undefined", new ArrayList<>());
 	}
 
 	public Appointment(Date startTime, Date endTime, String room, String treatmentType, List<Professional> professionals) {
@@ -85,11 +76,4 @@ public class Appointment implements Comparable<Appointment> {
 	public void setProfessionals(List<Professional> professionals) {
 		this.professionals = professionals;
 	}
-
-	@Override
-	public int compareTo(Appointment o) {
-		return getStartTime().compareTo(o.getStartTime());
-	}
-
-
 }

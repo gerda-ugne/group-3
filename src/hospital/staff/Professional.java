@@ -2,8 +2,6 @@ package hospital.staff;
 
 import java.time.DayOfWeek;
 import java.util.*;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class Professional {
 
@@ -21,38 +19,14 @@ public class Professional {
 
 	private ElectronicDiary diary;
 
-	private TaskList tasks;
-
 	private Map<DayOfWeek, WorkingHours> workingHours;
 
-	/**
-	 * Default constructor for the professional classs
-	 */
-	public Professional() {
-
-		id = counter++;
-		firstName = "undefined";
-		lastName = "undefined";
-		office = "undefined";
-		role = "undefined";
-		diary = new ElectronicDiary();
-		tasks = new TaskList();
-
-	}
-
-	/**
-	 * Default constructor for the Professional class
-	 * @param firstName - first name of the professional
-	 * @param lastName - last  name of the professional
-	 * @param role - role that professional takes
-	 */
-	public Professional(String firstName, String lastName, String role, String office) {
+	public Professional(String firstName, String lastName, String role) {
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.office = office;
+		this.office = "<undefined>";
 		this.role = role;
-		this.diary = new ElectronicDiary();
-		this.tasks = new TaskList();
+		this.diary = null;
 		workingHours = new HashMap<>(7);
 		this.id = counter++;
 	}
@@ -66,7 +40,7 @@ public class Professional {
 	}
 
 	/**
-	 * 
+	 * TODO
 	 * @param firstName
 	 */
 	public void setFirstName(String firstName) {
@@ -78,7 +52,7 @@ public class Professional {
 	}
 
 	/**
-	 * 
+	 * TODO
 	 * @param lastName
 	 */
 	public void setLastName(String lastName) {
@@ -86,81 +60,18 @@ public class Professional {
 	}
 
 	/**
-	 * Finds available slots for a possible appointment
-	 * and returns a List of available appointment dates.
-	 *
-	 * The returned list only contains Appointments with only
-	 * data of start and end time.
-	 *
-	 * @param from data range to search from
-	 * @param to data range to search to
+	 * TODO
+	 * @param from
+	 * @param to
+	 * @param duration
 	 */
-	public List<Appointment>  searchAvailability(Date from, Date to) {
-
-		// by Miklos
-
-		//Start time is converted into seconds
-		long startTime = from.getTime();
-
-		//End time of an appointment is calculated
-		long endTime = from.getTime() + Appointment.TREATMENT_DURATION;
-
-		//New list for empty available slots is created
-		List<Appointment> availableSlots = new ArrayList<>();
-
-		//While there is more time to add empty appointments
-		while (endTime < to.getTime()) {
-
-			//Add an empty appointment with defined start and end time
-			availableSlots.add(new Appointment(new Date(startTime), new Date(endTime)));
-
-			//Adjust the time for the next instance
-			startTime = endTime;
-			endTime = startTime + Appointment.TREATMENT_DURATION;
-		}
-
-		// Check if an appointment is in the given time-range
-		Predicate<Appointment> checkTimeRange = appointment -> {
-			Date start = appointment.getStartTime();
-			Date end = appointment.getEndTime();
-			if (start.compareTo(from) <= 0 && start.compareTo(to) >= 0 &&
-					end.compareTo(from) >= 0 && end.compareTo(to) <= 0) return true;
-			else return false;
-		};
-
-		//Appointments are filtered to be in the provided time range
-		List<Appointment> bookedAppointments = diary.sortByDate()
-				.stream()
-				.filter(checkTimeRange)
-				.sorted()
-				.collect(Collectors.toList());
-		//end by Miklos
-
-		//Clear other data of booked appointments to make the list comparable to available slots
-		for (Appointment i: bookedAppointments
-			 ) {
-
-			Date start = i.getStartTime();
-			Date end = i.getEndTime();
-
-			i = new Appointment(start,end);
-		}
-		
-		//Leaves the available slots to be empty
-		try {
-			availableSlots.removeAll(bookedAppointments);
-			return availableSlots;
-
-		} catch (NullPointerException e) {
-			System.out.println("Null element found, searching for availability could not be completed.");
-		}
-
-
+	public Set<Appointment> searchAvailability(Date from, Date to, int duration) {
+		// TODO - implement Professional.searchAvailability
 		return null;
 	}
 
 	/**
-	 * 
+	 * TODO
 	 * @param startTime
 	 * @param endTime
 	 * @param room
@@ -168,14 +79,13 @@ public class Professional {
 	 */
 	public Appointment addAppointment(Date startTime, Date endTime, String room, String treatmentType) {
 		// TODO - implement Professional.addAppointment
-
 		Appointment tempAppointment = new Appointment(startTime, endTime, room, treatmentType);
 		diary.addAppointment(tempAppointment);
 		return null;
 	}
 
 	/**
-	 * 
+	 * TODO
 	 * @param startTime
 	 * @param endTime
 	 * @param room
@@ -187,50 +97,13 @@ public class Professional {
 	}
 
 	/**
-	 * 
+	 * TODO
 	 * @param appointmentId
 	 */
 	public boolean deleteAppointment(long appointmentId) {
 		// TODO - implement Professional.deleteAppointment
 		return false;
 	}
-
-	/**
-	 * A new task is added to the personal task list.
-	 * @param taskName - name of the task
-	 * @param description - description of the task
-	 * @param dueBy - date when the task is due by
-	 * @return true or false whether the addition was successful
-	 */
-	public boolean addTask(String taskName, String description, Date dueBy)
-	{
-		Task toAdd = new Task(taskName, description, dueBy);
-		return tasks.addTask(toAdd);
-	}
-
-	/**
-	 * Task is deleted off the personal task list.
-	 * @param taskName task name to delete
-	 * @return the deleted task
-	 */
-	public Task deleteTask(String taskName)
-	{
-		Task toDelete = new Task();
-		toDelete.setTaskName(taskName);
-
-		//Finds a task with the same task name in the list
-		//Copies the content of the found task onto the
-		//toDelete node
-		for (Task task : tasks.getTaskList()) {
-			if (task.getTaskName().equals(taskName)) {
-				toDelete = task;
-
-			}
-		}
-
-		return tasks.deleteTask(toDelete);
-	}
-
 
 	public String getOffice() {
 		return this.office;
