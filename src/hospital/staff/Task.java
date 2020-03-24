@@ -79,4 +79,15 @@ public class Task implements Comparable<Task> {
         return getInitialised().compareTo(o.getInitialised());
     }
 
+    /**
+     * Prints data of the task
+     */
+    public void printData()
+    {
+        System.out.println("Task: " + taskName);
+        System.out.println("Initalised: " + initialised);
+        System.out.println(description);
+        System.out.println("Task is due by: " + dueBy);
+    }
+
 }

@@ -78,4 +78,16 @@ public class TaskList {
     public void setTaskList(List<Task> taskList) {
         this.taskList = taskList;
     }
+
+    /**
+     * Displays the task list.
+     */
+    public void displayTaskList()
+    {
+        for (Task task:taskList
+             ) {
+            task.printData();
+            System.out.println();
+        }
+    }
 }

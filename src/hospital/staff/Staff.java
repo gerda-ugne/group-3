@@ -53,13 +53,13 @@ public class Staff {
 	 * @param from searching data range from
 	 * @param to searching data range to
 	 */
-	public Set<Appointment> searchAvailability(List<Professional> professionals, Date from, Date to) {
+	public List<Appointment> searchAvailability(List<Professional> professionals, Date from, Date to) {
 
 		//Records current time to calculate time taken to search availability
 		Date startSearchTime = new Date();
 
 		//Local variable for holding personal appointments of one professional at a time
-		List <Appointment> personalFreeSlots = new ArrayList<Appointment>();
+		List <Appointment> personalFreeSlots;
 		Set <Appointment> allAppointments = new HashSet<Appointment>();
 
 		//Professional availability is retrieved and recorded into a set
@@ -78,6 +78,9 @@ public class Staff {
 
 		}
 
+		//Converts set into a list type object
+		List<Appointment> listOfAppointments = new ArrayList<Appointment>();
+		listOfAppointments.addAll(allAppointments);
 
 		Date endSearchTime = new Date();
 
@@ -85,7 +88,27 @@ public class Staff {
 		long totalTimeTaken = endSearchTime.getTime() - startSearchTime.getTime();
 		System.out.println("Search took " + totalTimeTaken/1000 + "seconds.");
 
-		return allAppointments;
+		return listOfAppointments;
+	}
+
+	/**
+	 * List of professionals is filtered by role
+	 *
+	 * @param professionals list of professionals to filter
+	 * @param role role to filter by
+	 * @return list of professionals only with the given role
+	 */
+	public List<Professional> sortByRole(List<Professional> professionals, String role)
+	{
+		List<Professional> professionalsOfRole = new ArrayList<Professional>();
+		for (Professional professional:
+			 professionals) {
+
+			if(professional.getRole().equals(role)) professionalsOfRole.add(professional);
+		}
+
+		return professionalsOfRole;
+
 	}
 
 	/**
