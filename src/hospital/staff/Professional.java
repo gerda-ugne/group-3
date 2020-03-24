@@ -125,44 +125,25 @@ public class Professional {
 	}
 
 	/**
-	 * Adds a new appointment to the professional's electronic diary.
+	 * Registers a new appointment in the professional's electronic diary.
 	 * Checks if it's allowed and if there are now conflicts with the already booked appointments.
 	 *
-	 * @param startTime The time when the new appointment starts.
-	 * @param endTime The time when the new appointment ends.
-	 * @param room The name/number of the room where the appointment takes place in.
-	 * @param treatmentType The type of the treatment
+	 * @param appointment the new appointment to register in the professional's electronic diary.
 	 */
-	public Appointment addAppointment(Date startTime, Date endTime, String room, String treatmentType) {
-		// TODO - implement Professional.addAppointment
-		Appointment tempAppointment = new Appointment(startTime, endTime, room, treatmentType);
-		diary.addAppointment(tempAppointment);
-		return null;
-	}
-
-	/**
-	 * Modifies an appointment in the professional's electronic diary.
-	 * Checks if it's allowed and if there are now conflicts with the already booked appointments.
-	 *
-	 * @param id The id of the appointment to modify.
-	 * @param startTime The time when the new appointment starts.
-	 * @param endTime The time when the new appointment ends.
-	 * @param room The name/number of the room where the appointment takes place in.
-	 * @param treatmentType The type of the treatment
-	 */
-	public Appointment editAppointment(long id, Date startTime, Date endTime, String room, String treatmentType) {
-		// TODO - implement Professional.editAppointment
-		return null;
+	public boolean addAppointment(Appointment appointment) {
+		// TODO check for conflicts. Here or in the diary?
+		return diary.addAppointment(appointment);
 	}
 
 	/**
 	 * Deletes an appointment from the professional's electronic diary
 	 *
 	 * @param appointmentId The id of the appointment to delete
+	 * @return the deleted appointment.
 	 */
-	public boolean deleteAppointment(long appointmentId) {
+	public Appointment deleteAppointment(long appointmentId) {
 		// TODO - implement Professional.deleteAppointment
-		return false;
+		return null;
 	}
 
 	/**
