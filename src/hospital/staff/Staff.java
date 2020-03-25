@@ -55,6 +55,7 @@ public class Staff {
 	 */
 	public List<Appointment> searchAvailability(List<Professional> professionals, Date from, Date to) {
 
+		// TODO move time logging to a different class (and package), e.g. TimeLogger
 		//Records current time to calculate time taken to search availability
 		Date startSearchTime = new Date();
 
@@ -82,6 +83,7 @@ public class Staff {
 		List<Appointment> listOfAppointments = new ArrayList<Appointment>();
 		listOfAppointments.addAll(allAppointments);
 
+		// TODO move time logging to a different class (and package), e.g. TimeLogger
 		Date endSearchTime = new Date();
 
 		//Calculates the total time taken to search the free appointment slots
