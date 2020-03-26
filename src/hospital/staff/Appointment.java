@@ -86,6 +86,13 @@ public class Appointment implements Comparable<Appointment> {
 		this.professionals = professionals;
 	}
 
+    /**
+     * TODO
+     * @param o The other appointment to compare this appointment to
+     * @return  0 if the two appointment start at the same time,
+     *          a negative number if the argument starts later then this appointment,
+     *          a positive number if the argument starts sooner then this appointment
+     */
 	@Override
 	public int compareTo(Appointment o) {
 		return getStartTime().compareTo(o.getStartTime());
