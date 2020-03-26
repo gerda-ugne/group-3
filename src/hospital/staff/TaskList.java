@@ -44,16 +44,11 @@ public class TaskList {
     /**
      * Deletes a task from the personal task list.
      * @param toDelete - task to delete
-     * @return deleted task
+     * @return True if the deletion was successful.
      */
-    public Task deleteTask(Task toDelete)
+    public boolean deleteTask(Task toDelete)
     {
-
-            Task temp = toDelete;
-            taskList.remove(toDelete);
-
-            return toDelete;
-
+        return taskList.remove(toDelete);
     }
 
 
