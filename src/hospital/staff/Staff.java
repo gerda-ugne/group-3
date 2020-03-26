@@ -59,7 +59,7 @@ public class Staff {
 		Date startSearchTime = new Date();
 
 		//Local variable for holding personal appointments of one professional at a time
-		List<List<Appointment>> personalFreeSlots = new ArrayList<List<Appointment>>;
+		List<List<Appointment>> personalFreeSlots = new ArrayList<>();
 		Set <Appointment> allAppointments = new HashSet<Appointment>();
 
 		//Professional availability is retrieved and recorded into a set

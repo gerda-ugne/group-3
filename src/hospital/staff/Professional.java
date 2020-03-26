@@ -169,7 +169,7 @@ public class Professional {
 	public Appointment addAppointment(Date startTime, Date endTime, String room, String treatmentType) {
 		// TODO - implement Professional.addAppointment
 
-		Appointment tempAppointment = new Appointment(startTime, endTime, room, treatmentType);
+		Appointment tempAppointment = new Appointment(startTime, endTime);
 		diary.addAppointment(tempAppointment);
 		return null;
 	}
