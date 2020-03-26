@@ -230,8 +230,7 @@ public class Professional {
 	 */
 	public Task deleteTask(String taskName)
 	{
-		Task toDelete = new Task();
-		toDelete.setTaskName(taskName);
+		Task toDelete = null;
 
 		//Finds a task with the same task name in the list
 		//Copies the content of the found task onto the
@@ -239,11 +238,10 @@ public class Professional {
 		for (Task task : tasks.getTaskList()) {
 			if (task.getTaskName().equals(taskName)) {
 				toDelete = task;
-
 			}
 		}
-
-		return tasks.deleteTask(toDelete);
+		if (tasks.deleteTask(toDelete)) return toDelete;
+		else return null;
 	}
 
 	/**
