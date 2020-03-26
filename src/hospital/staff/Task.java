@@ -23,10 +23,7 @@ public class Task implements Comparable<Task> {
      * Default constructor for Task class
      */
     public Task() {
-        taskName = "<undefined>";
-        description = "<undefined>";
-        initialised = new Date();
-        dueBy = null;
+        this("<undefined>", "<undefined>", null);
     }
 
     /**
@@ -40,6 +37,7 @@ public class Task implements Comparable<Task> {
         this.taskName = taskName;
         this.description = description;
         this.dueBy = dueBy;
+        this.initialised = new Date();
     }
 
     public String getTaskName() {
@@ -77,6 +75,17 @@ public class Task implements Comparable<Task> {
     @Override
     public int compareTo(Task o) {
         return getInitialised().compareTo(o.getInitialised());
+    }
+
+    /**
+     * Prints data of the task
+     */
+    public void printData()
+    {
+        System.out.println("Task: " + taskName);
+        System.out.println("Initalised: " + initialised);
+        System.out.println(description);
+        System.out.println("Task is due by: " + dueBy);
     }
 
 }

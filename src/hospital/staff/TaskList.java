@@ -25,6 +25,7 @@ public class TaskList {
 
     /**
      * Adds a task to the personal task list.
+     * The list is sorted by initialised date afterwards.
      * @param newTask - task to be added
      * @return true/false whether the addition was successful
      */
@@ -36,27 +37,18 @@ public class TaskList {
            return false;
        }
         else taskList.add(newTask);
+        sortTasksByInitialisedDate();
         return true;
     }
 
     /**
      * Deletes a task from the personal task list.
      * @param toDelete - task to delete
-     * @return deleted task
+     * @return True if the deletion was successful.
      */
-    public Task deleteTask(Task toDelete)
+    public boolean deleteTask(Task toDelete)
     {
-        try {
-
-            Task temp = toDelete;
-            taskList.remove(toDelete);
-
-            return toDelete;
-        } catch (NullPointerException e) {
-
-            System.out.println("Task not found - nothing to remove.");
-            return null;
-        }
+        return taskList.remove(toDelete);
     }
 
 
@@ -66,7 +58,7 @@ public class TaskList {
      */
     public List<Task> sortTasksByInitialisedDate()
     {
-        List<Task> copy = new ArrayList<>(List.copyOf(taskList));
+        List<Task> copy = new ArrayList<>((taskList));
         Collections.sort(copy);
         return copy;
     }
@@ -78,4 +70,17 @@ public class TaskList {
     public void setTaskList(List<Task> taskList) {
         this.taskList = taskList;
     }
+
+    /**
+     * Displays the task list.
+     */
+    public void displayTaskList()
+    {
+        for (Task task:taskList
+             ) {
+            task.printData();
+            System.out.println();
+        }
+    }
+
 }
