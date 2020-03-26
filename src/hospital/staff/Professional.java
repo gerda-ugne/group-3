@@ -5,81 +5,114 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+/**
+ * Represents a professional in the hospital staff.
+ */
 public class Professional {
 
+	/**
+	 * Static counter to generate unique IDs
+	 */
 	private static long counter = 0;
 
-	private long id;
+	/**
+	 * The unique ID of the professional.
+	 */
+	private final long id;
 
+	// TODO add title
+
+	/**
+	 * The first name of the professional.
+	 */
 	private String firstName;
 
+	/**
+	 * The last name of the professional.
+	 */
 	private String lastName;
 
+	/**
+	 * The office name/number of the professional.
+	 */
 	private String office;
 
+	/**
+	 * The role of the professional, e.g. nurse, dermatologist, etc.
+	 */
 	private String role;
 
+	/**
+	 * The personal electronic diary of the professional with booked appointments.
+	 */
 	private ElectronicDiary diary;
 
 	private TaskList tasks;
 
+	/**
+	 * The schedule when the professional is working in a week.
+	 */
 	private Map<DayOfWeek, WorkingHours> workingHours;
 
-	/**
-	 * Default constructor for the professional classs
-	 */
 	public Professional() {
-
-		id = counter++;
-		firstName = "undefined";
-		lastName = "undefined";
-		office = "undefined";
-		role = "undefined";
-		diary = new ElectronicDiary();
-		tasks = new TaskList();
-
+		this("<undefined>", "<undefined>", "<undefined>", "<undefined>");
 	}
 
-	/**
-	 * Default constructor for the Professional class
-	 * @param firstName - first name of the professional
-	 * @param lastName - last  name of the professional
-	 * @param role - role that professional takes
-	 */
+	public Professional(String firstName, String lastName, String role) {
+		this(firstName, lastName, role, "<undefined>");
+	}
+
 	public Professional(String firstName, String lastName, String role, String office) {
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.office = office;
 		this.role = role;
+		this.office = office;
 		this.diary = new ElectronicDiary();
 		this.tasks = new TaskList();
-		workingHours = new HashMap<>(7);
+		this.workingHours = new HashMap<>(7);
 		this.id = counter++;
 	}
 
+	/**
+	 * Getter of the ID of the professional.
+	 *
+	 * @return the unique ID of the professional.
+	 */
 	public long getId() {
 		return this.id;
 	}
 
+	/**
+	 * Getter of the first name of the professional.
+	 *
+	 * @return the first name of the professional.
+	 */
 	public String getFirstName() {
 		return this.firstName;
 	}
 
 	/**
-	 * 
-	 * @param firstName
+	 * Sets the first name of the professional.
+	 *
+	 * @param firstName The first name to set to the professional.
 	 */
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
 
+	/**
+	 * Getter of the last name of the professional.
+	 *
+	 * @return the last name of the professional.
+	 */
 	public String getLastName() {
 		return this.lastName;
 	}
 
 	/**
-	 * 
-	 * @param lastName
+	 * Sets the last name of the professional.
+	 *
+	 * @param lastName the last name to set to the professional.
 	 */
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
@@ -90,14 +123,12 @@ public class Professional {
 	 * and returns a List of available appointment slots with start
 	 * ane end times specified.
 
-	 *  @param from data range to search from
+	 * @param from data range to search from
 	 * @param to data range to search to
 	 * @return List of free slots for appointments that has data of
 	 * start and end time
 	 */
 	public List<Appointment> searchAvailability(Date from, Date to) {
-
-		// by Miklos
 
 		//Start time is converted into seconds
 		long startTime = from.getTime();
@@ -134,8 +165,6 @@ public class Professional {
 				.filter(checkTimeRange)
 				.sorted()
 				.collect(Collectors.toList());
-		//end by Miklos
-
 
 		//Nested for loop: each slot is compared to the existing appointments.
 		for (Appointment slot:
@@ -160,39 +189,25 @@ public class Professional {
 	}
 
 	/**
-	 * 
-	 * @param startTime
-	 * @param endTime
-	 * @param room
-	 * @param treatmentType
+	 * Registers a new appointment in the professional's electronic diary.
+	 * Checks if it's allowed and if there are now conflicts with the already booked appointments.
+	 *
+	 * @param appointment the new appointment to register in the professional's electronic diary.
 	 */
-	public Appointment addAppointment(Date startTime, Date endTime, String room, String treatmentType) {
-		// TODO - implement Professional.addAppointment
-
-		Appointment tempAppointment = new Appointment(startTime, endTime);
-		diary.addAppointment(tempAppointment);
-		return null;
+	public boolean addAppointment(Appointment appointment) {
+		// TODO check for conflicts. Here or in the diary?
+		return diary.addAppointment(appointment);
 	}
 
 	/**
-	 * 
-	 * @param startTime
-	 * @param endTime
-	 * @param room
-	 * @param treatmentType
+	 * Deletes an appointment from the professional's electronic diary
+	 *
+	 * @param appointmentId The id of the appointment to delete
+	 * @return the deleted appointment.
 	 */
-	public Appointment editAppointment(Date startTime, Date endTime, String room, String treatmentType) {
-		// TODO - implement Professional.editAppointment
-		return null;
-	}
-
-	/**
-	 * 
-	 * @param appointmentId
-	 */
-	public boolean deleteAppointment(long appointmentId) {
+	public Appointment deleteAppointment(long appointmentId) {
 		// TODO - implement Professional.deleteAppointment
-		return false;
+		return null;
 	}
 
 	/**
@@ -231,31 +246,47 @@ public class Professional {
 		return tasks.deleteTask(toDelete);
 	}
 
-
+	/**
+	 * Getter of the professional's office
+	 *
+	 * @return the professional's office name/number
+	 */
 	public String getOffice() {
 		return this.office;
 	}
 
 	/**
-	 * 
-	 * @param office
+	 * Sets the name/number of the professional's office.
+	 *
+	 * @param office The name/number to set the professional office to.
 	 */
 	public void setOffice(String office) {
 		this.office = office;
 	}
 
+	/**
+	 * Getter of the professional's role.
+	 *
+	 * @return the role of the professional.
+	 */
 	public String getRole() {
 		return this.role;
 	}
 
 	/**
-	 * 
-	 * @param role
+	 * Sets the role of the professional.
+	 *
+	 * @param role The role to set to the professional.
 	 */
 	public void setRole(String role) {
 		this.role = role;
 	}
 
+	/**
+	 * Getter of the professional's electronic diary.
+	 *
+	 * @return the professional's electronic diary.
+	 */
 	public ElectronicDiary getDiary() {
 		return this.diary;
 	}
