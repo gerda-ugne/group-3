@@ -1,7 +1,6 @@
 package hospital.staff;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Represents an electronic diary of a professional. Contains appointments.
@@ -66,5 +65,19 @@ public class ElectronicDiary {
 		}
 		return null;
 	}
+
+	/**
+	 * Sorts the appointments by date to ease the
+	 * search functionality in other methods.
+	 * @return sorted appointment list by date
+	 */
+	public List<Appointment> sortByDate()
+	{
+		List<Appointment> copy = new ArrayList<>(List.copyOf(appointments));
+		Collections.sort(copy);
+		return copy;
+	}
+
+
 
 }

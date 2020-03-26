@@ -2,14 +2,15 @@ package hospital.staff;
 
 import hospital.undo_redo.UndoRedoExecutor;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
- * Represents the staff of a hospital.
- * Handles any changes made to it as well as managing all the professional's personal administrations.
+ * Staff class contains a HashSet of Professionals.
+ * The HashSet implements the Set interface.
+ *
+ * Members can be added and removed from the staff.
+ *
  */
 public class Staff implements UndoRedoExecutor {
 
@@ -19,7 +20,7 @@ public class Staff implements UndoRedoExecutor {
 	private Set<Professional> staff;
 
 	/**
-	 * Default constructor of the class.
+	 * Default constructor for Staff class
 	 */
 	public Staff() {
 		staff = new HashSet<>();
@@ -31,32 +32,91 @@ public class Staff implements UndoRedoExecutor {
 	 * @param newMember The professional to add as a new member.
 	 */
 	public void addMember(Professional newMember) {
-		// TODO - implement Staff.addMember
-		
+
+		staff.add(newMember);
+
 	}
 
 	/**
-	 * Removes a professional from the staff.
-	 *
-	 * @param member The professional to remove.
+	 * Removes a professional from the staff
+	 * @param member member to remove
+	 * @return false/true whether the member was removed
 	 */
-	public void removeMember(Professional member) {
-		// TODO - implement Staff.removeMember
-		
+	public boolean removeMember(Professional member) {
+
+		return staff.remove(member);
+
 	}
 
 	/**
-	 * Searches for free and available appointment slots for ALL the given professionals in the given interval.
+	 * Finds all common available slots in a list of provided professionals.
+	 * Time taken to search the diaries is recorded and displayed to the user.
 	 *
 	 * @param professionals The list of professionals who have to share the new appointment.
 	 * @param from The starting time of the interval to search in.
 	 * @param to The ending time of the interval to search in.
-	 * @param duration The duration of the planned appointment in minutes.
 	 * @return A set of available time-slots as empty appointments, which are free for all of the involved professionals.
 	 */
-	public Set<Appointment> searchAvailability(List<Long> professionals, Date from, Date to, int duration) {
-		// TODO - implement Staff.searchAvailability
-		return null;
+	public List<Appointment> searchAvailability(List<Professional> professionals, Date from, Date to) {
+
+		// TODO move time logging to a different class (and package), e.g. TimeLogger
+		//Records current time to calculate time taken to search availability
+		Date startSearchTime = new Date();
+
+		//Local variable for holding personal appointments of one professional at a time
+		List<List<Appointment>> personalFreeSlots = new ArrayList<>();
+		Set <Appointment> allAppointments = new HashSet<Appointment>();
+
+		//Professional availability is retrieved and recorded into a set
+		for (Professional professional:
+			 professionals) {
+
+			List<Appointment> tempList = professional.searchAvailability(from, to);
+			personalFreeSlots.add(tempList);
+			allAppointments.addAll(tempList);
+		}
+
+		//The intersection of free common slots is calculated
+
+		for(int o=0; o<personalFreeSlots.size(); o++)
+		{
+			allAppointments.retainAll(personalFreeSlots.get(o));
+		}
+
+		//Converts set into a list type object
+		List<Appointment> listOfAppointments = new ArrayList<Appointment>(allAppointments);
+		//Sorts the list by start date
+		listOfAppointments.sort(Comparator.comparing(Appointment::getStartTime));
+
+		// TODO move time logging to a different class (and package), e.g. TimeLogger
+		Date endSearchTime = new Date();
+
+		//Calculates the total time taken to search the free appointment slots
+		long totalTimeTaken = endSearchTime.getTime() - startSearchTime.getTime();
+		System.out.println("Search took " + totalTimeTaken/1000 + "seconds.");
+
+		return listOfAppointments;
+	}
+
+	/**
+	 * List of professionals is filtered by role.
+	 *
+	 * @param professionals list of professionals to filter
+	 * @param role role to filter by
+	 * @return list of professionals only with the given role
+	 */
+	public List<Professional> sortByRole(List<Professional> professionals, String role)
+	{
+		List<Professional> professionalsOfRole = new ArrayList<Professional>(professionals)
+				.stream()
+				.filter(professional -> {
+					if(professional.getRole().equals(role)) return true;
+					else return false;
+				})
+				.collect(Collectors.toList());
+
+		return professionalsOfRole;
+
 	}
 
 	/**

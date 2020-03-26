@@ -8,7 +8,13 @@ import java.util.List;
  * This class represents an appointment in one or more professional's electronic diary.
  * Stores and sets data about the appointment.
  */
-public class Appointment {
+public class Appointment implements Comparable<Appointment> {
+
+	/**
+	 * Treatment duration in milliseconds.
+	 * Right now it's one hour.
+	 */
+	public static final int TREATMENT_DURATION = 3600000;
 
 	/**
 	 * Static counter used to generate unique IDs for every appointment.
@@ -50,7 +56,11 @@ public class Appointment {
 	 */
 	public Appointment() {
 		// TODO check for existing ids or make sure that counter is restored too with the appointments (from save)
-		this(null, null, "undefined", "undefined", new ArrayList<>());
+		this(null, null, "<undefined>", "<undefined>", new ArrayList<>());
+	}
+
+	public Appointment(Date startTime, Date endTime) {
+		this(startTime, endTime, "<undefined>", "<undefined>", new ArrayList<>());
 	}
 
 	public Appointment(Date startTime, Date endTime, String room, String treatmentType, List<Professional> professionals) {
@@ -158,4 +168,18 @@ public class Appointment {
 	public void setProfessionals(List<Professional> professionals) {
 		this.professionals = professionals;
 	}
+
+    /**
+     * TODO
+     * @param o The other appointment to compare this appointment to
+     * @return  0 if the two appointment start at the same time,
+     *          a negative number if the argument starts later then this appointment,
+     *          a positive number if the argument starts sooner then this appointment
+     */
+	@Override
+	public int compareTo(Appointment o) {
+		return getStartTime().compareTo(o.getStartTime());
+	}
+
+
 }
