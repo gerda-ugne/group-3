@@ -50,6 +50,7 @@ public class Staff {
 	 * @param professionals list of professionals needed for the appointment
 	 * @param from searching data range from
 	 * @param to searching data range to
+	 * @return list of slots for available appointments
 	 */
 	public List<Appointment> searchAvailability(List<Professional> professionals, Date from, Date to) {
 
@@ -65,16 +66,16 @@ public class Staff {
 		for (Professional professional:
 			 professionals) {
 
-			personalFreeSlots = professional.searchAvailability(from, to);
-			allAppointments.addAll(personalFreeSlots);
+			List<Appointment> tempList = professional.searchAvailability(from, to);
+			personalFreeSlots.add(tempList);
+			allAppointments.addAll(tempList);
 		}
 
 		//The intersection of free common slots is calculated
-		for (Professional professional:
-			 professionals) {
 
-			allAppointments.retainAll(professional.searchAvailability(from,to));
-
+		for(int o=0; o<personalFreeSlots.size(); o++)
+		{
+			allAppointments.retainAll(personalFreeSlots.get(o));
 		}
 
 		//Converts set into a list type object
