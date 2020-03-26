@@ -86,16 +86,16 @@ public class Professional {
 	}
 
 	/**
-	 * Finds available slots for a possible appointment
-	 * and returns a List of available appointment dates.
-	 *
-	 * The returned list only contains Appointments with only
-	 * data of start and end time.
-	 *
-	 * @param from data range to search from
+	 * Finds all available slots for a possible appointment
+	 * and returns a List of available appointment slots with start
+	 * ane end times specified.
+
+	 *  @param from data range to search from
 	 * @param to data range to search to
+	 * @return List of free slots for appointments that has data of
+	 * start and end time
 	 */
-	public List<Appointment>  searchAvailability(Date from, Date to) {
+	public List<Appointment> searchAvailability(Date from, Date to) {
 
 		// by Miklos
 
@@ -106,7 +106,7 @@ public class Professional {
 		long endTime = from.getTime() + Appointment.TREATMENT_DURATION;
 
 		//New list for empty available slots is created
-		List<Appointment> availableSlots = new ArrayList<>();
+		List<Appointment> availableSlots = new ArrayList<Appointment>();
 
 		//While there is more time to add empty appointments
 		while (endTime < to.getTime()) {
@@ -136,27 +136,27 @@ public class Professional {
 				.collect(Collectors.toList());
 		//end by Miklos
 
-		//Clear other data of booked appointments to make the list comparable to available slots
-		for (Appointment i: bookedAppointments
-			 ) {
 
-			Date start = i.getStartTime();
-			Date end = i.getEndTime();
+		//Nested for loop: each slot is compared to the existing appointments.
+		for (Appointment slot:
+			 availableSlots) {
 
-			i = new Appointment(start,end);
+			for (Appointment bookedAppointment:
+				 bookedAppointments) {
+
+				//If the start and end times match it means the slot is not available
+				// and therefore is removed from the available slots list.
+				if((slot.getStartTime().equals(bookedAppointment.getStartTime()))
+				&& slot.getEndTime().equals(bookedAppointment.getEndTime()))
+				{
+					availableSlots.remove(slot);
+					break;
+				}
+			}
+
 		}
-		
-		//Leaves the available slots to be empty
-		try {
-			availableSlots.removeAll(bookedAppointments);
-			return availableSlots;
 
-		} catch (NullPointerException e) {
-			System.out.println("Null element found, searching for availability could not be completed.");
-		}
-
-
-		return null;
+		return availableSlots;
 	}
 
 	/**

@@ -1,6 +1,7 @@
 package hospital.staff;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Staff class contains a HashSet of Professionals.
@@ -34,14 +35,11 @@ public class Staff {
 	/**
 	 * Removes a professional from the staff
 	 * @param member member to remove
+	 * @return false/true whether the member was removed
 	 */
-	public void removeMember(Professional member) {
+	public boolean removeMember(Professional member) {
 
-		try {
-			staff.remove(member);
-		} catch (NullPointerException e) {
-			System.out.println("This professional does not exist.");
-		}
+		return staff.remove(member);
 
 	}
 
@@ -60,7 +58,7 @@ public class Staff {
 		Date startSearchTime = new Date();
 
 		//Local variable for holding personal appointments of one professional at a time
-		List <Appointment> personalFreeSlots;
+		List<List<Appointment>> personalFreeSlots = new ArrayList<List<Appointment>>;
 		Set <Appointment> allAppointments = new HashSet<Appointment>();
 
 		//Professional availability is retrieved and recorded into a set
@@ -80,8 +78,9 @@ public class Staff {
 		}
 
 		//Converts set into a list type object
-		List<Appointment> listOfAppointments = new ArrayList<Appointment>();
-		listOfAppointments.addAll(allAppointments);
+		List<Appointment> listOfAppointments = new ArrayList<Appointment>(allAppointments);
+		//Sorts the list by start date
+		listOfAppointments.sort(Comparator.comparing(Appointment::getStartTime));
 
 		// TODO move time logging to a different class (and package), e.g. TimeLogger
 		Date endSearchTime = new Date();
@@ -94,7 +93,7 @@ public class Staff {
 	}
 
 	/**
-	 * List of professionals is filtered by role
+	 * List of professionals is filtered by role.
 	 *
 	 * @param professionals list of professionals to filter
 	 * @param role role to filter by
@@ -102,12 +101,13 @@ public class Staff {
 	 */
 	public List<Professional> sortByRole(List<Professional> professionals, String role)
 	{
-		List<Professional> professionalsOfRole = new ArrayList<Professional>();
-		for (Professional professional:
-			 professionals) {
-
-			if(professional.getRole().equals(role)) professionalsOfRole.add(professional);
-		}
+		List<Professional> professionalsOfRole = new ArrayList<Professional>(professionals)
+				.stream()
+				.filter(professional -> {
+					if(professional.getRole().equals(role)) return true;
+					else return false;
+				})
+				.collect(Collectors.toList());
 
 		return professionalsOfRole;
 

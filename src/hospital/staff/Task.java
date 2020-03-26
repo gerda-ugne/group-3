@@ -24,6 +24,7 @@ public class Task implements Comparable<Task> {
      */
     public Task() {
         this("<undefined>", "<undefined>", null);
+
     }
 
     /**
