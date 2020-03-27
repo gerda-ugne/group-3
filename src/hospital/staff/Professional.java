@@ -189,6 +189,38 @@ public class Professional {
 	}
 
 	/**
+	 * Checks whether the specified time is free in the Professional's diary
+
+	 * @param from data range to search from
+	 * @return true if time is free
+	 */
+	public boolean searchIfTimeAvailable(Date from) {
+
+		//Start time is converted into seconds
+		long startTime = from.getTime();
+
+		//End time of an appointment is calculated
+		long endTime = from.getTime() + Appointment.TREATMENT_DURATION;
+
+		List<Appointment> appointments = diary.getAppointments();
+		for(Appointment appointment: appointments)
+		{
+			//Gets each appointment's start and end times
+			long appointmentStartTime = appointment.getStartTime().getTime();
+			long appointmentEndTime = appointment.getStartTime().getTime()+Appointment.TREATMENT_DURATION;
+
+			//checks if times overlap
+			if((endTime<appointmentEndTime)&&(endTime>appointmentStartTime)) return false;
+
+			else if ((startTime>appointmentStartTime)&&(startTime<appointmentEndTime)) return false;
+
+			else if((startTime<appointmentStartTime)&&(endTime>appointmentEndTime)) return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Registers a new appointment in the professional's electronic diary.
 	 * Checks if it's allowed and if there are now conflicts with the already booked appointments.
 	 *
