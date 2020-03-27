@@ -123,7 +123,7 @@ public class Staff implements UndoRedoExecutor {
 	 * Books an appointment in one or more electronic diaries of the involved professionals.
 	 * It also checks if the given time-slot is free and available for all of the involved professionals.
 	 *
-	 * @param professionals A list of the ids of the professionals who are involved in the new appointment.
+	 * @param professionalIds A list of the ids of the professionals who are involved in the new appointment.
 	 * @param startTime The time when the new appointment starts.
 	 * @param endTime The time when the new appointment ends.
 	 * @param room The name/number of the room where the appointment will take place.
@@ -131,7 +131,7 @@ public class Staff implements UndoRedoExecutor {
 	 * @return The newly created appointment or null if the booking was unsuccessful.
 	 */
 	public Appointment bookAppointment(List<Professional> professionals, List<Long> professionalIds, Date startTime, Date endTime, String room, String treatmentType) {
-		List<Professional> involvedProfessionals = new List<Professional>();
+		List<Professional> involvedProfessionals = new ArrayList<Professional>();
 		for (Professional professional: professionals)
 		{
 			for (long ID : professionalIds) {
@@ -144,7 +144,7 @@ public class Staff implements UndoRedoExecutor {
 		Appointment newAppointment = new Appointment(startTime, endTime, room, treatmentType, involvedProfessionals);
 		for(Professional professional: involvedProfessionals)
 		{
-			if(professional.addAppointment(newAppointment)==null) return null;
+			if(professional.getDiary().addAppointment(newAppointment)==false) return null;
 		}
 		return newAppointment;
 	}
@@ -182,10 +182,10 @@ public class Staff implements UndoRedoExecutor {
 		Appointment deletedAppointment=null;
 		for (Professional professional: professionals)
 			{
-				if(professional.getAppointment(appointmentId)!=null)
+				if(professional.getDiary().getAppointment(appointmentId)!=null)
 				{
 					deletedAppointment=professional.getDiary().getAppointment(appointmentId);
-					professional.deleteAppointment(professional.getDiary().getAppointment(appointmentId));
+					professional.deleteAppointment(appointmentId);
 				}
 			}
 		return deletedAppointment;
