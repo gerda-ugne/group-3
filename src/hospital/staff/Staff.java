@@ -177,7 +177,13 @@ public class Staff implements UndoRedoExecutor {
 	 * @return The found appointment or null if it could not have been found.
 	 */
 	public Appointment searchAppointment(long professionId, long appointmentId) {
-		// TODO - implement Staff.searchAppointment
+		for (Professional professional:
+				professionals) {
+			if(professional.getId()==professionId)
+			{
+				return professional.getDiary().getAppointment(appointmentId);
+			}
+		}
 		return null;
 	}
 }
