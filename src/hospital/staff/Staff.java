@@ -165,8 +165,18 @@ public class Staff implements UndoRedoExecutor {
 	 * @return The deleted appointment or null, if the deletion was unsuccessful.
 	 */
 	public Appointment deleteAppointment(long professionalId, long appointmentId) {
-		// TODO - implement Staff.deleteAppointment
-		return null;
+		Appointment deletedAppointment=null;
+		for (Professional professional:
+				professionals)
+			{
+				if(professional.getAppointment(appointmentId)!=null)
+				{
+					deletedAppointment=professional.getAppointment(appointmentId);
+					professional.deleteAppointment(appointmentId);
+				}
+			}
+		}
+		return deletedAppointment;
 	}
 
 	/**
