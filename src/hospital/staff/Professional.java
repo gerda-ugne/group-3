@@ -238,8 +238,9 @@ public class Professional {
 	 * @return the deleted appointment.
 	 */
 	public Appointment deleteAppointment(long appointmentId) {
-		// TODO - implement Professional.deleteAppointment
-		return null;
+		Appointment deletedAppointment=diary.getAppointment(appointmentId);
+		if(deletedAppointment!=null) diary.deleteAppointment(appointmentId);
+		return deletedAppointment;
 	}
 
 	/**
