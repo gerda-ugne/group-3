@@ -227,8 +227,8 @@ public class Professional {
 	 * @param appointment the new appointment to register in the professional's electronic diary.
 	 */
 	public boolean addAppointment(Appointment appointment) {
-		// TODO check for conflicts. Here or in the diary?
-		return diary.addAppointment(appointment);
+		if(searchIfTimeAvailable(appointment.getStartTime())) return diary.addAppointment(appointment);
+		return false;
 	}
 
 	/**
