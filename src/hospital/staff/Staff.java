@@ -180,4 +180,38 @@ public class Staff implements UndoRedoExecutor {
 		// TODO - implement Staff.searchAppointment
 		return null;
 	}
+
+	/**
+	 * Returns the set of all the professionals
+	 * @return set of professionals
+	 */
+	public Set<Professional> getStaff() {
+		return staff;
+	}
+
+	/**
+	 * Sets the staff of professionals
+	 * @param staff professional set to be set
+	 */
+	public void setStaff(Set<Professional> staff) {
+		this.staff = staff;
+	}
+
+	/**
+	 * Searches professional by ID and returns if found
+	 * @return the found professional or null if not found
+	 */
+	public Professional searchById(String id)
+	{
+		String idAsString;
+		for (Professional professional:
+		staff) {
+
+			//Converts the id into string for comparison
+			idAsString = String.valueOf(professional.getId());
+			if(idAsString.equals(id)) return professional;
+		}
+
+		return null;
+	}
 }

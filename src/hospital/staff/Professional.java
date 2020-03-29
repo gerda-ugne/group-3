@@ -4,11 +4,14 @@ import java.time.DayOfWeek;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import org.jasypt.util.password.StrongPasswordEncryptor;
+
+
 
 /**
  * Represents a professional in the hospital staff.
  */
-public class Professional {
+public class Professional{
 
 	/**
 	 * Static counter to generate unique IDs
@@ -53,6 +56,11 @@ public class Professional {
 	 * The schedule when the professional is working in a week.
 	 */
 	private Map<DayOfWeek, WorkingHours> workingHours;
+
+	/**
+	 * Encrypted password of the professional, which is used to log in.
+	 */
+	private String encryptedPassword;
 
 	public Professional() {
 		this("<undefined>", "<undefined>", "<undefined>", "<undefined>");
@@ -245,6 +253,31 @@ public class Professional {
 	}
 
 	/**
+	 * Sets a new password for the professional.
+	 * The set password is encrypted in the password field.
+	 *
+	 * @param password password to be set
+	 */
+	public void setPassword(String password)
+	{
+		StrongPasswordEncryptor encryption = new StrongPasswordEncryptor();
+		encryptedPassword = encryption.encryptPassword(password);
+
+	}
+
+	/**
+	 * Checks if the entered password is true
+	 *
+	 * @param input user's input
+	 * @return true/false whether the passwords match
+	 */
+	public boolean checkPassword(String input)
+	{
+		StrongPasswordEncryptor encryption = new StrongPasswordEncryptor();
+		return encryption.checkPassword(input, encryptedPassword);
+	}
+
+	/**
 	 * Getter of the professional's office
 	 *
 	 * @return the professional's office name/number
@@ -288,5 +321,6 @@ public class Professional {
 	public ElectronicDiary getDiary() {
 		return this.diary;
 	}
+
 
 }

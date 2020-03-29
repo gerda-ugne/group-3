@@ -185,4 +185,44 @@ public class Menu {
 		// TODO - implement Menu.changeUser
 		
 	}
+
+	/**
+	 * Prompts the user to log-in
+	 */
+	private void logIn()
+	{
+		Scanner s = new Scanner(System.in);
+		String id, password;
+		boolean retry = false;
+		boolean isPasswordCorrect = false;
+
+		do {
+			try {
+				System.out.println("Please log-in to access the system:\n");
+				System.out.println("Enter your ID:");
+
+				id = s.nextLine();
+				activeUser = staff.searchById(id);
+
+				System.out.println("\nEnter your password:");
+				password = s.nextLine();
+
+				isPasswordCorrect = activeUser.checkPassword(password);
+				if(isPasswordCorrect)
+				{
+					System.out.println("You've successfully logged in! Welcome, " + activeUser.getFirstName() +".");
+					retry = false;
+				}
+				else{
+					System.out.println("Your password is incorrect. Please try again.");
+					retry = true;
+				}
+
+			} catch (NullPointerException e) {
+				System.out.println("No such ID found. Please try again.");
+				retry = true;
+			}
+		} while (retry);
+
+	}
 }
