@@ -62,14 +62,30 @@ public class Professional{
 	 */
 	private String encryptedPassword;
 
+	/**
+	 * Default constructor with no parameters for the Professional class
+	 */
 	public Professional() {
 		this("<undefined>", "<undefined>", "<undefined>", "<undefined>");
 	}
 
+	/**
+	 * Default constructor for the Professional class
+	 * @param firstName name of the professional
+	 * @param lastName last name of the professional
+	 * @param role role of the professional
+	 */
 	public Professional(String firstName, String lastName, String role) {
 		this(firstName, lastName, role, "<undefined>");
 	}
 
+	/**
+	 * Default constructor for the Professional class
+	 * @param firstName name of the professional
+	 * @param lastName last name of the professional
+	 * @param role role of the professional
+	 * @param office office of the professional
+	 */
 	public Professional(String firstName, String lastName, String role, String office) {
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -79,6 +95,7 @@ public class Professional{
 		this.tasks = new TaskList();
 		this.workingHours = new HashMap<>(7);
 		this.id = counter++;
+		setPassword("default");
 	}
 
 	/**

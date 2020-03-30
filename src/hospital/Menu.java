@@ -198,7 +198,8 @@ public class Menu {
 
 		do {
 			try {
-				System.out.println("Please log-in to access the system:\n");
+				System.out.println("Please log-in to access the system.");
+				System.out.println("If you're logging in for the first time, your password is set to be 'default'.\n");
 				System.out.println("Enter your ID:");
 
 				id = s.nextLine();
