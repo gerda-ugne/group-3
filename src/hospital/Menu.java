@@ -51,9 +51,28 @@ public class Menu {
 
 	/**
 	 * TODO
+	 * Displays the menu options
 	 */
 	private void showMenu() {
 		// TODO - implement Menu.showMenu
+		System.out.println("Appointment management:\n");
+		System.out.println("1. Add a new appointment");
+		System.out.println("2. Edit an existing appointment");
+		System.out.println("3. Remove an appointment");
+		System.out.println("4. Undo last action");
+		System.out.println("5. Redo last action");
+		System.out.println("6. Display the electronic diary");
+		System.out.println("7. Backup the electronic diary");
+		System.out.println("8. Restore the latest backup of the electronic diary");
+
+
+		System.out.println("\nTask management:");
+		System.out.println("9. Add a new task");
+		System.out.println("10. Remove a task");
+		System.out.println("11. Display the task list");
+
+		System.out.println("\nOther:");
+		System.out.println("12. Change your password");
 
 	}
 
