@@ -178,6 +178,25 @@ public class Menu {
 		}catch(Exception exp){
 			exp.printStackTrace();
 		}
+		finally {
+
+			if (out != null) {
+				try {
+					out.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+			if (oos != null) {
+				try {
+					oos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+		}
 	}
 
 
