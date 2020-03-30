@@ -34,8 +34,26 @@ public class ElectronicDiary {
 	 * @param newAppointment The appointment to add into the diary
 	 */
 	public boolean addAppointment(Appointment newAppointment) {
-		// TODO check for conflicts
-		appointments.add(newAppointment);
+		//gets all professionals that are required for the appointment
+		List<Professional> appointmentProfessionals = newAppointment.getProfessionals();
+
+		//gets appointment start time
+		Date from = newAppointment.getStartTime();
+
+		//boolean to check if all required professionals are available at that time
+		boolean allAvailable=true;
+
+		//goes through each professional and checks if the start time is available
+		for(Professional p: appointmentProfessionals)
+		{
+			if(!p.searchIfTimeAvailable(from)) allAvailable=false;
+		}
+
+		//if all professionals available, adds appointment to list
+		if(allAvailable) {
+			appointments.add(newAppointment);
+			return true;
+		}
 		return false;
 	}
 
