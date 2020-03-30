@@ -11,9 +11,9 @@ public class ElectronicDiary {
 	 * The list of appointments the professional has
 	 */
 	private List<Appointment> appointments;
-
+	
 	/**
-	 * Creates an empty diary with no appointments
+	 * Creates an empty diary with no appointments and empty backup
 	 */
 	public ElectronicDiary() {
 		appointments = new ArrayList<>();
@@ -65,7 +65,7 @@ public class ElectronicDiary {
 		}
 		return null;
 	}
-
+	
 	/**
 	 * Sorts the appointments by date to ease the
 	 * search functionality in other methods.
@@ -77,7 +77,4 @@ public class ElectronicDiary {
 		Collections.sort(copy);
 		return copy;
 	}
-
-
-
 }

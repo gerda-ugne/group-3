@@ -130,9 +130,23 @@ public class Staff implements UndoRedoExecutor {
 	 * @param treatmentType The type of treatment the new appointment has.
 	 * @return The newly created appointment or null if the booking was unsuccessful.
 	 */
-	public Appointment bookAppointment(List<Long> professionals, Date startTime, Date endTime, String room, String treatmentType) {
-		// TODO - implement Staff.bookAppointment
-		return null;
+	public Appointment bookAppointment(List<Professional> professionals, List<Long> professionalIds, Date startTime, Date endTime, String room, String treatmentType) {
+		List<Professional> involvedProfessionals = new List<Professional>();
+		for (Professional professional: professionals)
+		{
+			for (long ID : professionalIds) {
+				if(ID==professional.getId())
+				{
+					involvedProfessionals.add(professional);
+				}
+			}
+		}
+		Appointment newAppointment = new Appointment(startTime, endTime, room, treatmentType, involvedProfessionals);
+		for(Professional professional: involvedProfessionals)
+		{
+			if(professional.addAppointment(newAppointment)==null) return null;
+		}
+		return newAppointment;
 	}
 
 	/**
@@ -164,9 +178,17 @@ public class Staff implements UndoRedoExecutor {
 	 * @param appointmentId The ID of the appointment to delete.
 	 * @return The deleted appointment or null, if the deletion was unsuccessful.
 	 */
-	public Appointment deleteAppointment(long professionalId, long appointmentId) {
-		// TODO - implement Staff.deleteAppointment
-		return null;
+	public Appointment deleteAppointment(List<Professional> professionals, long professionalId, long appointmentId) {
+		Appointment deletedAppointment=null;
+		for (Professional professional: professionals)
+			{
+				if(professional.getAppointment(appointmentId)!=null)
+				{
+					deletedAppointment=professional.getDiary().getAppointment(appointmentId);
+					professional.deleteAppointment(professional.getDiary().getAppointment(appointmentId));
+				}
+			}
+		return deletedAppointment;
 	}
 
 	/**
@@ -176,8 +198,18 @@ public class Staff implements UndoRedoExecutor {
 	 * @param appointmentId The ID of the appointment to search for.
 	 * @return The found appointment or null if it could not have been found.
 	 */
-	public Appointment searchAppointment(long professionId, long appointmentId) {
-		// TODO - implement Staff.searchAppointment
+	public Appointment searchAppointment(List<Professional> professionals, long professionId, long appointmentId) {
+		for (Professional professional: professionals) {
+			if(professional.getId()==professionId)
+			{
+				return professional.getDiary().getAppointment(appointmentId);
+			}
+		}
 		return null;
+	}
+
+
+	public Set<Professional> getStaff() {
+		return staff;
 	}
 }

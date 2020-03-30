@@ -1,12 +1,11 @@
 package hospital;
 
-import hospital.staff.DeleteAppointmentAction;
+import hospital.staff.*;
 import hospital.undo_redo.Action;
-import hospital.staff.Appointment;
-import hospital.staff.Professional;
-import hospital.staff.Staff;
 import hospital.undo_redo.UndoRedoHandler;
 
+import java.io.*;
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -58,11 +57,12 @@ public class Menu {
 	}
 
 	/**
-	 * TODO
+	 *
 	 */
-	private void displayDiary() {
-		// TODO - implement Menu.displayDiary
-		
+	private void displayDiary(Long professionalId) {
+		Set<Professional> professionals = staff.getStaff();
+		professionals.stream().filter(professional -> Objects.nonNull(professionalId) && professional.getId() == professionalId).
+				flatMap(professional -> professional.getDiary().getAppointments().stream()).forEach(System.out::println);
 	}
 
 	/**
@@ -162,19 +162,34 @@ public class Menu {
 	}
 
 	/**
-	 * TODO
+	 * Iterate Over the professional and get all the appointment and save them as a backup
 	 */
-	private void backupDiary() {
-		// TODO - implement Menu.backupDiary
-		
+	private void backupDiary(){
+		staff.getStaff().stream().forEach(professional -> {
+			professional.getDiary().getAppointments().forEach(this::save);
+		});
 	}
 
+	private void save(Appointment appointment) {
+		try {
+			FileOutputStream out = new FileOutputStream("c:\\backupDiary.txt");
+			ObjectOutputStream oos = new ObjectOutputStream(out);
+			oos.writeObject(appointment);
+		}catch(Exception exp){
+			exp.printStackTrace();
+		}
+	}
+
+
 	/**
-	 * TODO
+	 * Restore all the backup Diary
 	 */
-	private void restoreDiary() {
-		// TODO - implement Menu.restoreDiary
-		
+	private void restoreDiary() throws IOException{
+		FileInputStream fin = new FileInputStream("c:\\backupDiary.txt");
+		ObjectInputStream ois = new ObjectInputStream(fin);
+		List<Appointment> appointments = (List<Appointment>)ois.readObject();
+		fin.close();
+		appointments.forEach(appointment -> System.out.println(appointment));
 	}
 
 	/**
