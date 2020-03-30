@@ -231,6 +231,7 @@ public class Menu {
 				if(isPasswordCorrect)
 				{
 					System.out.println("You've successfully logged in! Welcome, " + activeUser.getFirstName() +".");
+					if(activeUser.checkPassword("default")) System.out.println("Please don't forget to change the default password.");
 					retry = false;
 				}
 				else{
