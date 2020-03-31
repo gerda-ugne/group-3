@@ -1,6 +1,7 @@
 package hospital.staff;
 
 import hospital.undo_redo.UndoRedoExecutor;
+import hospital.timeLogger.TimeLogger;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -61,7 +62,7 @@ public class Staff implements UndoRedoExecutor {
 
 		// TODO move time logging to a different class (and package), e.g. TimeLogger
 		//Records current time to calculate time taken to search availability
-		Date startSearchTime = new Date();
+		long startSearchTime = System.nanoTime();
 
 		//Local variable for holding personal appointments of one professional at a time
 		List<List<Appointment>> personalFreeSlots = new ArrayList<>();
@@ -88,12 +89,7 @@ public class Staff implements UndoRedoExecutor {
 		//Sorts the list by start date
 		listOfAppointments.sort(Comparator.comparing(Appointment::getStartTime));
 
-		// TODO move time logging to a different class (and package), e.g. TimeLogger
-		Date endSearchTime = new Date();
-
-		//Calculates the total time taken to search the free appointment slots
-		long totalTimeTaken = endSearchTime.getTime() - startSearchTime.getTime();
-		System.out.println("Search took " + totalTimeTaken/1000 + "seconds.");
+		TimeLogger log = new TimeLogger(startSearchTime);
 
 		return listOfAppointments;
 	}
