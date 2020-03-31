@@ -13,6 +13,7 @@ public class ElectronicDiary {
 	private List<Appointment> appointments;
 
 	/**
+	 * Constructor for the Electronic diary class.
 	 * Creates an empty diary with no appointments
 	 */
 	public ElectronicDiary() {

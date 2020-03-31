@@ -51,9 +51,29 @@ public class Menu {
 
 	/**
 	 * TODO
+	 * Displays the menu options
 	 */
 	private void showMenu() {
 		// TODO - implement Menu.showMenu
+		System.out.println("\nAppointment management:\n");
+		System.out.println("1. Add a new appointment");
+		System.out.println("2. Edit an existing appointment");
+		System.out.println("3. Remove an appointment");
+		System.out.println("4. Undo last action");
+		System.out.println("5. Redo last action");
+		System.out.println("6. Display the electronic diary");
+		System.out.println("7. Backup the electronic diary");
+		System.out.println("8. Restore the latest backup of the electronic diary");
+
+
+		System.out.println("\nTask management:\n");
+		System.out.println("9. Add a new task");
+		System.out.println("10. Remove a task");
+		System.out.println("11. Display the task list");
+
+		System.out.println("\nOther:\n");
+		System.out.println("12. Change your password");
+		System.out.println("13. Change your personal details");
 
 	}
 
@@ -184,5 +204,48 @@ public class Menu {
 	private void changeUser() {
 		// TODO - implement Menu.changeUser
 		
+	}
+
+	/**
+	 * Prompts the user to log-in
+	 */
+	private void logIn()
+	{
+		Scanner s = new Scanner(System.in);
+		String username, password;
+		boolean retry = false;
+		boolean isPasswordCorrect = false;
+
+		do {
+			try {
+				System.out.println("Please log-in to access the system.\n");
+				System.out.println("If you're logging in for the first time, your password is set to be 'default'.");
+				System.out.println("Your username is the first letter of your name, followed by your last name.\n");
+				System.out.println("Enter your username:");
+
+				username = s.nextLine();
+				activeUser = staff.searchByUsername(username);
+
+				System.out.println("\nEnter your password:");
+				password = s.nextLine();
+
+				isPasswordCorrect = activeUser.checkPassword(password);
+				if(isPasswordCorrect)
+				{
+					System.out.println("You've successfully logged in! Welcome, " + activeUser.getFirstName() +".");
+					if(activeUser.checkPassword("default")) System.out.println("Please don't forget to change the default password.");
+					retry = false;
+				}
+				else{
+					System.out.println("Your password is incorrect. Please try again.");
+					retry = true;
+				}
+
+			} catch (NullPointerException e) {
+				System.out.println("No such username found. Please try again.");
+				retry = true;
+			}
+		} while (retry);
+
 	}
 }

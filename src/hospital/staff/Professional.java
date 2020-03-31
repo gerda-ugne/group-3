@@ -4,11 +4,14 @@ import java.time.DayOfWeek;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import org.jasypt.util.password.StrongPasswordEncryptor;
+
+
 
 /**
  * Represents a professional in the hospital staff.
  */
-public class Professional {
+public class Professional{
 
 	/**
 	 * Static counter to generate unique IDs
@@ -54,14 +57,41 @@ public class Professional {
 	 */
 	private Map<DayOfWeek, WorkingHours> workingHours;
 
+	/**
+	 * Encrypted password of the professional, which is used to log in.
+	 */
+	private String encryptedPassword;
+
+	/**
+	 * Username used in the login system.
+	 * Contains first name letter and last name
+	 */
+	private String username;
+
+	/**
+	 * Constructor with no parameters for the Professional class
+	 */
 	public Professional() {
 		this("<undefined>", "<undefined>", "<undefined>", "<undefined>");
 	}
 
+	/**
+	 * Constructor for the Professional class
+	 * @param firstName name of the professional
+	 * @param lastName last name of the professional
+	 * @param role role of the professional
+	 */
 	public Professional(String firstName, String lastName, String role) {
 		this(firstName, lastName, role, "<undefined>");
 	}
 
+	/**
+	 * Constructor for the Professional class
+	 * @param firstName name of the professional
+	 * @param lastName last name of the professional
+	 * @param role role of the professional
+	 * @param office office of the professional
+	 */
 	public Professional(String firstName, String lastName, String role, String office) {
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -71,6 +101,24 @@ public class Professional {
 		this.tasks = new TaskList();
 		this.workingHours = new HashMap<>(7);
 		this.id = counter++;
+		setPassword("default");
+		username = this.firstName.substring(0) + lastName;
+	}
+
+	/**
+	 * Getter method for the username
+	 * @return username of the professional
+	 */
+	public String getUsername() {
+		return username;
+	}
+
+	/**
+	 * Setter method for the username
+	 * @param username username to be set
+	 */
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	/**
@@ -245,6 +293,31 @@ public class Professional {
 	}
 
 	/**
+	 * Sets a new password for the professional.
+	 * The set password is encrypted in the password field.
+	 *
+	 * @param password password to be set
+	 */
+	public void setPassword(String password)
+	{
+		StrongPasswordEncryptor encryption = new StrongPasswordEncryptor();
+		encryptedPassword = encryption.encryptPassword(password);
+
+	}
+
+	/**
+	 * Checks if the entered password is true
+	 *
+	 * @param input user's input
+	 * @return true/false whether the passwords match
+	 */
+	public boolean checkPassword(String input)
+	{
+		StrongPasswordEncryptor encryption = new StrongPasswordEncryptor();
+		return encryption.checkPassword(input, encryptedPassword);
+	}
+
+	/**
 	 * Getter of the professional's office
 	 *
 	 * @return the professional's office name/number
@@ -288,5 +361,6 @@ public class Professional {
 	public ElectronicDiary getDiary() {
 		return this.diary;
 	}
+
 
 }
