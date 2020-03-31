@@ -19,7 +19,7 @@ public class TaskList {
     List<Task> taskList;
 
     /**
-     * Default constructor for TaskList class
+     * Constructor for the TaskList class
      */
     public TaskList()
     {

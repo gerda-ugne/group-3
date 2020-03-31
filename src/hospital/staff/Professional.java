@@ -63,14 +63,20 @@ public class Professional{
 	private String encryptedPassword;
 
 	/**
-	 * Default constructor with no parameters for the Professional class
+	 * Username used in the login system.
+	 * Contains first name letter and last name
+	 */
+	private String username;
+
+	/**
+	 * Constructor with no parameters for the Professional class
 	 */
 	public Professional() {
 		this("<undefined>", "<undefined>", "<undefined>", "<undefined>");
 	}
 
 	/**
-	 * Default constructor for the Professional class
+	 * Constructor for the Professional class
 	 * @param firstName name of the professional
 	 * @param lastName last name of the professional
 	 * @param role role of the professional
@@ -80,7 +86,7 @@ public class Professional{
 	}
 
 	/**
-	 * Default constructor for the Professional class
+	 * Constructor for the Professional class
 	 * @param firstName name of the professional
 	 * @param lastName last name of the professional
 	 * @param role role of the professional
@@ -96,6 +102,23 @@ public class Professional{
 		this.workingHours = new HashMap<>(7);
 		this.id = counter++;
 		setPassword("default");
+		username = this.firstName.substring(0) + lastName;
+	}
+
+	/**
+	 * Getter method for the username
+	 * @return username of the professional
+	 */
+	public String getUsername() {
+		return username;
+	}
+
+	/**
+	 * Setter method for the username
+	 * @param username username to be set
+	 */
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	/**

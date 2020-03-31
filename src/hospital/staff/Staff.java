@@ -20,7 +20,7 @@ public class Staff implements UndoRedoExecutor {
 	private Set<Professional> staff;
 
 	/**
-	 * Default constructor for Staff class
+	 * Constructor for Staff class
 	 */
 	public Staff() {
 		staff = new HashSet<>();
@@ -199,6 +199,7 @@ public class Staff implements UndoRedoExecutor {
 
 	/**
 	 * Searches professional by ID and returns if found
+	 * @param id id to be filtered by
 	 * @return the found professional or null if not found
 	 */
 	public Professional searchById(String id)
@@ -210,6 +211,21 @@ public class Staff implements UndoRedoExecutor {
 			//Converts the id into string for comparison
 			idAsString = String.valueOf(professional.getId());
 			if(idAsString.equals(id)) return professional;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Searches professional by their username and returns if found
+	 * @param username username to be filtered by
+	 * @return if found professional, otherwise null
+	 */
+	public Professional searchByUsername(String username)
+	{
+		for(Professional professional: staff)
+		{
+			if(professional.getUsername().equals(username)) return professional;
 		}
 
 		return null;

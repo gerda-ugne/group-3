@@ -32,14 +32,14 @@ public class Task implements Comparable<Task> {
     Date dueBy;
 
     /**
-     * Default constructor for the Task class
+     * Constructor for the Task class
      */
     public Task() {
         this("<undefined>", "<undefined>", null);
     }
 
     /**
-     * Default constructor for the Task class
+     * Constructor for the Task class
      *
      * @param taskName    name of the task
      * @param description short description of the task

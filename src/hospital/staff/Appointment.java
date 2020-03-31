@@ -52,7 +52,7 @@ public class Appointment implements Comparable<Appointment> {
 	private List<Professional> professionals;
 
 	/**
-	 * Default constructor for the Appointment class.
+	 * Constructor for the Appointment class.
 	 * Creates and empty appointment without data, in which only the ID is unique.
 	 */
 	public Appointment() {
@@ -61,7 +61,7 @@ public class Appointment implements Comparable<Appointment> {
 	}
 
 	/**
-	 * Default constructor for the Appointment class.
+	 * Constructor for the Appointment class.
 	 * @param startTime time when the appointment starts
 	 * @param endTime time when the appointment ends
 	 */
@@ -70,7 +70,7 @@ public class Appointment implements Comparable<Appointment> {
 	}
 
 	/**
-	 * Default constructor for the Appointment class
+	 * Constructor for the Appointment class
 	 * @param startTime time when the appointment starts
 	 * @param endTime time when the appointment ends
 	 * @param room room where appointment takes place

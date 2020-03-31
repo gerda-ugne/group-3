@@ -73,6 +73,7 @@ public class Menu {
 
 		System.out.println("\nOther:\n");
 		System.out.println("12. Change your password");
+		System.out.println("13. Change your personal details");
 
 	}
 
@@ -211,18 +212,19 @@ public class Menu {
 	private void logIn()
 	{
 		Scanner s = new Scanner(System.in);
-		String id, password;
+		String username, password;
 		boolean retry = false;
 		boolean isPasswordCorrect = false;
 
 		do {
 			try {
-				System.out.println("Please log-in to access the system.");
-				System.out.println("If you're logging in for the first time, your password is set to be 'default'.\n");
-				System.out.println("Enter your ID:");
+				System.out.println("Please log-in to access the system.\n");
+				System.out.println("If you're logging in for the first time, your password is set to be 'default'.");
+				System.out.println("Your username is the first letter of your name, followed by your last name.\n");
+				System.out.println("Enter your username:");
 
-				id = s.nextLine();
-				activeUser = staff.searchById(id);
+				username = s.nextLine();
+				activeUser = staff.searchByUsername(username);
 
 				System.out.println("\nEnter your password:");
 				password = s.nextLine();
@@ -240,7 +242,7 @@ public class Menu {
 				}
 
 			} catch (NullPointerException e) {
-				System.out.println("No such ID found. Please try again.");
+				System.out.println("No such username found. Please try again.");
 				retry = true;
 			}
 		} while (retry);
