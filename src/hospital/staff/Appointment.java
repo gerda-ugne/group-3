@@ -52,24 +52,30 @@ public class Appointment implements Comparable<Appointment> {
 	private List<Professional> professionals;
 
 	/**
+	 * Professional requirements needed for the appointment
+	 */
+	private List <String> professionalRequirements;
+
+	/**
 	 * Creates and empty appointment without data, in which only the ID is unique.
 	 */
 	public Appointment() {
 		// TODO check for existing ids or make sure that counter is restored too with the appointments (from save)
-		this(null, null, "<undefined>", "<undefined>", new ArrayList<>());
+		this(null, null, "<undefined>", "<undefined>", new ArrayList<>(), new ArrayList<>());
 	}
 
 	public Appointment(Date startTime, Date endTime) {
-		this(startTime, endTime, "<undefined>", "<undefined>", new ArrayList<>());
+		this(startTime, endTime, "<undefined>", "<undefined>", new ArrayList<>(), new ArrayList<>());
 	}
 
-	public Appointment(Date startTime, Date endTime, String room, String treatmentType, List<Professional> professionals) {
+	public Appointment(Date startTime, Date endTime, String room, String treatmentType, List<Professional> professionals, List<String> requirements) {
 		this.id = counter++;
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.room = room;
 		this.treatmentType = treatmentType;
 		this.professionals = professionals;
+		this.professionalRequirements = requirements;
 	}
 
 	/**
@@ -159,6 +165,22 @@ public class Appointment implements Comparable<Appointment> {
 	 */
 	public List<Professional> getProfessionals() {
 		return professionals;
+	}
+
+	/**
+	 * Getter for the professional requirements
+	 * @return professional requirements
+	 */
+	public List<String> getProfessionalRequirements() {
+		return professionalRequirements;
+	}
+
+	/**
+	 * Setter for the professional requirements
+	 * @param professionalRequirements new requirements to be set
+	 */
+	public void setProfessionalRequirements(List<String> professionalRequirements) {
+		this.professionalRequirements = professionalRequirements;
 	}
 
 	/**
