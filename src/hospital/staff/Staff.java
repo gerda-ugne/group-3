@@ -180,8 +180,65 @@ public class Staff implements UndoRedoExecutor {
 	 * 			The return can be null, if the appointment could not have been found.
 	 */
 	public Appointment editAppointment(long professionalId, long appointmentId, List<Long> professionals, Date startTime, Date endTime, String room, String treatmentType) {
-		// TODO - implement Staff.editAppointment
-		return null;
+
+		List<Professional> involvedProfessionals = new ArrayList<>();
+
+		Appointment uneditedAppointment=null;
+		boolean appointmentFound=false;
+
+		//searches through all given IDs and the staff to find the matching professionals
+		for(long profID:professionals)
+		{
+			for(Professional professional:staff)
+			{
+				if(professional.getId()==profID)
+				{
+					//if appointment hadn't been found before and exists in the professional's diary, get the appointment
+					if(!appointmentFound)
+					{
+						if (professional.getDiary().getAppointment(appointmentId) != null)
+						{
+							appointmentFound = true;
+							uneditedAppointment=professional.getDiary().getAppointment(appointmentId);
+						}
+					}
+					involvedProfessionals.add(professional);
+				}
+			}
+		}
+
+		//create new appointment instance with the edited parameters
+		Appointment editedAppointment = new Appointment(startTime,endTime,room,treatmentType,involvedProfessionals);
+		//change new appointment's ID to match the unedited one's
+		editedAppointment.setId(appointmentId);
+
+		//delete the previous version of the appointment from all the professionals' diaries
+		for(long profID:professionals)
+		{
+			deleteAppointment(profID,appointmentId);
+		}
+
+		//check if all professionals have the free slot at the required time
+		List<Appointment> freeSlot = searchAvailability(involvedProfessionals,startTime,endTime);
+
+		//if they do, add the appointment to their diaries and return the edited appointment
+		if(!freeSlot.isEmpty())
+		{
+			for(Professional professional:involvedProfessionals)
+			{
+				professional.addAppointment(editedAppointment);
+			}
+			return editedAppointment;
+		}
+		//if they don't, re-add the deleted original appointment and return it
+		else
+		{
+			for(Professional professional:involvedProfessionals)
+			{
+				professional.addAppointment(uneditedAppointment);
+			}
+			return uneditedAppointment;
+		}
 	}
 
 	/**
