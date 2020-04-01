@@ -130,9 +130,11 @@ public class Staff implements UndoRedoExecutor {
 	 * @param treatmentType The type of treatment the new appointment has.
 	 * @return The newly created appointment or null if the booking was unsuccessful.
 	 */
-	public Appointment bookAppointment(List<Professional> professionals, List<Long> professionalIds, Date startTime, Date endTime, String room, String treatmentType) {
+	public Appointment bookAppointment(List<Long> professionalIds, Date startTime, Date endTime, String room, String treatmentType) {
+
 		List<Professional> involvedProfessionals = new ArrayList<Professional>();
-		for (Professional professional: professionals)
+		//searches through staff for professionals whose IDs match the given ones and adds them to involvedProfessionals list
+		for (Professional professional: staff)
 		{
 			for (long ID : professionalIds) {
 				if(ID==professional.getId())
@@ -141,12 +143,24 @@ public class Staff implements UndoRedoExecutor {
 				}
 			}
 		}
+
+		//creates new appointment instance with the given parameters
 		Appointment newAppointment = new Appointment(startTime, endTime, room, treatmentType, involvedProfessionals);
-		for(Professional professional: involvedProfessionals)
+
+		//creates new appointment list of available slots at the given time for all involved professionals, should only have one list item
+		List<Appointment> freeSlots=searchAvailability(involvedProfessionals,startTime,endTime);
+
+		//if the list of free slots isn't empty (all involved professionals have one free slot at the given time), adds the appointment to all of their diaries
+		if(!freeSlots.isEmpty())
 		{
-			if(professional.getDiary().addAppointment(newAppointment)==false) return null;
+			for(Professional professional: involvedProfessionals)
+			{
+				professional.addAppointment(newAppointment);
+			}
+			return newAppointment;
 		}
-		return newAppointment;
+		//if at least one of the professionals don't have a free slot at the given time, return null
+		return null;
 	}
 
 	/**
