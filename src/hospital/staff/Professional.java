@@ -47,6 +47,9 @@ public class Professional {
 	 */
 	private ElectronicDiary diary;
 
+	/**
+	 * The personal task list for the professional
+	 */
 	private TaskList tasks;
 
 	/**
@@ -71,6 +74,46 @@ public class Professional {
 		this.tasks = new TaskList();
 		this.workingHours = new HashMap<>(7);
 		this.id = counter++;
+	}
+
+	/**
+	 * Setter method for Electronic diary
+	 * @param diary diary to be set
+	 */
+	public void setDiary(ElectronicDiary diary) {
+		this.diary = diary;
+	}
+
+	/**
+	 * Getter method for the TaskList
+	 * @return the task list
+	 */
+	public TaskList getTasks() {
+		return tasks;
+	}
+
+	/**
+	 * Setter method for the TaskList
+	 * @param tasks task list to be set
+	 */
+	public void setTasks(TaskList tasks) {
+		this.tasks = tasks;
+	}
+
+	/**
+	 * Getter method for the Working Hours
+	 * @return working hours
+	 */
+	public Map<DayOfWeek, WorkingHours> getWorkingHours() {
+		return workingHours;
+	}
+
+	/**
+	 * Setter method for the working hours
+	 * @param workingHours to be set
+	 */
+	public void setWorkingHours(Map<DayOfWeek, WorkingHours> workingHours) {
+		this.workingHours = workingHours;
 	}
 
 	/**
@@ -151,18 +194,53 @@ public class Professional {
 		}
 
 		// Check if an appointment is in the given time-range
+		// Filters by from/to dates
 		Predicate<Appointment> checkTimeRange = appointment -> {
 			Date start = appointment.getStartTime();
 			Date end = appointment.getEndTime();
 			if (start.compareTo(from) <= 0 && start.compareTo(to) >= 0 &&
-					end.compareTo(from) >= 0 && end.compareTo(to) <= 0) return true;
+					end.compareTo(from) <= 0 && end.compareTo(to) >= 0
+			) return true;
 			else return false;
+		};
+
+		// Filters appointments by working hours of the professional
+		Predicate <Appointment> checkWorkingHourRange = appointment -> {
+
+			Date start = appointment.getStartTime();
+			Date end = appointment.getEndTime();
+
+			// Gets days of week for start/end dates
+			// The values are of 0-6 for each week day
+			int startDay =  start.getDay();
+			int endDay = end.getDay();
+
+			Map<DayOfWeek, WorkingHours> workingHoursMap = workingHours;
+
+			//Iterates through the map
+			for (Map.Entry<DayOfWeek, WorkingHours> entry : workingHoursMap.entrySet()) {
+
+				//If weeks of day match of the appointment and the working hours set
+				if(entry.getKey().equals(startDay) && entry.getKey().equals(endDay))
+				{
+					//Checks if appointment is within the working hour range
+					if ((start.compareTo(entry.getValue().getStartHour())) >= 0 &&
+							(start.compareTo(entry.getValue().getEndHour()) <= 0) &&
+							(end.compareTo(entry.getValue().getStartHour()) >= 0) &&
+							(end.compareTo(entry.getValue().getEndHour()) <= 0))
+					return true;
+				}
+			}
+
+			return false;
+
 		};
 
 		//Appointments are filtered to be in the provided time range
 		List<Appointment> bookedAppointments = diary.sortByDate()
 				.stream()
 				.filter(checkTimeRange)
+				.filter(checkWorkingHourRange)
 				.sorted()
 				.collect(Collectors.toList());
 
