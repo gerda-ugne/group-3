@@ -74,6 +74,7 @@ public class Menu {
 		System.out.println("\nOther:\n");
 		System.out.println("12. Change your password");
 		System.out.println("13. Change your personal details");
+		System.out.println("0. Log out");
 
 	}
 
@@ -198,12 +199,14 @@ public class Menu {
 	}
 
 	/**
-	 * Gets the professional ID of the user who would like to use the system.
-	 * After verification the professional will be able to make changes to their electronic diary.
+	 * Logs the user out of the system.
 	 */
-	private void changeUser() {
-		// TODO - implement Menu.changeUser
-		
+	private void logOut() {
+
+		System.out.println("Thank you for using the system.");
+		activeUser = null;
+
+		//Do we need to reset the undo-redo handler here too?
 	}
 
 	/**
