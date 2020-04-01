@@ -178,10 +178,10 @@ public class Staff implements UndoRedoExecutor {
 	 * @param appointmentId The ID of the appointment to delete.
 	 * @return The deleted appointment or null, if the deletion was unsuccessful.
 	 */
-	public Appointment deleteAppointment(List<Professional> professionals, long professionalId, long appointmentId) {
+	public Appointment deleteAppointment(long professionalId, long appointmentId) {
 		Appointment deletedAppointment=null;
 		boolean appointmentFound=false;
-		for (Professional professional: professionals)
+		for (Professional professional: staff)
 			{
 				if(professional.getDiary().getAppointment(appointmentId)!=null)
 				{
@@ -203,13 +203,40 @@ public class Staff implements UndoRedoExecutor {
 	 * @param appointmentId The ID of the appointment to search for.
 	 * @return The found appointment or null if it could not have been found.
 	 */
-	public Appointment searchAppointment(List<Professional> professionals, long professionId, long appointmentId) {
-		for (Professional professional: professionals) {
+	public Appointment searchAppointment(long professionId, long appointmentId) {
+
+		Appointment foundAppointment=null;
+
+		//searches through staff to find the first one who has the appointment
+		for (Professional professional: staff)
+		{
 			if(professional.getId()==professionId)
 			{
-				return professional.getDiary().getAppointment(appointmentId);
+				if(professional.getDiary().getAppointment(appointmentId)!=null)
+				{
+					//once found, get the appointment and break out of the for loop
+					foundAppointment=professional.getDiary().getAppointment(appointmentId);
+					break;
+				}
 			}
 		}
+
+		//get the required professionals for the appointment
+		List<Professional> appointmentProfessionals = foundAppointment.getProfessionals();
+		boolean foundInAllDiaries=true;
+
+		//check if all of them have the appointment in their diaries
+		for(Professional professional: appointmentProfessionals)
+		{
+			//if any of them don't have it, change the boolean to false
+			if(professional.getDiary().getAppointment(appointmentId)==null)
+			{
+				foundInAllDiaries=false;
+			}
+		}
+		//if appointment was found in the diaries of all involved professionals, return the appointment
+		if(foundInAllDiaries) return foundAppointment;
+		//else return null
 		return null;
 	}
 }
