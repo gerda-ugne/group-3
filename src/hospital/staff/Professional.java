@@ -207,27 +207,33 @@ public class Professional {
 		// Filters appointments by working hours of the professional
 		Predicate <Appointment> checkWorkingHourRange = appointment -> {
 
-			Date start = appointment.getStartTime();
-			Date end = appointment.getEndTime();
+			//Get the hours of the day when the appointment starts and ends
+			int start = appointment.getStartTime().getHours();
+			int end = appointment.getEndTime().getHours();
 
 			// Gets days of week for start/end dates
 			// The values are of 0-6 for each week day
-			int startDay =  start.getDay();
-			int endDay = end.getDay();
+			int startDay =  appointment.getStartTime().getDay();
+			int endDay = appointment.getEndTime().getDay();
 
 			Map<DayOfWeek, WorkingHours> workingHoursMap = workingHours;
 
 			//Iterates through the map
 			for (Map.Entry<DayOfWeek, WorkingHours> entry : workingHoursMap.entrySet()) {
 
-				//If weeks of day match of the appointment and the working hours set
+				//If the day of the week match of the appointment and the working hours set,
+				// i.e the appointment is happening on Monday and the iterator reaches
+				// Monday working hour definition
 				if(entry.getKey().equals(startDay) && entry.getKey().equals(endDay))
 				{
 					//Checks if appointment is within the working hour range
-					if ((start.compareTo(entry.getValue().getStartHour())) >= 0 &&
-							(start.compareTo(entry.getValue().getEndHour()) <= 0) &&
-							(end.compareTo(entry.getValue().getStartHour()) >= 0) &&
-							(end.compareTo(entry.getValue().getEndHour()) <= 0))
+					//Starting and ending hours have to be:
+					//equal or after the working shift start hour AND
+					//before or equal to the working shit start hour
+					if ((start >= (entry.getValue().getStartHour()))  &&
+							(start <= (entry.getValue().getEndHour()))&&
+							(end >= (entry.getValue().getStartHour()))&&
+							(end <= (entry.getValue().getEndHour())))
 					return true;
 				}
 			}
