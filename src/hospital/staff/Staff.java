@@ -180,11 +180,16 @@ public class Staff implements UndoRedoExecutor {
 	 */
 	public Appointment deleteAppointment(List<Professional> professionals, long professionalId, long appointmentId) {
 		Appointment deletedAppointment=null;
+		boolean appointmentFound=false;
 		for (Professional professional: professionals)
 			{
 				if(professional.getDiary().getAppointment(appointmentId)!=null)
 				{
-					deletedAppointment=professional.getDiary().getAppointment(appointmentId);
+					if(!appointmentFound)
+					{
+						appointmentFound = true;
+						deletedAppointment = professional.getDiary().getAppointment(appointmentId);
+					}
 					professional.deleteAppointment(appointmentId);
 				}
 			}
