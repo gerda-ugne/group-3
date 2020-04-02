@@ -75,6 +75,96 @@ public class Menu {
 
 	}
 
+
+	public int processUserChoice() throws Exception {
+
+		int userChoice;
+		while (true) {
+
+			showMenu();
+			userChoice = Genio.getInteger();
+
+			switch (userChoice) {
+
+				case 0:
+					System.out.println("Goodbye");
+					System.exit(0);
+					break;
+
+				case 1:
+					addAppointment();
+					processUserChoice();
+					break;
+
+				case 2:
+					editAppointment();
+					processUserChoice();
+					break;
+
+				case 3:
+					deleteAppointment();
+					processUserChoice();
+					break;
+
+				case 4:
+					// TODO undo
+					processUserChoice();
+					break;
+
+				case 5:
+					//TODO redo
+					processUserChoice();
+					break;
+
+//				case 6:
+//					activeUser.getId();
+//					displayDiary(staff, professionalId);
+//					processUserChoice();
+//					break;
+
+				case 7:
+					backupDiary();
+					processUserChoice();
+					break;
+
+				case 8:
+					restoreDiary();
+					processUserChoice();
+					break;
+
+				case 9:
+					//TODO addTask
+					processUserChoice();
+					break;
+
+				case 10:
+					//TODO deleteTask
+					processUserChoice();
+					break;
+
+				case 11:
+					//TODO displayTask
+					processUserChoice();
+					break;
+
+				case 12:
+					//TODO change password
+					processUserChoice();
+					break;
+
+				case 13:
+					//TODO change personal details
+					processUserChoice();
+					break;
+
+				default:
+					System.out.println("Something went wrong");
+			}
+
+			return userChoice;
+		}
+	}
+
 	/**
 	 * This method displays diary. Gets list of professionals, streams over each professional with filter
 	 * based on professionalID. flatMap makes it possible access from professional to ElectornicDiary
@@ -104,7 +194,7 @@ public class Menu {
 		String room = "";
 		String treatmentType = "";
 		// TODO get input from user
-//		Appointment newAppointment = staff.bookAppointment(startTime, endTime, room, treatmentType, professionals);
+		//		Appointment newAppointment = staff.bookAppointment(startTime, endTime, room, treatmentType, professionals);
 		Appointment newAppointment = staff.bookAppointment(null, null, null, null, null, null);
 		if (newAppointment != null) {
 			try {
@@ -189,8 +279,8 @@ public class Menu {
 	private void backupDiary() throws Exception {
 		save(staff);
 	}
-	
-	
+
+
 	/**
 	 * Try-with-resources method allowing to save data to txt file.
 	 * Note there is no finally block because it's try-with-resources statement
@@ -207,15 +297,16 @@ public class Menu {
 	 * Restore all the backup Diary.
 	 * Note there is no finally block because it's try-with-resources statement
 	 */
-	private void restoreDiary() throws IOException{
-		try(FileInputStream fin = new FileInputStream("c:\\backupDiary.txt");
-		ObjectInputStream ois = new ObjectInputStream(fin)) {
+	private void restoreDiary() throws IOException {
+		try (FileInputStream fin = new FileInputStream("c:\\backupDiary.txt");
+			 ObjectInputStream ois = new ObjectInputStream(fin)) {
 			Staff staff = (Staff) ois.readObject();
-			displayDiary(staff,null);
-		}catch(Exception exp){
+			displayDiary(staff, null);
+		} catch (Exception exp) {
 			exp.printStackTrace();
 		}
 	}
+
 
 	/**
 	 * Gets the professional ID of the user who would like to use the system.
@@ -223,6 +314,6 @@ public class Menu {
 	 */
 	private void changeUser() {
 		// TODO - implement Menu.changeUser
-		
+
 	}
 }
