@@ -183,28 +183,22 @@ public class Staff implements UndoRedoExecutor {
 
 		List<Professional> involvedProfessionals = new ArrayList<>();
 
-		Appointment uneditedAppointment=null;
 		boolean appointmentFound=false;
-
+		Appointment uneditedAppointment=null;
 		//searches through all given IDs and the staff to find the matching professionals
 		for(long profID:professionals)
 		{
 			for(Professional professional:staff)
 			{
-				if(professional.getId()==profID)
+				if((professional.getId()==profID)&&(professional.getDiary().getAppointment(appointmentId) != null))
 				{
-					//if appointment hadn't been found before and exists in the professional's diary, get the appointment
-					if(!appointmentFound)
-					{
-						if (professional.getDiary().getAppointment(appointmentId) != null)
-						{
-							appointmentFound = true;
-							uneditedAppointment=professional.getDiary().getAppointment(appointmentId);
-						}
-					}
-					involvedProfessionals.add(professional);
+					uneditedAppointment=professional.getDiary().getAppointment(appointmentId);
+					involvedProfessionals=uneditedAppointment.getProfessionals();
+					appointmentFound=true;
+					break;
 				}
 			}
+			if(appointmentFound) break;
 		}
 
 		//create new appointment instance with the edited parameters
