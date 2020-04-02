@@ -5,7 +5,6 @@ import hospital.undo_redo.Action;
 import hospital.undo_redo.UndoRedoHandler;
 
 import java.io.*;
-import java.time.Instant;
 import java.util.*;
 
 /**
@@ -105,7 +104,8 @@ public class Menu {
 		String room = "";
 		String treatmentType = "";
 		// TODO get input from user
-		Appointment newAppointment = staff.bookAppointment(professionals, startTime, endTime, room, treatmentType);
+//		Appointment newAppointment = staff.bookAppointment(startTime, endTime, room, treatmentType, professionals);
+		Appointment newAppointment = staff.bookAppointment(null, null, null, null, null, null);
 		if (newAppointment != null) {
 			try {
 				undoRedoHandler.addAction(new Action(
@@ -134,7 +134,7 @@ public class Menu {
 		String room = "";
 		String treatmentType = "";
 		// TODO get input from user
-		Appointment oldAppointment = staff.searchAppointment(activeUser.getId(), appointmentId);
+		Appointment oldAppointment = staff.searchAppointment(Collections.singletonList(activeUser), activeUser.getId(), appointmentId);
 		Appointment modifiedAppointment = staff.editAppointment(activeUser.getId(), appointmentId, professionals, startTime, endTime, room, treatmentType);
 		if (!modifiedAppointment.equals(oldAppointment)) {
 			try {
@@ -160,7 +160,7 @@ public class Menu {
 	private void deleteAppointment() {
 		long appointmentId = 0;
 		// TODO get input from user
-		Appointment deletedAppointment = staff.deleteAppointment(activeUser.getId(), appointmentId);
+		Appointment deletedAppointment = staff.deleteAppointment(Collections.singletonList(activeUser), appointmentId);
 		if (deletedAppointment != null) {
 			try {
 				undoRedoHandler.addAction(new DeleteAppointmentAction(
@@ -223,49 +223,6 @@ public class Menu {
 	 */
 	private void changeUser() {
 		// TODO - implement Menu.changeUser
-		
-	}
-
-	/**
-	 * Prompts the user to log-in
-	 */
-	private void logIn()
-	{
-		Scanner s = new Scanner(System.in);
-		String username, password;
-		boolean retry = false;
-		boolean isPasswordCorrect = false;
-
-		do {
-			try {
-				System.out.println("Please log-in to access the system.\n");
-				System.out.println("If you're logging in for the first time, your password is set to be 'default'.");
-				System.out.println("Your username is the first letter of your name, followed by your last name.\n");
-				System.out.println("Enter your username:");
-
-				username = s.nextLine();
-				activeUser = staff.searchByUsername(username);
-
-				System.out.println("\nEnter your password:");
-				password = s.nextLine();
-
-				isPasswordCorrect = activeUser.checkPassword(password);
-				if(isPasswordCorrect)
-				{
-					System.out.println("You've successfully logged in! Welcome, " + activeUser.getFirstName() +".");
-					if(activeUser.checkPassword("default")) System.out.println("Please don't forget to change the default password.");
-					retry = false;
-				}
-				else{
-					System.out.println("Your password is incorrect. Please try again.");
-					retry = true;
-				}
-
-			} catch (NullPointerException e) {
-				System.out.println("No such username found. Please try again.");
-				retry = true;
-			}
-		} while (retry);
 		
 	}
 }

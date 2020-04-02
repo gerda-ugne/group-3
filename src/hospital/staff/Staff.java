@@ -2,6 +2,7 @@ package hospital.staff;
 
 import hospital.undo_redo.UndoRedoExecutor;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -131,7 +132,7 @@ public class Staff implements UndoRedoExecutor, Serializable {
 	 * @return The newly created appointment or null if the booking was unsuccessful.
 	 */
 	public Appointment bookAppointment(List<Professional> professionals, List<Long> professionalIds, Date startTime, Date endTime, String room, String treatmentType) {
-		List<Professional> involvedProfessionals = new List<Professional>();
+		List<Professional> involvedProfessionals = new ArrayList<>();
 		for (Professional professional: professionals)
 		{
 			for (long ID : professionalIds) {
@@ -144,7 +145,7 @@ public class Staff implements UndoRedoExecutor, Serializable {
 		Appointment newAppointment = new Appointment(startTime, endTime, room, treatmentType, involvedProfessionals);
 		for(Professional professional: involvedProfessionals)
 		{
-			if(professional.addAppointment(newAppointment)==null) return null;
+			if(!professional.addAppointment(newAppointment)) return null;
 		}
 		return newAppointment;
 	}
@@ -174,18 +175,17 @@ public class Staff implements UndoRedoExecutor, Serializable {
 	 * Deletes an appointment from one of professional's electronic diary.
 	 * It also deletes it from all the involved professionals' diaries.
 	 *
-	 * @param professionalId The ID of the professional who has the appointment.
 	 * @param appointmentId The ID of the appointment to delete.
 	 * @return The deleted appointment or null, if the deletion was unsuccessful.
 	 */
-	public Appointment deleteAppointment(List<Professional> professionals, long professionalId, long appointmentId) {
+	public Appointment deleteAppointment(List<Professional> professionals, long appointmentId) {
 		Appointment deletedAppointment=null;
 		for (Professional professional: professionals)
 			{
 				if(professional.getAppointment(appointmentId)!=null)
 				{
 					deletedAppointment=professional.getDiary().getAppointment(appointmentId);
-					professional.deleteAppointment(professional.getDiary().getAppointment(appointmentId));
+					professional.deleteAppointment(appointmentId);
 				}
 			}
 		return deletedAppointment;
@@ -208,11 +208,6 @@ public class Staff implements UndoRedoExecutor, Serializable {
 		return null;
 	}
 
-<<<<<<< HEAD
-
-	public Set<Professional> getStaff() {
-		return staff;
-=======
 	/**
 	 * Returns the set of all the professionals
 	 * @return set of professionals
@@ -261,6 +256,5 @@ public class Staff implements UndoRedoExecutor, Serializable {
 		}
 
 		return null;
->>>>>>> branch 'development' of https://github.com/gerda-ugne/group-3.git
 	}
 }

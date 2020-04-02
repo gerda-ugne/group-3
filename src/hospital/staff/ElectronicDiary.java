@@ -1,11 +1,12 @@
 package hospital.staff;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * Represents an electronic diary of a professional. Contains appointments.
  */
-public class ElectronicDiary, Serializable {
+public class ElectronicDiary implements Serializable {
 
 	/**
 	 * The list of appointments the professional has
@@ -13,12 +14,8 @@ public class ElectronicDiary, Serializable {
 	private List<Appointment> appointments;
 	
 	/**
-<<<<<<< HEAD
-	 * Creates an empty diary with no appointments and empty backup
-=======
 	 * Constructor for the Electronic diary class.
 	 * Creates an empty diary with no appointments
->>>>>>> branch 'development' of https://github.com/gerda-ugne/group-3.git
 	 */
 	public ElectronicDiary() {
 		appointments = new ArrayList<>();
