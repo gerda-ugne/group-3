@@ -53,6 +53,7 @@ public class Appointment implements Comparable<Appointment>, Serializable {
 	private List<Professional> professionals;
 	
 	/**
+	 * Constructor for the Appointment class.
 	 * Creates and empty appointment without data, in which only the ID is unique.
 	 */
 	public Appointment() {
@@ -60,10 +61,23 @@ public class Appointment implements Comparable<Appointment>, Serializable {
 		this(null, null, "<undefined>", "<undefined>", new ArrayList<>());
 	}
 
+	/**
+	 * Constructor for the Appointment class.
+	 * @param startTime time when the appointment starts
+	 * @param endTime time when the appointment ends
+	 */
 	public Appointment(Date startTime, Date endTime) {
 		this(startTime, endTime, "<undefined>", "<undefined>", new ArrayList<>());
 	}
 
+	/**
+	 * Constructor for the Appointment class
+	 * @param startTime time when the appointment starts
+	 * @param endTime time when the appointment ends
+	 * @param room room where appointment takes place
+	 * @param treatmentType treatment type of the appointment
+	 * @param professionals professionals needed for the appointment
+	 */
 	public Appointment(Date startTime, Date endTime, String room, String treatmentType, List<Professional> professionals) {
 		this.id = counter++;
 		this.startTime = startTime;

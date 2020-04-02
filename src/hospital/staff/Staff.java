@@ -12,172 +12,255 @@ import java.util.stream.Collectors;
  * Members can be added and removed from the staff.
  *
  */
-public class Staff implements UndoRedoExecutor {
+public class Staff implements UndoRedoExecutor, Serializable {
 
-    /**
-     * The set of professionals the staff is consists of.
-     */
-    private Set<Professional> staff;
+	/**
+	 * The set of professionals the staff is consists of.
+	 */
+	private Set<Professional> staff;
 
-    /**
-     * Default constructor for Staff class
-     */
-    public Staff() {
-        staff = new HashSet<>();
-    }
+	/**
+	 * Constructor for Staff class
+	 */
+	public Staff() {
+		staff = new HashSet<>();
+	}
 
-    /**
-     * Adds a new member to the staff.
-     *
-     * @param newMember The professional to add as a new member.
-     */
-    public void addMember(Professional newMember) {
+	/**
+	 * Adds a new member to the staff.
+	 *
+	 * @param newMember The professional to add as a new member.
+	 */
+	public void addMember(Professional newMember) {
 
-        staff.add(newMember);
+		staff.add(newMember);
 
-    }
+	}
 
-    /**
-     * Removes a professional from the staff
-     * @param member member to remove
-     * @return false/true whether the member was removed
-     */
-    public boolean removeMember(Professional member) {
+	/**
+	 * Removes a professional from the staff
+	 * @param member member to remove
+	 * @return false/true whether the member was removed
+	 */
+	public boolean removeMember(Professional member) {
 
-        return staff.remove(member);
+		return staff.remove(member);
 
-    }
+	}
 
-    /**
-     * Finds all common available slots in a list of provided professionals.
-     * Time taken to search the diaries is recorded and displayed to the user.
-     *
-     * @param professionals The list of professionals who have to share the new appointment.
-     * @param from The starting time of the interval to search in.
-     * @param to The ending time of the interval to search in.
-     * @return A set of available time-slots as empty appointments, which are free for all of the involved professionals.
-     */
-    public List<Appointment> searchAvailability(List<Professional> professionals, Date from, Date to) {
+	/**
+	 * Finds all common available slots in a list of provided professionals.
+	 * Time taken to search the diaries is recorded and displayed to the user.
+	 *
+	 * @param professionals The list of professionals who have to share the new appointment.
+	 * @param from The starting time of the interval to search in.
+	 * @param to The ending time of the interval to search in.
+	 * @return A set of available time-slots as empty appointments, which are free for all of the involved professionals.
+	 */
+	public List<Appointment> searchAvailability(List<Professional> professionals, Date from, Date to) {
 
-        // TODO move time logging to a different class (and package), e.g. TimeLogger
-        //Records current time to calculate time taken to search availability
-        Date startSearchTime = new Date();
+		// TODO move time logging to a different class (and package), e.g. TimeLogger
+		//Records current time to calculate time taken to search availability
+		Date startSearchTime = new Date();
 
-        //Local variable for holding personal appointments of one professional at a time
-        List<List<Appointment>> personalFreeSlots = new ArrayList<>();
-        Set <Appointment> allAppointments = new HashSet<Appointment>();
+		//Local variable for holding personal appointments of one professional at a time
+		List<List<Appointment>> personalFreeSlots = new ArrayList<>();
+		Set <Appointment> allAppointments = new HashSet<Appointment>();
 
-        //Professional availability is retrieved and recorded into a set
-        for (Professional professional:
-                professionals) {
+		//Professional availability is retrieved and recorded into a set
+		for (Professional professional:
+			 professionals) {
 
-            List<Appointment> tempList = professional.searchAvailability(from, to);
-            personalFreeSlots.add(tempList);
-            allAppointments.addAll(tempList);
-        }
+			List<Appointment> tempList = professional.searchAvailability(from, to);
+			personalFreeSlots.add(tempList);
+			allAppointments.addAll(tempList);
+		}
 
-        //The intersection of free common slots is calculated
+		//The intersection of free common slots is calculated
 
-        for(int o=0; o<personalFreeSlots.size(); o++)
-        {
-            allAppointments.retainAll(personalFreeSlots.get(o));
-        }
+		for(int o=0; o<personalFreeSlots.size(); o++)
+		{
+			allAppointments.retainAll(personalFreeSlots.get(o));
+		}
 
-        //Converts set into a list type object
-        List<Appointment> listOfAppointments = new ArrayList<Appointment>(allAppointments);
-        //Sorts the list by start date
-        listOfAppointments.sort(Comparator.comparing(Appointment::getStartTime));
+		//Converts set into a list type object
+		List<Appointment> listOfAppointments = new ArrayList<Appointment>(allAppointments);
+		//Sorts the list by start date
+		listOfAppointments.sort(Comparator.comparing(Appointment::getStartTime));
 
-        // TODO move time logging to a different class (and package), e.g. TimeLogger
-        Date endSearchTime = new Date();
+		// TODO move time logging to a different class (and package), e.g. TimeLogger
+		Date endSearchTime = new Date();
 
-        //Calculates the total time taken to search the free appointment slots
-        long totalTimeTaken = endSearchTime.getTime() - startSearchTime.getTime();
-        System.out.println("Search took " + totalTimeTaken/1000 + "seconds.");
+		//Calculates the total time taken to search the free appointment slots
+		long totalTimeTaken = endSearchTime.getTime() - startSearchTime.getTime();
+		System.out.println("Search took " + totalTimeTaken/1000 + "seconds.");
 
-        return listOfAppointments;
-    }
+		return listOfAppointments;
+	}
 
-    /**
-     * List of professionals is filtered by role.
-     *
-     * @param professionals list of professionals to filter
-     * @param role role to filter by
-     * @return list of professionals only with the given role
-     */
-    public List<Professional> sortByRole(List<Professional> professionals, String role)
-    {
-        List<Professional> professionalsOfRole = new ArrayList<Professional>(professionals)
-                .stream()
-                .filter(professional -> {
-                    if(professional.getRole().equals(role)) return true;
-                    else return false;
-                })
-                .collect(Collectors.toList());
+	/**
+	 * List of professionals is filtered by role.
+	 *
+	 * @param professionals list of professionals to filter
+	 * @param role role to filter by
+	 * @return list of professionals only with the given role
+	 */
+	public List<Professional> sortByRole(List<Professional> professionals, String role)
+	{
+		List<Professional> professionalsOfRole = new ArrayList<Professional>(professionals)
+				.stream()
+				.filter(professional -> {
+					if(professional.getRole().equals(role)) return true;
+					else return false;
+				})
+				.collect(Collectors.toList());
 
-        return professionalsOfRole;
+		return professionalsOfRole;
 
-    }
+	}
 
-    /**
-     * Books an appointment in one or more electronic diaries of the involved professionals.
-     * It also checks if the given time-slot is free and available for all of the involved professionals.
-     *
-     * @param professionals A list of the ids of the professionals who are involved in the new appointment.
-     * @param startTime The time when the new appointment starts.
-     * @param endTime The time when the new appointment ends.
-     * @param room The name/number of the room where the appointment will take place.
-     * @param treatmentType The type of treatment the new appointment has.
-     * @return The newly created appointment or null if the booking was unsuccessful.
-     */
-    public Appointment bookAppointment(List<Long> professionals, Date startTime, Date endTime, String room, String treatmentType) {
-        // TODO - implement Staff.bookAppointment
-        return null;
-    }
+	/**
+	 * Books an appointment in one or more electronic diaries of the involved professionals.
+	 * It also checks if the given time-slot is free and available for all of the involved professionals.
+	 *
+	 * @param professionals A list of the ids of the professionals who are involved in the new appointment.
+	 * @param startTime The time when the new appointment starts.
+	 * @param endTime The time when the new appointment ends.
+	 * @param room The name/number of the room where the appointment will take place.
+	 * @param treatmentType The type of treatment the new appointment has.
+	 * @return The newly created appointment or null if the booking was unsuccessful.
+	 */
+	public Appointment bookAppointment(List<Professional> professionals, List<Long> professionalIds, Date startTime, Date endTime, String room, String treatmentType) {
+		List<Professional> involvedProfessionals = new List<Professional>();
+		for (Professional professional: professionals)
+		{
+			for (long ID : professionalIds) {
+				if(ID==professional.getId())
+				{
+					involvedProfessionals.add(professional);
+				}
+			}
+		}
+		Appointment newAppointment = new Appointment(startTime, endTime, room, treatmentType, involvedProfessionals);
+		for(Professional professional: involvedProfessionals)
+		{
+			if(professional.addAppointment(newAppointment)==null) return null;
+		}
+		return newAppointment;
+	}
 
-    /**
-     * Edit one of the appointment of one of the staff member.
-     * If more than one professionals are involved in the treatment,
-     * it checks if the modifications do not conflict with any of the professionals' electronic diary.
-     *
-     * @param professionalId The ID of the professional who has the appointment.
-     * @param appointmentId The ID of the appointment to modify.
-     * @param professionals A list of the ids of the professionals who are involved in the appointment, including the owner themself.
-     * @param startTime The time when the appointment starts.
-     * @param endTime The time when the appointment ends.
-     * @param room The name/number of the room where the appointment will take place.
-     * @param treatmentType The type of treatment the appointment has.
-     * @return	The modified appointment.
-     * 			It is possible, that the modification was unsuccessful, and the returned appointment is the unmodified one.
-     * 			The return can be null, if the appointment could not have been found.
-     */
-    public Appointment editAppointment(long professionalId, long appointmentId, List<Long> professionals, Date startTime, Date endTime, String room, String treatmentType) {
-        // TODO - implement Staff.editAppointment
-        return null;
-    }
+	/**
+	 * Edit one of the appointment of one of the staff member.
+	 * If more than one professionals are involved in the treatment,
+	 * it checks if the modifications do not conflict with any of the professionals' electronic diary.
+	 *
+	 * @param professionalId The ID of the professional who has the appointment.
+	 * @param appointmentId The ID of the appointment to modify.
+	 * @param professionals A list of the ids of the professionals who are involved in the appointment, including the owner themself.
+	 * @param startTime The time when the appointment starts.
+	 * @param endTime The time when the appointment ends.
+	 * @param room The name/number of the room where the appointment will take place.
+	 * @param treatmentType The type of treatment the appointment has.
+	 * @return	The modified appointment.
+	 * 			It is possible, that the modification was unsuccessful, and the returned appointment is the unmodified one.
+	 * 			The return can be null, if the appointment could not have been found.
+	 */
+	public Appointment editAppointment(long professionalId, long appointmentId, List<Long> professionals, Date startTime, Date endTime, String room, String treatmentType) {
+		// TODO - implement Staff.editAppointment
+		return null;
+	}
 
-    /**
-     * Deletes an appointment from one of professional's electronic diary.
-     * It also deletes it from all the involved professionals' diaries.
-     *
-     * @param professionalId The ID of the professional who has the appointment.
-     * @param appointmentId The ID of the appointment to delete.
-     * @return The deleted appointment or null, if the deletion was unsuccessful.
-     */
-    public Appointment deleteAppointment(long professionalId, long appointmentId) {
-        // TODO - implement Staff.deleteAppointment
-        return null;
-    }
+	/**
+	 * Deletes an appointment from one of professional's electronic diary.
+	 * It also deletes it from all the involved professionals' diaries.
+	 *
+	 * @param professionalId The ID of the professional who has the appointment.
+	 * @param appointmentId The ID of the appointment to delete.
+	 * @return The deleted appointment or null, if the deletion was unsuccessful.
+	 */
+	public Appointment deleteAppointment(List<Professional> professionals, long professionalId, long appointmentId) {
+		Appointment deletedAppointment=null;
+		for (Professional professional: professionals)
+			{
+				if(professional.getAppointment(appointmentId)!=null)
+				{
+					deletedAppointment=professional.getDiary().getAppointment(appointmentId);
+					professional.deleteAppointment(professional.getDiary().getAppointment(appointmentId));
+				}
+			}
+		return deletedAppointment;
+	}
 
-    /**
-     * Search for an appointment in one of the professional's electronic diary.
-     *
-     * @param professionId The ID of the professional who has the appointment.
-     * @param appointmentId The ID of the appointment to search for.
-     * @return The found appointment or null if it could not have been found.
-     */
-    public Appointment searchAppointment(long professionId, long appointmentId) {
-        // TODO - implement Staff.searchAppointment
-        return null;
-    }
+	/**
+	 * Search for an appointment in one of the professional's electronic diary.
+	 *
+	 * @param professionId The ID of the professional who has the appointment.
+	 * @param appointmentId The ID of the appointment to search for.
+	 * @return The found appointment or null if it could not have been found.
+	 */
+	public Appointment searchAppointment(List<Professional> professionals, long professionId, long appointmentId) {
+		for (Professional professional: professionals) {
+			if(professional.getId()==professionId)
+			{
+				return professional.getDiary().getAppointment(appointmentId);
+			}
+		}
+		return null;
+	}
+
+<<<<<<< HEAD
+
+	public Set<Professional> getStaff() {
+		return staff;
+=======
+	/**
+	 * Returns the set of all the professionals
+	 * @return set of professionals
+	 */
+	public Set<Professional> getStaff() {
+		return staff;
+	}
+
+	/**
+	 * Sets the staff of professionals
+	 * @param staff professional set to be set
+	 */
+	public void setStaff(Set<Professional> staff) {
+		this.staff = staff;
+	}
+
+	/**
+	 * Searches professional by ID and returns if found
+	 * @param id id to be filtered by
+	 * @return the found professional or null if not found
+	 */
+	public Professional searchById(String id)
+	{
+		String idAsString;
+		for (Professional professional:
+		staff) {
+
+			//Converts the id into string for comparison
+			idAsString = String.valueOf(professional.getId());
+			if(idAsString.equals(id)) return professional;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Searches professional by their username and returns if found
+	 * @param username username to be filtered by
+	 * @return if found professional, otherwise null
+	 */
+	public Professional searchByUsername(String username)
+	{
+		for(Professional professional: staff)
+		{
+			if(professional.getUsername().equals(username)) return professional;
+		}
+
+		return null;
+>>>>>>> branch 'development' of https://github.com/gerda-ugne/group-3.git
+	}
 }
