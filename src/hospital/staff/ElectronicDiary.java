@@ -1,5 +1,6 @@
 package hospital.staff;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -36,7 +37,7 @@ public class ElectronicDiary {
 	 */
 	public boolean addAppointment(Professional professional, Appointment newAppointment) {
 		//gets appointment start time
-		Date from = newAppointment.getStartTime();
+		LocalDateTime from = newAppointment.getStartTime();
 
 		//checks if the given professional has the free slot needed
 		if(searchIfTimeAvailable(from))
@@ -93,27 +94,25 @@ public class ElectronicDiary {
 	 * @param from data range to search from
 	 * @return true if time is free
 	 */
-	public boolean searchIfTimeAvailable(Date from) {
-
-		//Start time is converted into seconds
-		long startTime = from.getTime();
+	public boolean searchIfTimeAvailable(LocalDateTime from) {
 
 		//End time of an appointment is calculated
-		long endTime = from.getTime() + Appointment.TREATMENT_DURATION;
+		LocalDateTime endTime = from.plus(Appointment.TREATMENT_DURATION);
 
 		List<Appointment> appointments = getAppointments();
 		for(Appointment appointment: appointments)
 		{
 			//Gets each appointment's start and end times
-			long appointmentStartTime = appointment.getStartTime().getTime();
-			long appointmentEndTime = appointment.getStartTime().getTime()+Appointment.TREATMENT_DURATION;
+			LocalDateTime appointmentStartTime = appointment.getStartTime();
+			LocalDateTime appointmentEndTime = appointment.getStartTime().plus(Appointment.TREATMENT_DURATION);
 
 			//checks if times overlap
-			if((endTime<appointmentEndTime)&&(endTime>appointmentStartTime)) return false;
-
-			else if ((startTime>appointmentStartTime)&&(startTime<appointmentEndTime)) return false;
-
-			else if((startTime<appointmentStartTime)&&(endTime>appointmentEndTime)) return false;
+			// End time is in the existing appointment
+			if(!endTime.isBefore(appointmentStartTime) && !endTime.isAfter(appointmentEndTime)) return false;
+			// From time is in the existing appointment
+			else if (!from.isBefore(appointmentStartTime) && !from.isAfter(appointmentEndTime)) return false;
+			// New appointment is longer than the existing but still overlaps
+			else if(!from.isBefore(appointmentStartTime) && !endTime.isAfter(appointmentEndTime)) return false;
 		}
 
 		return true;
