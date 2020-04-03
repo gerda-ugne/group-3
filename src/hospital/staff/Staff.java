@@ -61,7 +61,7 @@ public class Staff implements UndoRedoExecutor {
 	public List<Appointment> searchAvailability(List<Professional> professionals, Date from, Date to) {
 
 		//Records current time to calculate time taken to search availability
-		TimeLogger logTime = new TimeLogger();
+		TimeLogger logTime = new TimeLogger("search for available time slots");
 
 		//Local variable for holding personal appointments of one professional at a time
 		List<List<Appointment>> personalFreeSlots = new ArrayList<>();
@@ -89,7 +89,7 @@ public class Staff implements UndoRedoExecutor {
 		listOfAppointments.sort(Comparator.comparing(Appointment::getStartTime));
 
 		//Time is logged at the end of the method
-		logTime.calculateElapsedTime("search for available slots");
+		logTime.calculateElapsedTime();
 
 		return listOfAppointments;
 	}

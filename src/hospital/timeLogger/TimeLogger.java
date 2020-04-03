@@ -13,6 +13,10 @@ package hospital.timeLogger;
 public class TimeLogger {
 
     /**
+     * Name of the task to log time of
+     */
+    String taskName;
+    /**
      * Start of the time logging
      */
     long startTime;
@@ -25,18 +29,20 @@ public class TimeLogger {
     /**
      * Constructor of the TimeLogger class.
      * When object of the class is initiated,
-     * start time is recorded
+     * start time is recorded.
+     * and a task name is set.
      */
-    public TimeLogger()
+    public TimeLogger(String taskName)
     {
         startTime = System.nanoTime();
+        this.taskName = taskName;
     }
 
     /**
      * The method calculates the elapsed time
      * and displays the result to the user.
      */
-    public void calculateElapsedTime(String taskName)
+    public void calculateElapsedTime()
     {
         endTime = System.nanoTime();
         long totalTime = endTime - startTime;
