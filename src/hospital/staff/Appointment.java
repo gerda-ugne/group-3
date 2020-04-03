@@ -170,6 +170,20 @@ public class Appointment implements Comparable<Appointment> {
 		this.professionals = professionals;
 	}
 
+	/**
+	 * Assigns a treatment to the appointment.
+	 * @param treatmentType name of the treatment to assign
+	 */
+	public void assignTreatment(String treatmentType)
+	{
+		try {
+			this.treatmentType = TreatmentList.findATreatment(treatmentType);
+		} catch (NullPointerException e) {
+
+			System.out.println("Treatment type not found in the database.");
+		}
+	}
+
     /**
      * TODO
      * @param o The other appointment to compare this appointment to

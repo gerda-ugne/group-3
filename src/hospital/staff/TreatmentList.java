@@ -17,13 +17,13 @@ public class TreatmentList {
      * String defines treatment type,
      * List of Roles defines required professionals.
      */
-    Map<String, List<Role>> treatments;
+    private static Map<String, List<Role>> treatments;
 
     /**
      * Constructor of the Treatment class.
      * Defines default treatments available at the hospital with the requirement of roles.
      */
-    public TreatmentList()
+    private TreatmentList()
     {
         treatments = new HashMap<>();
         treatments.put("Routine Checkup", Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("GP")));
@@ -47,7 +47,7 @@ public class TreatmentList {
      * @param treatment treatment type to add
      * @param roles roles needed for the treatment
      */
-    public void addTreatment(String treatment, List<Role> roles)
+    public static void addTreatment(String treatment, List<Role> roles)
     {
         treatments.put(treatment,roles);
     }
@@ -58,7 +58,7 @@ public class TreatmentList {
      * @param treatment treatment to remove
      * @return true/false whether deletion was successful
      */
-    public void deleteTreatment(String treatment)
+    public static void deleteTreatment(String treatment)
     {
        treatments.remove(treatment);
     }
@@ -66,7 +66,7 @@ public class TreatmentList {
     /**
      * Prints all the available treatment types
      */
-    public void displayTreatments()
+    public static void displayTreatments()
     {
         int counter = 1;
 
@@ -83,7 +83,7 @@ public class TreatmentList {
      * @return found map entry for the treatment type or null
      * if not found
      */
-    public Map<String, List<Role>> findATreatment(String treatmentType)
+    public static Map<String, List<Role>> findATreatment(String treatmentType)
     {
         for (Map.Entry<String, List<Role>> entry : treatments.entrySet()) {
             String key = entry.getKey();
@@ -101,4 +101,11 @@ public class TreatmentList {
         return null;
     }
 
+    /**
+     * Getter method for the treatment list.
+     * @return map of treatments
+     */
+    public static Map<String, List<Role>> getTreatments() {
+        return treatments;
+    }
 }
