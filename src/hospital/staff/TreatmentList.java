@@ -63,4 +63,18 @@ public class TreatmentList {
        treatments.remove(treatment);
     }
 
+    /**
+     * Prints all the available treatment types
+     */
+    public void displayTreatments()
+    {
+        int counter = 1;
+
+        for (String key : treatments.keySet()) {
+
+            System.out.println(counter + ". " + key);
+            counter ++;
+        }
+    }
+
 }
