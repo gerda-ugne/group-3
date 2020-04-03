@@ -3,6 +3,7 @@ package hospital.staff;
 import hospital.undo_redo.UndoRedoExecutor;
 import hospital.timeLogger.TimeLogger;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -58,7 +59,7 @@ public class Staff implements UndoRedoExecutor {
 	 * @param to The ending time of the interval to search in.
 	 * @return A set of available time-slots as empty appointments, which are free for all of the involved professionals.
 	 */
-	public List<Appointment> searchAvailability(List<Professional> professionals, Date from, Date to) {
+	public List<Appointment> searchAvailability(List<Professional> professionals, LocalDateTime from, LocalDateTime to) {
 
 		//Records current time to calculate time taken to search availability
 		TimeLogger logTime = new TimeLogger("search for available time slots");

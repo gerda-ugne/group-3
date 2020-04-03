@@ -1,12 +1,6 @@
 package hospital.staff;
 
-import jdk.vm.ci.meta.Local;
-import org.apache.commons.lang.time.DateUtils;
-
-import java.time.DayOfWeek;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -178,27 +172,28 @@ public class Professional {
 	 * @return List of free slots for appointments that has data of
 	 * start and end time
 	 */
-	public List<Appointment> searchAvailability(Date from, Date to) {
+	public List<Appointment> searchAvailability(LocalDateTime from, LocalDateTime to) {
 
 		//Start time is converted into seconds
-		long startTime = from.getTime();
+		LocalDateTime startTime = from;
 
 		//End time of an appointment is calculated
-		long endTime = from.getTime() + Appointment.TREATMENT_DURATION;
+		LocalDateTime endTime = from.plus(Appointment.TREATMENT_DURATION);
 
 		//New list for empty available slots is created
 		List<Appointment> availableSlots = new ArrayList<Appointment>();
 
 		//While there is more time to add empty appointments
-		while (endTime < to.getTime()) {
+		while (endTime.compareTo(to) <= 0) {
+			// TODO this while condition needs to be tested. I don't know if it have to be compared in the other way or not.
 
 			//Add an empty appointment with defined start and end time
-			availableSlots.add(new Appointment(new Date(startTime), new Date(endTime)));
+			availableSlots.add(new Appointment(startTime, endTime));
 
 
 			//Adjust the time for the next instance
 			startTime = endTime;
-			endTime = startTime + Appointment.TREATMENT_DURATION;
+			endTime = startTime.plus(Appointment.TREATMENT_DURATION);
 		}
 
 		// Check if an appointment is in the given time-range
@@ -217,18 +212,16 @@ public class Professional {
 		Predicate <Appointment> checkWorkingHourRange = appointment -> {
 
 			//Get the hours of the day when the appointment starts and ends
-			int start = appointment.getStartTime().getHours();
-			int end = appointment.getEndTime().getHours();
+			int start = appointment.getStartTime().getHour();
+			int end = appointment.getEndTime().getHour();
 
 			// Gets days of week for start/end dates
-			// The values are of 0-6 for each week day
-			int startDay =  appointment.getStartTime().getDay();
-			int endDay = appointment.getEndTime().getDay();
-
-			Map<DayOfWeek, WorkingHours> workingHoursMap = workingHours;
+			// The values are of 1-7 for each week day
+			DayOfWeek startDay =  appointment.getStartTime().getDayOfWeek();
+			DayOfWeek endDay = appointment.getEndTime().getDayOfWeek();
 
 			//Iterates through the map
-			for (Map.Entry<DayOfWeek, WorkingHours> entry : workingHoursMap.entrySet()) {
+			for (Map.Entry<DayOfWeek, WorkingHours> entry : workingHours.entrySet()) {
 
 				//If the day of the week match of the appointment and the working hours set,
 				// i.e the appointment is happening on Monday and the iterator reaches
@@ -239,10 +232,10 @@ public class Professional {
 					//Starting and ending hours have to be:
 					//equal or after the working shift start hour AND
 					//before or equal to the working shit start hour
-					if ((start >= (entry.getValue().getStartHour()))  &&
-							(start <= (entry.getValue().getEndHour()))&&
-							(end >= (entry.getValue().getStartHour()))&&
-							(end <= (entry.getValue().getEndHour())))
+					if ((start >= (entry.getValue().getStartHour().getHour()))  &&
+							(start <= (entry.getValue().getEndHour().getHour()))&&
+							(end >= (entry.getValue().getStartHour().getHour()))&&
+							(end <= (entry.getValue().getEndHour().getHour())))
 					return true;
 				}
 			}
@@ -254,8 +247,7 @@ public class Professional {
 		//Appointments are filtered to be in the provided time range
 		List<Appointment> bookedAppointments = diary.sortByDate()
 				.stream()
-				.filter(checkTimeRange)
-				.filter(checkWorkingHourRange)
+				.filter(checkTimeRange.and(checkWorkingHourRange))
 				.sorted()
 				.collect(Collectors.toList());
 

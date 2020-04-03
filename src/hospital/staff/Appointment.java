@@ -1,5 +1,6 @@
 package hospital.staff;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,7 +16,7 @@ public class Appointment implements Comparable<Appointment> {
 	 * Treatment duration in milliseconds.
 	 * Right now it's one hour.
 	 */
-	public static final int TREATMENT_DURATION = 3600000;
+	public static final Duration TREATMENT_DURATION = Duration.ofHours(1);
 
 	/**
 	 * Static counter used to generate unique IDs for every appointment.
