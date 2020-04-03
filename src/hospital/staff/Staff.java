@@ -22,7 +22,7 @@ public class Staff implements UndoRedoExecutor {
 	private Set<Professional> staff;
 
 	/**
-	 * Default constructor for Staff class
+	 * Constructor for Staff class
 	 */
 	public Staff() {
 		staff = new HashSet<>();
@@ -120,15 +120,43 @@ public class Staff implements UndoRedoExecutor {
 	 * Books an appointment in one or more electronic diaries of the involved professionals.
 	 * It also checks if the given time-slot is free and available for all of the involved professionals.
 	 *
-	 * @param professionals A list of the ids of the professionals who are involved in the new appointment.
+	 * @param professionalIds A list of the ids of the professionals who are involved in the new appointment.
 	 * @param startTime The time when the new appointment starts.
 	 * @param endTime The time when the new appointment ends.
 	 * @param room The name/number of the room where the appointment will take place.
 	 * @param treatmentType The type of treatment the new appointment has.
 	 * @return The newly created appointment or null if the booking was unsuccessful.
 	 */
-	public Appointment bookAppointment(List<Long> professionals, Date startTime, Date endTime, String room, String treatmentType) {
-		// TODO - implement Staff.bookAppointment
+	public Appointment bookAppointment(List<Long> professionalIds, Date startTime, Date endTime, String room, String treatmentType) {
+
+		List<Professional> involvedProfessionals = new ArrayList<Professional>();
+		//searches through staff for professionals whose IDs match the given ones and adds them to involvedProfessionals list
+		for (Professional professional: staff)
+		{
+			for (long ID : professionalIds) {
+				if(ID==professional.getId())
+				{
+					involvedProfessionals.add(professional);
+				}
+			}
+		}
+
+		//creates new appointment instance with the given parameters
+		Appointment newAppointment = new Appointment(startTime, endTime, room, treatmentType, involvedProfessionals);
+
+		//creates new appointment list of available slots at the given time for all involved professionals, should only have one list item
+		List<Appointment> freeSlots=searchAvailability(involvedProfessionals,startTime,endTime);
+
+		//if the list of free slots isn't empty (all involved professionals have one free slot at the given time), adds the appointment to all of their diaries
+		if(!freeSlots.isEmpty())
+		{
+			for(Professional professional: involvedProfessionals)
+			{
+				professional.addAppointment(newAppointment);
+			}
+			return newAppointment;
+		}
+		//if at least one of the professionals don't have a free slot at the given time, return null
 		return null;
 	}
 
@@ -149,8 +177,46 @@ public class Staff implements UndoRedoExecutor {
 	 * 			The return can be null, if the appointment could not have been found.
 	 */
 	public Appointment editAppointment(long professionalId, long appointmentId, List<Long> professionals, Date startTime, Date endTime, String room, String treatmentType) {
-		// TODO - implement Staff.editAppointment
-		return null;
+
+		List<Professional> involvedProfessionals = new ArrayList<>();
+
+		boolean appointmentFound=false;
+		Appointment appointmentToChange=null;
+
+		//searches through all given IDs and the staff to find the matching professionals
+		for(long profID:professionals)
+		{
+			for(Professional professional:staff)
+			{
+				if(professional.getId()==profID)
+				{
+					appointmentToChange=professional.getDiary().getAppointment(appointmentId);
+					if(appointmentToChange!=null)
+					{
+						involvedProfessionals = appointmentToChange.getProfessionals();
+						appointmentFound = true;
+						break;
+					}
+				}
+			}
+			if(appointmentFound) break;
+		}
+
+		if(appointmentFound) {
+
+				//check if all professionals have the free slot at the required time
+				List<Appointment> freeSlot = searchAvailability(involvedProfessionals, startTime, endTime);
+
+				//if they do, edit appointment's fields
+				if (!freeSlot.isEmpty()) {
+					appointmentToChange.setStartTime(startTime);
+					appointmentToChange.setEndTime(endTime);
+					appointmentToChange.setProfessionals(involvedProfessionals);
+					appointmentToChange.setRoom(room);
+					appointmentToChange.setTreatmentType(treatmentType);
+				}
+		}
+		return appointmentToChange;
 	}
 
 	/**
@@ -162,8 +228,21 @@ public class Staff implements UndoRedoExecutor {
 	 * @return The deleted appointment or null, if the deletion was unsuccessful.
 	 */
 	public Appointment deleteAppointment(long professionalId, long appointmentId) {
-		// TODO - implement Staff.deleteAppointment
-		return null;
+		Appointment deletedAppointment=null;
+		boolean appointmentFound=false;
+		for (Professional professional: staff)
+			{
+				if(professional.getDiary().getAppointment(appointmentId)!=null)
+				{
+					if(!appointmentFound)
+					{
+						appointmentFound = true;
+						deletedAppointment = professional.getDiary().getAppointment(appointmentId);
+					}
+					professional.deleteAppointment(appointmentId);
+				}
+			}
+		return deletedAppointment;
 	}
 
 	/**
@@ -174,7 +253,68 @@ public class Staff implements UndoRedoExecutor {
 	 * @return The found appointment or null if it could not have been found.
 	 */
 	public Appointment searchAppointment(long professionId, long appointmentId) {
-		// TODO - implement Staff.searchAppointment
+
+		Appointment foundAppointment=null;
+
+		//searches through staff to find the first one who has the appointment
+		for (Professional professional: staff)
+		{
+			if(professional.getId()==professionId)
+			{
+				foundAppointment=professional.getDiary().getAppointment(appointmentId);
+				if(foundAppointment!=null) break;
+			}
+		}
+		return foundAppointment;
+	}
+
+	/**
+	 * Returns the set of all the professionals
+	 * @return set of professionals
+	 */
+	public Set<Professional> getStaff() {
+		return staff;
+	}
+
+	/**
+	 * Sets the staff of professionals
+	 * @param staff professional set to be set
+	 */
+	public void setStaff(Set<Professional> staff) {
+		this.staff = staff;
+	}
+
+	/**
+	 * Searches professional by ID and returns if found
+	 * @param id id to be filtered by
+	 * @return the found professional or null if not found
+	 */
+	public Professional searchById(String id)
+	{
+		String idAsString;
+		for (Professional professional:
+		staff) {
+
+			//Converts the id into string for comparison
+			idAsString = String.valueOf(professional.getId());
+			if(idAsString.equals(id)) return professional;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Searches professional by their username and returns if found
+	 * @param username username to be filtered by
+	 * @return if found professional, otherwise null
+	 */
+	public Professional searchByUsername(String username)
+	{
+		for(Professional professional: staff)
+		{
+			if(professional.getUsername().equals(username)) return professional;
+		}
+
 		return null;
 	}
 }
