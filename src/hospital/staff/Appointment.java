@@ -1,5 +1,7 @@
 package hospital.staff;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,7 +16,7 @@ public class Appointment implements Comparable<Appointment> {
 	 * Treatment duration in milliseconds.
 	 * Right now it's one hour.
 	 */
-	public static final int TREATMENT_DURATION = 3600000;
+	public static final Duration TREATMENT_DURATION = Duration.ofHours(1);
 
 	/**
 	 * Static counter used to generate unique IDs for every appointment.
@@ -29,12 +31,12 @@ public class Appointment implements Comparable<Appointment> {
 	/**
 	 * The time when the appointment starts
 	 */
-	private Date startTime;
+	private LocalDateTime startTime;
 
 	/**
 	 * The time when the appointment ends
 	 */
-	private Date endTime;
+	private LocalDateTime endTime;
 
 	/**
 	 * The room the appointment takes place in
@@ -65,7 +67,7 @@ public class Appointment implements Comparable<Appointment> {
 	 * @param startTime time when the appointment starts
 	 * @param endTime time when the appointment ends
 	 */
-	public Appointment(Date startTime, Date endTime) {
+	public Appointment(LocalDateTime startTime, LocalDateTime endTime) {
 		this(startTime, endTime, "<undefined>", "<undefined>", new ArrayList<>());
 	}
 
@@ -77,7 +79,7 @@ public class Appointment implements Comparable<Appointment> {
 	 * @param treatmentType treatment type of the appointment
 	 * @param professionals professionals needed for the appointment
 	 */
-	public Appointment(Date startTime, Date endTime, String room, String treatmentType, List<Professional> professionals) {
+	public Appointment(LocalDateTime startTime, LocalDateTime endTime, String room, String treatmentType, List<Professional> professionals) {
 		this.id = counter++;
 		this.startTime = startTime;
 		this.endTime = endTime;
@@ -100,7 +102,7 @@ public class Appointment implements Comparable<Appointment> {
 	 *
 	 * @return the starting time of the appointment
 	 */
-	public Date getStartTime() {
+	public LocalDateTime getStartTime() {
 		return startTime;
 	}
 
@@ -109,7 +111,7 @@ public class Appointment implements Comparable<Appointment> {
 	 *
 	 * @param startTime the time to set as starting time to the appointment
 	 */
-	public void setStartTime(Date startTime) {
+	public void setStartTime(LocalDateTime startTime) {
 		this.startTime = startTime;
 	}
 
@@ -118,7 +120,7 @@ public class Appointment implements Comparable<Appointment> {
 	 *
 	 * @return the ending time of the appointment
 	 */
-	public Date getEndTime() {
+	public LocalDateTime getEndTime() {
 		return endTime;
 	}
 
@@ -127,7 +129,7 @@ public class Appointment implements Comparable<Appointment> {
 	 *
 	 * @param endTime The time to set as ending time to the appointment.
 	 */
-	public void setEndTime(Date endTime) {
+	public void setEndTime(LocalDateTime endTime) {
 		this.endTime = endTime;
 	}
 
@@ -193,10 +195,5 @@ public class Appointment implements Comparable<Appointment> {
 	@Override
 	public int compareTo(Appointment o) {
 		return getStartTime().compareTo(o.getStartTime());
-	}
-
-	public void setId(long newID)
-	{
-		id=newID;
 	}
 }

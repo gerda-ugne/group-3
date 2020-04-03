@@ -1,7 +1,9 @@
 package hospital.staff;
 
 import hospital.undo_redo.UndoRedoExecutor;
+import hospital.timeLogger.TimeLogger;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -57,11 +59,10 @@ public class Staff implements UndoRedoExecutor {
 	 * @param to The ending time of the interval to search in.
 	 * @return A set of available time-slots as empty appointments, which are free for all of the involved professionals.
 	 */
-	public List<Appointment> searchAvailability(List<Professional> professionals, Date from, Date to) {
+	public List<Appointment> searchAvailability(List<Professional> professionals, LocalDateTime from, LocalDateTime to) {
 
-		// TODO move time logging to a different class (and package), e.g. TimeLogger
 		//Records current time to calculate time taken to search availability
-		Date startSearchTime = new Date();
+		TimeLogger logTime = new TimeLogger("search for available time slots");
 
 		//Local variable for holding personal appointments of one professional at a time
 		List<List<Appointment>> personalFreeSlots = new ArrayList<>();
@@ -88,12 +89,8 @@ public class Staff implements UndoRedoExecutor {
 		//Sorts the list by start date
 		listOfAppointments.sort(Comparator.comparing(Appointment::getStartTime));
 
-		// TODO move time logging to a different class (and package), e.g. TimeLogger
-		Date endSearchTime = new Date();
-
-		//Calculates the total time taken to search the free appointment slots
-		long totalTimeTaken = endSearchTime.getTime() - startSearchTime.getTime();
-		System.out.println("Search took " + totalTimeTaken/1000 + "seconds.");
+		//Time is logged at the end of the method
+		logTime.calculateElapsedTime();
 
 		return listOfAppointments;
 	}

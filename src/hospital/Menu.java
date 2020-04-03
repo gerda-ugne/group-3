@@ -174,13 +174,6 @@ public class Menu {
 		}
 	}
 
-	/**
-	 * TODO
-	 */
-	public void logRunningTime() {
-		// TODO - implement Menu.logRunningTime
-		
-	}
 
 	/**
 	 * TODO
