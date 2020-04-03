@@ -194,9 +194,6 @@ public class Professional {
 
 			//Add an empty appointment with defined start and end time
 			availableSlots.add(new Appointment(new Date(startTime), new Date(endTime)));
-			LocalDateTime localStartTime =
-
-			availableSlots.add(new Appointment(startTime, endTime);
 
 
 			//Adjust the time for the next instance
