@@ -195,5 +195,8 @@ public class Appointment implements Comparable<Appointment> {
 		return getStartTime().compareTo(o.getStartTime());
 	}
 
-
+	public void setId(long newID)
+	{
+		id=newID;
+	}
 }

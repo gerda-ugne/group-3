@@ -236,6 +236,7 @@ public class Professional{
 		return availableSlots;
 	}
 
+
 	/**
 	 * Registers a new appointment in the professional's electronic diary.
 	 * Checks if it's allowed and if there are now conflicts with the already booked appointments.
@@ -243,8 +244,8 @@ public class Professional{
 	 * @param appointment the new appointment to register in the professional's electronic diary.
 	 */
 	public boolean addAppointment(Appointment appointment) {
-		// TODO check for conflicts. Here or in the diary?
-		return diary.addAppointment(appointment);
+		if(diary.searchIfTimeAvailable(appointment.getStartTime())) return diary.addAppointment(this,appointment);
+		return false;
 	}
 
 	/**
@@ -254,8 +255,9 @@ public class Professional{
 	 * @return the deleted appointment.
 	 */
 	public Appointment deleteAppointment(long appointmentId) {
-		// TODO - implement Professional.deleteAppointment
-		return null;
+		Appointment deletedAppointment=diary.getAppointment(appointmentId);
+		if(deletedAppointment!=null) diary.deleteAppointment(appointmentId);
+		return deletedAppointment;
 	}
 
 	/**
