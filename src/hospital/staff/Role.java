@@ -1,10 +1,12 @@
 package hospital.staff;
 
+
 /**
  * Enum that defines available staff roles
- * at the hospital.
+ * in the hospital.
+ *
  */
-public enum Role {
+public enum Role{
 
     Nurse,
     Surgeon,
@@ -12,6 +14,9 @@ public enum Role {
     GP,
     PhysicianAssistant,
     OccupationalTherapist,
+    Therapist,
+    Optometrist,
     Physiotherapist,
-    Administrator
+    Administrator,
+    Dentist
 }

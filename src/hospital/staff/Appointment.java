@@ -44,38 +44,34 @@ public class Appointment implements Comparable<Appointment> {
 	/**
 	 * The type of the treatment
 	 */
-	private String treatmentType;
+	private TreatmentList treatmentType;
 
 	/**
 	 * The professionals who participate in the treatment
 	 */
 	private List<Professional> professionals;
 
-	/**
-	 * Professional requirements needed for the appointment
-	 */
-	private List <String> professionalRequirements;
+
 
 	/**
 	 * Creates and empty appointment without data, in which only the ID is unique.
 	 */
 	public Appointment() {
 		// TODO check for existing ids or make sure that counter is restored too with the appointments (from save)
-		this(null, null, "<undefined>", "<undefined>", new ArrayList<>(), new ArrayList<>());
+		this(null, null, "<undefined>", new TreatmentList(), new ArrayList<>());
 	}
 
 	public Appointment(Date startTime, Date endTime) {
-		this(startTime, endTime, "<undefined>", "<undefined>", new ArrayList<>(), new ArrayList<>());
+		this(startTime, endTime, "<undefined>", new TreatmentList(), new ArrayList<>());
 	}
 
-	public Appointment(Date startTime, Date endTime, String room, String treatmentType, List<Professional> professionals, List<String> requirements) {
+	public Appointment(Date startTime, Date endTime, String room, TreatmentList treatmentType, List<Professional> professionals) {
 		this.id = counter++;
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.room = room;
 		this.treatmentType = treatmentType;
 		this.professionals = professionals;
-		this.professionalRequirements = requirements;
 	}
 
 	/**
