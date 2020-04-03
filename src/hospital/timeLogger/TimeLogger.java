@@ -36,10 +36,10 @@ public class TimeLogger {
      * The method calculates the elapsed time
      * and displays the result to the user.
      */
-    public void calculateElapsedTime()
+    public void calculateElapsedTime(String taskName)
     {
         endTime = System.nanoTime();
         long totalTime = endTime - startTime;
-        System.out.println("The method took " + totalTime + " milliseconds.");
+        System.out.println("The " + taskName + " task took " + totalTime + " milliseconds.");
     }
 }

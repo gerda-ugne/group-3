@@ -89,7 +89,7 @@ public class Staff implements UndoRedoExecutor {
 		listOfAppointments.sort(Comparator.comparing(Appointment::getStartTime));
 
 		//Time is logged at the end of the method
-		logTime.calculateElapsedTime();
+		logTime.calculateElapsedTime("search for available slots");
 
 		return listOfAppointments;
 	}
