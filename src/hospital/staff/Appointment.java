@@ -42,7 +42,7 @@ public class Appointment implements Comparable<Appointment> {
 	/**
 	 * The type of the treatment
 	 */
-	private Map<String, List<Role>> treatmentType;
+	private Map.Entry<String,List<Role>> treatmentType;
 
 	/**
 	 * The professionals who participate in the treatment
@@ -56,19 +56,19 @@ public class Appointment implements Comparable<Appointment> {
 	 */
 	public Appointment() {
 		// TODO check for existing ids or make sure that counter is restored too with the appointments (from save)
-		this(null, null, "<undefined>",  new ArrayList<>());
+		this(null, null, "<undefined>",  new ArrayList<>(), "<undefined>");
 	}
 
 	public Appointment(Date startTime, Date endTime) {
-		this(startTime, endTime, "<undefined>",  new ArrayList<>());
+		this(startTime, endTime, "<undefined>",  new ArrayList<>(), "<undefined>");
 	}
 
-	public Appointment(Date startTime, Date endTime, String room, List<Professional> professionals) {
+	public Appointment(Date startTime, Date endTime, String room, List<Professional> professionals, String treatmentType) {
 		this.id = counter++;
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.room = room;
-		this.treatmentType = new HashMap<String, List<Role>>(1);
+		assignTreatment(treatmentType);
 		this.professionals = professionals;
 	}
 
@@ -139,7 +139,7 @@ public class Appointment implements Comparable<Appointment> {
 	 *
 	 * @return the appointment's treatment type.
 	 */
-	public Map<String, List<Role>> getTreatmentType() {
+	public Map.Entry<String, List<Role>> getTreatmentType() {
 		return treatmentType;
 	}
 
@@ -148,7 +148,7 @@ public class Appointment implements Comparable<Appointment> {
 	 *
 	 * @param treatmentType the type of treatment to set to the appointment
 	 */
-	public void setTreatmentType(Map<String, List<Role>> treatmentType) {
+	public void setTreatmentType(Map.Entry<String, List<Role>> treatmentType) {
 		this.treatmentType = treatmentType;
 	}
 
@@ -173,14 +173,17 @@ public class Appointment implements Comparable<Appointment> {
 	/**
 	 * Assigns a treatment to the appointment.
 	 * @param treatmentType name of the treatment to assign
+	 * @return true/false whether the assignment was successful
 	 */
-	public void assignTreatment(String treatmentType)
+	public boolean assignTreatment(String treatmentType)
 	{
 		try {
 			this.treatmentType = TreatmentList.findATreatment(treatmentType);
+			return true;
 		} catch (NullPointerException e) {
 
 			System.out.println("Treatment type not found in the database.");
+			return false;
 		}
 	}
 

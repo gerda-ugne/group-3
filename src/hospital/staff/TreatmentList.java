@@ -26,6 +26,7 @@ public class TreatmentList {
     private TreatmentList()
     {
         treatments = new HashMap<>();
+        treatments.put("<undefined>", null);
         treatments.put("Routine Checkup", Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("GP")));
         treatments.put("Emergency Appointment",Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("PhysicianAssistant"),Role.valueOf("OccupationalTherapist")));
         treatments.put("Mental Health Services",Arrays.asList(Role.valueOf("Therapist")));
@@ -83,7 +84,7 @@ public class TreatmentList {
      * @return found map entry for the treatment type or null
      * if not found
      */
-    public static Map<String, List<Role>> findATreatment(String treatmentType)
+    public static Map.Entry<String, List<Role>> findATreatment(String treatmentType)
     {
         for (Map.Entry<String, List<Role>> entry : treatments.entrySet()) {
             String key = entry.getKey();
@@ -91,10 +92,7 @@ public class TreatmentList {
 
             if(entry.getKey().equals(treatmentType))
             {
-                Map<String, List<Role>> foundInstance = new HashMap<String, List<Role>>(1);
-                foundInstance.put(entry.getKey(),entry.getValue());
-
-                return foundInstance;
+                return entry;
             }
         }
 
