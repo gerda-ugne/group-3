@@ -181,11 +181,10 @@ public class Professional {
 		LocalDateTime endTime = from.plus(Appointment.TREATMENT_DURATION);
 
 		//New list for empty available slots is created
-		List<Appointment> availableSlots = new ArrayList<Appointment>();
+		List<Appointment> availableSlots = new ArrayList<>();
 
 		//While there is more time to add empty appointments
-		while (endTime.compareTo(to) <= 0) {
-			// TODO this while condition needs to be tested. I don't know if it have to be compared in the other way or not.
+		while (!endTime.isAfter(to)) {
 
 			//Add an empty appointment with defined start and end time
 			availableSlots.add(new Appointment(startTime, endTime));
@@ -202,8 +201,8 @@ public class Professional {
 			LocalDateTime start = appointment.getStartTime();
 			LocalDateTime end = appointment.getEndTime();
 
-			if (start.compareTo(from) <= 0 && start.compareTo(to) >= 0 &&
-					end.compareTo(from) <= 0 && end.compareTo(to) >= 0
+			if (!start.isBefore(from) && !start.isAfter(to) &&
+					!end.isBefore(from) && !end.isAfter(to)
 			) return true;
 			else return false;
 		};
@@ -212,8 +211,8 @@ public class Professional {
 		Predicate <Appointment> checkWorkingHourRange = appointment -> {
 
 			//Get the hours of the day when the appointment starts and ends
-			int start = appointment.getStartTime().getHour();
-			int end = appointment.getEndTime().getHour();
+			LocalTime start = appointment.getStartTime().toLocalTime();
+			LocalTime end = appointment.getEndTime().toLocalTime();
 
 			// Gets days of week for start/end dates
 			// The values are of 1-7 for each week day
@@ -232,10 +231,10 @@ public class Professional {
 					//Starting and ending hours have to be:
 					//equal or after the working shift start hour AND
 					//before or equal to the working shit start hour
-					if ((start >= (entry.getValue().getStartHour().getHour()))  &&
-							(start <= (entry.getValue().getEndHour().getHour()))&&
-							(end >= (entry.getValue().getStartHour().getHour()))&&
-							(end <= (entry.getValue().getEndHour().getHour())))
+					if (!start.isBefore(entry.getValue().getStartHour()) &&
+							!start.isAfter(entry.getValue().getEndHour()) &&
+							!end.isBefore(entry.getValue().getStartHour()) &&
+							!end.isAfter(entry.getValue().getEndHour()))
 					return true;
 				}
 			}
