@@ -184,55 +184,42 @@ public class Staff implements UndoRedoExecutor {
 		List<Professional> involvedProfessionals = new ArrayList<>();
 
 		boolean appointmentFound=false;
-		Appointment uneditedAppointment=null;
+		Appointment appointmentToChange=null;
+
 		//searches through all given IDs and the staff to find the matching professionals
 		for(long profID:professionals)
 		{
 			for(Professional professional:staff)
 			{
-				if((professional.getId()==profID)&&(professional.getDiary().getAppointment(appointmentId) != null))
+				if(professional.getId()==profID)
 				{
-					uneditedAppointment=professional.getDiary().getAppointment(appointmentId);
-					involvedProfessionals=uneditedAppointment.getProfessionals();
-					appointmentFound=true;
-					break;
+					appointmentToChange=professional.getDiary().getAppointment(appointmentId);
+					if(appointmentToChange!=null)
+					{
+						involvedProfessionals = appointmentToChange.getProfessionals();
+						appointmentFound = true;
+						break;
+					}
 				}
 			}
 			if(appointmentFound) break;
 		}
 
-		//create new appointment instance with the edited parameters
-		Appointment editedAppointment = new Appointment(startTime,endTime,room,treatmentType,involvedProfessionals);
-		//change new appointment's ID to match the unedited one's
-		editedAppointment.setId(appointmentId);
+		if(appointmentFound) {
 
-		//delete the previous version of the appointment from all the professionals' diaries
-		for(long profID:professionals)
-		{
-			deleteAppointment(profID,appointmentId);
-		}
+				//check if all professionals have the free slot at the required time
+				List<Appointment> freeSlot = searchAvailability(involvedProfessionals, startTime, endTime);
 
-		//check if all professionals have the free slot at the required time
-		List<Appointment> freeSlot = searchAvailability(involvedProfessionals,startTime,endTime);
-
-		//if they do, add the appointment to their diaries and return the edited appointment
-		if(!freeSlot.isEmpty())
-		{
-			for(Professional professional:involvedProfessionals)
-			{
-				professional.addAppointment(editedAppointment);
-			}
-			return editedAppointment;
+				//if they do, edit appointment's fields
+				if (!freeSlot.isEmpty()) {
+					appointmentToChange.setStartTime(startTime);
+					appointmentToChange.setEndTime(endTime);
+					appointmentToChange.setProfessionals(involvedProfessionals);
+					appointmentToChange.setRoom(room);
+					appointmentToChange.setTreatmentType(treatmentType);
+				}
 		}
-		//if they don't, re-add the deleted original appointment and return it
-		else
-		{
-			for(Professional professional:involvedProfessionals)
-			{
-				professional.addAppointment(uneditedAppointment);
-			}
-			return uneditedAppointment;
-		}
+		return appointmentToChange;
 	}
 
 	/**
@@ -277,31 +264,10 @@ public class Staff implements UndoRedoExecutor {
 		{
 			if(professional.getId()==professionId)
 			{
-				if(professional.getDiary().getAppointment(appointmentId)!=null)
-				{
-					//once found, get the appointment and break out of the for loop
-					foundAppointment=professional.getDiary().getAppointment(appointmentId);
-					break;
-				}
+				foundAppointment=professional.getDiary().getAppointment(appointmentId);
+				if(foundAppointment!=null) break;
 			}
 		}
-
-		//get the required professionals for the appointment
-		List<Professional> appointmentProfessionals = foundAppointment.getProfessionals();
-		boolean foundInAllDiaries=true;
-
-		//check if all of them have the appointment in their diaries
-		for(Professional professional: appointmentProfessionals)
-		{
-			//if any of them don't have it, change the boolean to false
-			if(professional.getDiary().getAppointment(appointmentId)==null)
-			{
-				foundInAllDiaries=false;
-			}
-		}
-		//if appointment was found in the diaries of all involved professionals, return the appointment
-		if(foundInAllDiaries) return foundAppointment;
-		//else return null
-		return null;
+		return foundAppointment;
 	}
 }
