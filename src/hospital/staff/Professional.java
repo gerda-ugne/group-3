@@ -49,6 +49,7 @@ public class Professional {
 
 	private TaskList tasks;
 
+
 	/**
 	 * The schedule when the professional is working in a week.
 	 */

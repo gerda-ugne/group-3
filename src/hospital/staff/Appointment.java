@@ -1,8 +1,6 @@
 package hospital.staff;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * This class represents an appointment in one or more professional's electronic diary.
@@ -44,7 +42,7 @@ public class Appointment implements Comparable<Appointment> {
 	/**
 	 * The type of the treatment
 	 */
-	private TreatmentList treatmentType;
+	private Map<String, List<Role>> treatmentType;
 
 	/**
 	 * The professionals who participate in the treatment
@@ -58,19 +56,19 @@ public class Appointment implements Comparable<Appointment> {
 	 */
 	public Appointment() {
 		// TODO check for existing ids or make sure that counter is restored too with the appointments (from save)
-		this(null, null, "<undefined>", new TreatmentList(), new ArrayList<>());
+		this(null, null, "<undefined>",  new ArrayList<>());
 	}
 
 	public Appointment(Date startTime, Date endTime) {
-		this(startTime, endTime, "<undefined>", new TreatmentList(), new ArrayList<>());
+		this(startTime, endTime, "<undefined>",  new ArrayList<>());
 	}
 
-	public Appointment(Date startTime, Date endTime, String room, TreatmentList treatmentType, List<Professional> professionals) {
+	public Appointment(Date startTime, Date endTime, String room, List<Professional> professionals) {
 		this.id = counter++;
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.room = room;
-		this.treatmentType = treatmentType;
+		this.treatmentType = new HashMap<String, List<Role>>(1);
 		this.professionals = professionals;
 	}
 
@@ -141,7 +139,7 @@ public class Appointment implements Comparable<Appointment> {
 	 *
 	 * @return the appointment's treatment type.
 	 */
-	public String getTreatmentType() {
+	public Map<String, List<Role>> getTreatmentType() {
 		return treatmentType;
 	}
 
@@ -150,7 +148,7 @@ public class Appointment implements Comparable<Appointment> {
 	 *
 	 * @param treatmentType the type of treatment to set to the appointment
 	 */
-	public void setTreatmentType(String treatmentType) {
+	public void setTreatmentType(Map<String, List<Role>> treatmentType) {
 		this.treatmentType = treatmentType;
 	}
 
@@ -163,21 +161,6 @@ public class Appointment implements Comparable<Appointment> {
 		return professionals;
 	}
 
-	/**
-	 * Getter for the professional requirements
-	 * @return professional requirements
-	 */
-	public List<String> getProfessionalRequirements() {
-		return professionalRequirements;
-	}
-
-	/**
-	 * Setter for the professional requirements
-	 * @param professionalRequirements new requirements to be set
-	 */
-	public void setProfessionalRequirements(List<String> professionalRequirements) {
-		this.professionalRequirements = professionalRequirements;
-	}
 
 	/**
 	 * Sets the professionals who participate in the treatment

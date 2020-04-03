@@ -77,4 +77,28 @@ public class TreatmentList {
         }
     }
 
+    /**
+     * Finds a treatment, searching by its name
+     * @param treatmentType treatment type to look for
+     * @return found map entry for the treatment type or null
+     * if not found
+     */
+    public Map<String, List<Role>> findATreatment(String treatmentType)
+    {
+        for (Map.Entry<String, List<Role>> entry : treatments.entrySet()) {
+            String key = entry.getKey();
+            List<Role> value = entry.getValue();
+
+            if(entry.getKey().equals(treatmentType))
+            {
+                Map<String, List<Role>> foundInstance = new HashMap<String, List<Role>>(1);
+                foundInstance.put(entry.getKey(),entry.getValue());
+
+                return foundInstance;
+            }
+        }
+
+        return null;
+    }
+
 }
