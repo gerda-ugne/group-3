@@ -41,7 +41,7 @@ public class ElectronicDiary {
 		if(searchIfTimeAvailable(from))
 		{
 			//if he does, adds the appointment to his diary and returns true
-			professional.addAppointment(newAppointment);
+			appointments.add(newAppointment);
 			return true;
 		}
 		return false;
