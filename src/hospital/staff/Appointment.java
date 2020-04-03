@@ -1,5 +1,6 @@
 package hospital.staff;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,12 +30,12 @@ public class Appointment implements Comparable<Appointment> {
 	/**
 	 * The time when the appointment starts
 	 */
-	private Date startTime;
+	private LocalDateTime startTime;
 
 	/**
 	 * The time when the appointment ends
 	 */
-	private Date endTime;
+	private LocalDateTime endTime;
 
 	/**
 	 * The room the appointment takes place in
@@ -59,11 +60,11 @@ public class Appointment implements Comparable<Appointment> {
 		this(null, null, "<undefined>", "<undefined>", new ArrayList<>());
 	}
 
-	public Appointment(Date startTime, Date endTime) {
+	public Appointment(LocalDateTime startTime, LocalDateTime endTime) {
 		this(startTime, endTime, "<undefined>", "<undefined>", new ArrayList<>());
 	}
 
-	public Appointment(Date startTime, Date endTime, String room, String treatmentType, List<Professional> professionals) {
+	public Appointment(LocalDateTime startTime, LocalDateTime endTime, String room, String treatmentType, List<Professional> professionals) {
 		this.id = counter++;
 		this.startTime = startTime;
 		this.endTime = endTime;
@@ -71,6 +72,7 @@ public class Appointment implements Comparable<Appointment> {
 		this.treatmentType = treatmentType;
 		this.professionals = professionals;
 	}
+
 
 	/**
 	 * Getter of the ID of the appointment.
@@ -86,7 +88,7 @@ public class Appointment implements Comparable<Appointment> {
 	 *
 	 * @return the starting time of the appointment
 	 */
-	public Date getStartTime() {
+	public LocalDateTime getStartTime() {
 		return startTime;
 	}
 
@@ -95,7 +97,7 @@ public class Appointment implements Comparable<Appointment> {
 	 *
 	 * @param startTime the time to set as starting time to the appointment
 	 */
-	public void setStartTime(Date startTime) {
+	public void setStartTime(LocalDateTime startTime) {
 		this.startTime = startTime;
 	}
 
@@ -104,7 +106,7 @@ public class Appointment implements Comparable<Appointment> {
 	 *
 	 * @return the ending time of the appointment
 	 */
-	public Date getEndTime() {
+	public LocalDateTime getEndTime() {
 		return endTime;
 	}
 
@@ -113,7 +115,7 @@ public class Appointment implements Comparable<Appointment> {
 	 *
 	 * @param endTime The time to set as ending time to the appointment.
 	 */
-	public void setEndTime(Date endTime) {
+	public void setEndTime(LocalDateTime endTime) {
 		this.endTime = endTime;
 	}
 

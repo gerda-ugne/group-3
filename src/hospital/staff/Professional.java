@@ -1,9 +1,16 @@
 package hospital.staff;
 
+import jdk.vm.ci.meta.Local;
+import org.apache.commons.lang.time.DateUtils;
+
 import java.time.DayOfWeek;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.Date;
 
 /**
  * Represents a professional in the hospital staff.
@@ -187,6 +194,10 @@ public class Professional {
 
 			//Add an empty appointment with defined start and end time
 			availableSlots.add(new Appointment(new Date(startTime), new Date(endTime)));
+			LocalDateTime localStartTime =
+
+			availableSlots.add(new Appointment(startTime, endTime);
+
 
 			//Adjust the time for the next instance
 			startTime = endTime;
@@ -196,8 +207,9 @@ public class Professional {
 		// Check if an appointment is in the given time-range
 		// Filters by from/to dates
 		Predicate<Appointment> checkTimeRange = appointment -> {
-			Date start = appointment.getStartTime();
-			Date end = appointment.getEndTime();
+			LocalDateTime start = appointment.getStartTime();
+			LocalDateTime end = appointment.getEndTime();
+
 			if (start.compareTo(from) <= 0 && start.compareTo(to) >= 0 &&
 					end.compareTo(from) <= 0 && end.compareTo(to) >= 0
 			) return true;
