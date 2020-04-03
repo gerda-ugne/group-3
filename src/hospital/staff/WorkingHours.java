@@ -1,6 +1,7 @@
 package hospital.staff;
 
 import java.time.DayOfWeek;
+import java.time.LocalTime;
 
 /**
  * Working hours class defines working hours of the
@@ -15,12 +16,12 @@ public class WorkingHours {
 	/**
 	 * Daily work shift starting hour
 	 */
-	private int startHour;
+	private LocalTime startHour;
 
 	/**
 	 * Daily work shift ending hour
 	 */
-	private int endHour;
+	private LocalTime endHour;
 
 	/**
 	 * Constructor for the WorkingHours class
@@ -28,7 +29,7 @@ public class WorkingHours {
 	 * @param startHour shift start hour
 	 * @param endHour shift end hour
 	 */
-	public WorkingHours(DayOfWeek day, int startHour, int endHour) {
+	public WorkingHours(DayOfWeek day, LocalTime startHour, LocalTime endHour) {
 		this.startHour = startHour;
 		this.endHour = endHour;
 	}
@@ -37,7 +38,7 @@ public class WorkingHours {
 	 * Getter method for the starting hour
 	 * @return start hour
 	 */
-	public int getStartHour() {
+	public LocalTime getStartHour() {
 		return startHour;
 	}
 
@@ -45,7 +46,7 @@ public class WorkingHours {
 	 * Setter method for the starting hour
 	 * @param startHour starting hour to be set
 	 */
-	public void setStartHour(int startHour) {
+	public void setStartHour(LocalTime startHour) {
 		this.startHour = startHour;
 	}
 
@@ -53,7 +54,7 @@ public class WorkingHours {
 	 * Getter method for the end hour
 	 * @return end hour
 	 */
-	public int getEndHour() {
+	public LocalTime getEndHour() {
 		return endHour;
 	}
 
@@ -61,7 +62,7 @@ public class WorkingHours {
 	 * Setter method for the end hour
 	 * @param endHour end hour to be set
 	 */
-	public void setEndHour(int endHour) {
+	public void setEndHour(LocalTime endHour) {
 		this.endHour = endHour;
 	}
 }
