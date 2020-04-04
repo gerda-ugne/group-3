@@ -122,11 +122,10 @@ public class Menu {
 					processUserChoice();
 					break;
 
-//				case 6:
-//					activeUser.getId();
-//					displayDiary(staff, professionalId);
-//					processUserChoice();
-//					break;
+				case 6:
+					displayDiary(staff, activeUser.getId());
+					processUserChoice();
+					break;
 
 				case 7:
 					backupDiary();
