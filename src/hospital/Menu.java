@@ -84,8 +84,10 @@ public class Menu {
 
 	public int processUserChoice() throws Exception {
 
-		int userChoice;
-		while (true) {
+		int userChoice = -1;
+		boolean loggedIn = true;
+
+		while (loggedIn) {
 
 			showMenu();
 			userChoice = Genio.getInteger();
@@ -93,8 +95,8 @@ public class Menu {
 			switch (userChoice) {
 
 				case 0:
-					System.out.println("Goodbye");
-					System.exit(0);
+					System.out.println("You have been logged out successfully!");
+					loggedIn = false;
 					break;
 
 				case 1:
@@ -165,9 +167,7 @@ public class Menu {
 				default:
 					System.out.println("Something went wrong");
 			}
-
-			return userChoice;
-		}
+		} return userChoice;
 	}
 
 	/**
