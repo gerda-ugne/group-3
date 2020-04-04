@@ -75,6 +75,12 @@ public class Menu {
 
 	}
 
+	/**
+	 * Method to process users choice from the menu and activate corresponding function.
+	 * Please note that it uses a Genio class written by UoD to handle data input.
+	 * @return int userChoice
+	 * @throws Exception is a standard switch case Exception to handle input errors.
+	 */
 
 	public int processUserChoice() throws Exception {
 
