@@ -362,17 +362,15 @@ public class Professional {
 	 */
 	public boolean deleteTask(String taskName)
 	{
-		//Finds a task with the same task name in the list
-		//Copies the content of the found task onto the
-		//toDelete node
-		for (Task task : tasks.getTaskList()) {
-			if (task.getTaskName().equals(taskName)) {
-				task = null;
-				return true;
-			}
+		Task toDelete = tasks.findTask(taskName);
+		if(toDelete == null) return false;
+		else
+		{
+			tasks.deleteTask(toDelete);
+			return true;
 		}
 
-		return false;
+
 	}
 
 	/**

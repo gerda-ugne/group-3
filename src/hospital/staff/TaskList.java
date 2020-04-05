@@ -94,4 +94,21 @@ public class TaskList {
         }
     }
 
+    /**
+     * Finds a task in the task list
+     * @param taskName task to find
+     * @return task if found, null if not
+     */
+    public Task findTask(String taskName)
+    {
+        for (Task task : taskList) {
+            if (task.getTaskName().equals(taskName)) {
+
+                return task;
+            }
+        }
+
+        return null;
+    }
+
 }
