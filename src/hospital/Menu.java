@@ -8,6 +8,7 @@ import hospital.staff.Staff;
 import hospital.undo_redo.UndoRedoHandler;
 
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -185,8 +186,8 @@ public class Menu {
 	 */
 	private void addAppointment() {
 		List<Long> professionals = new ArrayList<>();
-		Date startTime = new Date();
-		Date endTime = new Date();
+		LocalDateTime startTime = LocalDateTime.now();
+		LocalDateTime endTime = LocalDateTime.now();
 		String room = "";
 		String treatmentType = "";
 		// TODO get input from user
@@ -198,7 +199,7 @@ public class Menu {
 						staff,
 						staff.getClass().getMethod("deleteAppointment", long.class, long.class),
 						new Object[]{activeUser.getId(), newAppointment.getId()},
-						staff.getClass().getMethod("bookAppointment", List.class, Date.class, Date.class, String.class, String.class),
+						staff.getClass().getMethod("bookAppointment", List.class, LocalDateTime.class, LocalDateTime.class, String.class, String.class),
 						new Object[]{professionals, startTime, endTime, room, treatmentType}
 				));
 			} catch (NoSuchMethodException e) {
@@ -214,8 +215,8 @@ public class Menu {
 	private void editAppointment() {
 		long appointmentId = 0;
 		List<Long> professionals = new ArrayList<>();
-		Date startTime = new Date();
-		Date endTime = new Date();
+		LocalDateTime startTime = LocalDateTime.now();
+		LocalDateTime endTime = LocalDateTime.now();
 		String room = "";
 		String treatmentType = "";
 		// TODO get input from user
@@ -226,10 +227,10 @@ public class Menu {
 				undoRedoHandler.addAction(new Action(
 						"Edit appointment",
 						staff,
-						staff.getClass().getMethod("editAppointment", long.class, long.class),
-						new Object[]{activeUser.getId(), appointmentId},
-						staff.getClass().getMethod("editAppointment", long.class, long.class),
-						new Object[] {}
+						staff.getClass().getMethod("editAppointment", long.class, long.class, List.class, LocalDateTime.class, LocalDateTime.class, String.class, String.class),
+						new Object[]{activeUser.getId(), oldAppointment.getId(), oldAppointment.getProfessionals(), oldAppointment.getStartTime(), oldAppointment.getEndTime(), oldAppointment.getRoom(), oldAppointment.getTreatmentType()},
+						staff.getClass().getMethod("editAppointment", long.class, long.class, List.class, LocalDateTime.class, LocalDateTime.class, String.class, String.class),
+						new Object[]{activeUser.getId(), oldAppointment.getId(), oldAppointment.getProfessionals(), oldAppointment.getStartTime(), oldAppointment.getEndTime(), oldAppointment.getRoom(), oldAppointment.getTreatmentType()}
 				));
 			} catch (NoSuchMethodException e) {
 				// TODO handle exception
