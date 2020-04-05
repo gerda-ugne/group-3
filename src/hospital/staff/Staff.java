@@ -1,8 +1,10 @@
 package hospital.staff;
 
 import hospital.undo_redo.UndoRedoExecutor;
+import hospital.timeLogger.TimeLogger;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -58,11 +60,10 @@ public class Staff implements UndoRedoExecutor, Serializable {
 	 * @param to The ending time of the interval to search in.
 	 * @return A set of available time-slots as empty appointments, which are free for all of the involved professionals.
 	 */
-	public List<Appointment> searchAvailability(List<Professional> professionals, Date from, Date to) {
+	public List<Appointment> searchAvailability(List<Professional> professionals, LocalDateTime from, LocalDateTime to) {
 
-		// TODO move time logging to a different class (and package), e.g. TimeLogger
 		//Records current time to calculate time taken to search availability
-		Date startSearchTime = new Date();
+		TimeLogger logTime = new TimeLogger("search for available time slots");
 
 		//Local variable for holding personal appointments of one professional at a time
 		List<List<Appointment>> personalFreeSlots = new ArrayList<>();
@@ -89,12 +90,8 @@ public class Staff implements UndoRedoExecutor, Serializable {
 		//Sorts the list by start date
 		listOfAppointments.sort(Comparator.comparing(Appointment::getStartTime));
 
-		// TODO move time logging to a different class (and package), e.g. TimeLogger
-		Date endSearchTime = new Date();
-
-		//Calculates the total time taken to search the free appointment slots
-		long totalTimeTaken = endSearchTime.getTime() - startSearchTime.getTime();
-		System.out.println("Search took " + totalTimeTaken/1000 + "seconds.");
+		//Time is logged at the end of the method
+		logTime.calculateElapsedTime();
 
 		return listOfAppointments;
 	}
@@ -124,16 +121,18 @@ public class Staff implements UndoRedoExecutor, Serializable {
 	 * Books an appointment in one or more electronic diaries of the involved professionals.
 	 * It also checks if the given time-slot is free and available for all of the involved professionals.
 	 *
-	 * @param professionals A list of the ids of the professionals who are involved in the new appointment.
+	 * @param professionalIds A list of the ids of the professionals who are involved in the new appointment.
 	 * @param startTime The time when the new appointment starts.
 	 * @param endTime The time when the new appointment ends.
 	 * @param room The name/number of the room where the appointment will take place.
 	 * @param treatmentType The type of treatment the new appointment has.
 	 * @return The newly created appointment or null if the booking was unsuccessful.
 	 */
-	public Appointment bookAppointment(List<Professional> professionals, List<Long> professionalIds, Date startTime, Date endTime, String room, String treatmentType) {
-		List<Professional> involvedProfessionals = new ArrayList<>();
-		for (Professional professional: professionals)
+	public Appointment bookAppointment(List<Long> professionalIds, Date startTime, Date endTime, String room, String treatmentType) {
+
+		List<Professional> involvedProfessionals = new ArrayList<Professional>();
+		//searches through staff for professionals whose IDs match the given ones and adds them to involvedProfessionals list
+		for (Professional professional: staff)
 		{
 			for (long ID : professionalIds) {
 				if(ID==professional.getId())
@@ -142,12 +141,24 @@ public class Staff implements UndoRedoExecutor, Serializable {
 				}
 			}
 		}
+
+		//creates new appointment instance with the given parameters
 		Appointment newAppointment = new Appointment(startTime, endTime, room, treatmentType, involvedProfessionals);
-		for(Professional professional: involvedProfessionals)
+
+		//creates new appointment list of available slots at the given time for all involved professionals, should only have one list item
+		List<Appointment> freeSlots=searchAvailability(involvedProfessionals,startTime,endTime);
+
+		//if the list of free slots isn't empty (all involved professionals have one free slot at the given time), adds the appointment to all of their diaries
+		if(!freeSlots.isEmpty())
 		{
-			if(!professional.addAppointment(newAppointment)) return null;
+			for(Professional professional: involvedProfessionals)
+			{
+				professional.addAppointment(newAppointment);
+			}
+			return newAppointment;
 		}
-		return newAppointment;
+		//if at least one of the professionals don't have a free slot at the given time, return null
+		return null;
 	}
 
 	/**
@@ -167,24 +178,68 @@ public class Staff implements UndoRedoExecutor, Serializable {
 	 * 			The return can be null, if the appointment could not have been found.
 	 */
 	public Appointment editAppointment(long professionalId, long appointmentId, List<Long> professionals, Date startTime, Date endTime, String room, String treatmentType) {
-		// TODO - implement Staff.editAppointment
-		return null;
+
+		List<Professional> involvedProfessionals = new ArrayList<>();
+
+		boolean appointmentFound=false;
+		Appointment appointmentToChange=null;
+
+		//searches through all given IDs and the staff to find the matching professionals
+		for(long profID:professionals)
+		{
+			for(Professional professional:staff)
+			{
+				if(professional.getId()==profID)
+				{
+					appointmentToChange=professional.getDiary().getAppointment(appointmentId);
+					if(appointmentToChange!=null)
+					{
+						involvedProfessionals = appointmentToChange.getProfessionals();
+						appointmentFound = true;
+						break;
+					}
+				}
+			}
+			if(appointmentFound) break;
+		}
+
+		if(appointmentFound) {
+
+				//check if all professionals have the free slot at the required time
+				List<Appointment> freeSlot = searchAvailability(involvedProfessionals, startTime, endTime);
+
+				//if they do, edit appointment's fields
+				if (!freeSlot.isEmpty()) {
+					appointmentToChange.setStartTime(startTime);
+					appointmentToChange.setEndTime(endTime);
+					appointmentToChange.setProfessionals(involvedProfessionals);
+					appointmentToChange.setRoom(room);
+					appointmentToChange.setTreatmentType(treatmentType);
+				}
+		}
+		return appointmentToChange;
 	}
 
 	/**
 	 * Deletes an appointment from one of professional's electronic diary.
 	 * It also deletes it from all the involved professionals' diaries.
 	 *
+	 * @param professionalId The ID of the professional who has the appointment.
 	 * @param appointmentId The ID of the appointment to delete.
 	 * @return The deleted appointment or null, if the deletion was unsuccessful.
 	 */
-	public Appointment deleteAppointment(List<Professional> professionals, long appointmentId) {
+	public Appointment deleteAppointment(long professionalId, long appointmentId) {
 		Appointment deletedAppointment=null;
-		for (Professional professional: professionals)
+		boolean appointmentFound=false;
+		for (Professional professional: staff)
 			{
-				if(professional.getAppointment(appointmentId)!=null)
+				if(professional.getDiary().getAppointment(appointmentId)!=null)
 				{
-					deletedAppointment=professional.getDiary().getAppointment(appointmentId);
+					if(!appointmentFound)
+					{
+						appointmentFound = true;
+						deletedAppointment = professional.getDiary().getAppointment(appointmentId);
+					}
 					professional.deleteAppointment(appointmentId);
 				}
 			}
@@ -198,14 +253,20 @@ public class Staff implements UndoRedoExecutor, Serializable {
 	 * @param appointmentId The ID of the appointment to search for.
 	 * @return The found appointment or null if it could not have been found.
 	 */
-	public Appointment searchAppointment(List<Professional> professionals, long professionId, long appointmentId) {
-		for (Professional professional: professionals) {
+	public Appointment searchAppointment(long professionId, long appointmentId) {
+
+		Appointment foundAppointment=null;
+
+		//searches through staff to find the first one who has the appointment
+		for (Professional professional: staff)
+		{
 			if(professional.getId()==professionId)
 			{
-				return professional.getDiary().getAppointment(appointmentId);
+				foundAppointment=professional.getDiary().getAppointment(appointmentId);
+				if(foundAppointment!=null) break;
 			}
 		}
-		return null;
+		return foundAppointment;
 	}
 
 	/**
