@@ -346,6 +346,7 @@ public class Menu {
 	private void addTask()
 	{
 		String taskName, description, input, dueBy;
+		boolean retry = false;
 
 		Scanner s = new Scanner(System.in);
 		Scanner dateScanner = new Scanner(System.in);
@@ -372,7 +373,8 @@ public class Menu {
 				dueByDate = dateFormat.parse(dueBy);
 			} catch (ParseException e) {
 				System.out.println("There was an error recording your due-by date, please try again.");
-				return;
+				retry = true;
+				break;
 			}
 
 			System.out.println("These are the details of your task:\n");
@@ -383,10 +385,24 @@ public class Menu {
 			System.out.println("\nConfirm the task by entering Y, or retry by providing any other input.");
 			input = s.nextLine();
 
-			if(input.equals("Y")) activeUser.addTask(taskName,description,dueByDate);
-			else System.out.println("Task was not confirmed. Please retry.");
+			if(input.equals("Y"))
+			{
+				//Checks for duplicates
+				boolean success;
+				success = activeUser.addTask(taskName,description,dueByDate);
+				//Error message printed in TaskList class if duplicate
 
-		} while ((input.equals("Y")));
+				if(success) retry = false;
+				else retry = true;
+
+			}
+			else
+			{
+				System.out.println("Task was not confirmed. Please retry.");
+				retry = true;
+			}
+
+		} while (retry);
 
 	}
 
