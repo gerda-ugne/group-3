@@ -1,15 +1,12 @@
 package hospital;
 
-import hospital.staff.DeleteAppointmentAction;
+import hospital.staff.*;
 import hospital.undo_redo.Action;
-import hospital.staff.Appointment;
-import hospital.staff.Professional;
-import hospital.staff.Staff;
 import hospital.undo_redo.UndoRedoHandler;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 /**
@@ -365,15 +362,16 @@ public class Menu {
 
 			System.out.println("Enter the date when your task is due by (day-month-year format, e.g. 05-12-2020):");
 			dueBy = s.nextLine();
-			SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-			Date dueByDate = null;
+			DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-uuuu");
+			LocalDate dueByDate = null;
 
 			try {
 				//Parsing the String
-				dueByDate = dateFormat.parse(dueBy);
-			} catch (ParseException e) {
+				dueByDate = LocalDate.parse(dueBy, dateFormat);
+			} catch (DateTimeParseException e) {
 				System.out.println("There was an error recording your due-by date, please try again.");
 				retry = true;
+				// TODO ask for new input if there was  a wrong one
 				break;
 			}
 

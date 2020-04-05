@@ -1,6 +1,6 @@
 package hospital.staff;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 /**
  * Task Class defines a task that a professional can add to their
@@ -25,11 +25,11 @@ public class Task implements Comparable<Task> {
     /**
      * Date when the task was initialised
      */
-    Date initialised;
+    LocalDate initialised;
     /**
      * Date when the task is dueBy
      */
-    Date dueBy;
+    LocalDate dueBy;
 
     /**
      * Constructor for the Task class
@@ -45,11 +45,11 @@ public class Task implements Comparable<Task> {
      * @param description short description of the task
      * @param dueBy       date when the task is due
      */
-    public Task(String taskName, String description, Date dueBy) {
+    public Task(String taskName, String description, LocalDate dueBy) {
         this.taskName = taskName;
         this.description = description;
         this.dueBy = dueBy;
-        this.initialised = new Date();
+        this.initialised = LocalDate.now();
     }
 
     /**
@@ -88,7 +88,7 @@ public class Task implements Comparable<Task> {
      * Getter method for the initialised date
      * @return date when the task was initialised
      */
-    public Date getInitialised() {
+    public LocalDate getInitialised() {
         return initialised;
     }
 
@@ -96,7 +96,7 @@ public class Task implements Comparable<Task> {
      * Setter method for the initialised date
      * @param initialised initialised date to be set
      */
-    public void setInitialised(Date initialised) {
+    public void setInitialised(LocalDate initialised) {
         this.initialised = initialised;
     }
 
@@ -104,7 +104,7 @@ public class Task implements Comparable<Task> {
      * Getter method for the due by date.
      * @return date when the task is due by
      */
-    public Date getDueBy() {
+    public LocalDate getDueBy() {
         return dueBy;
     }
 
@@ -112,7 +112,7 @@ public class Task implements Comparable<Task> {
      * Setter method for the due by date.
      * @param dueBy due by date to be set
      */
-    public void setDueBy(Date dueBy) {
+    public void setDueBy(LocalDate dueBy) {
         this.dueBy = dueBy;
     }
 
@@ -140,7 +140,7 @@ public class Task implements Comparable<Task> {
         System.out.println(description);
         System.out.println("Task is due by: " + dueBy);
 
-        Date today = new Date();
+        LocalDate today = LocalDate.now();
         int comparator = (getDueBy().compareTo(today));
         if(comparator > 0) System.out.println("\nTHE DUE BY DATE HAS PASSED. PLEASE REMOVE THE TASK.");
     }

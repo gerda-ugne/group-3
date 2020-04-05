@@ -4,13 +4,14 @@ import java.time.*;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.Date;
+
+import hospital.undo_redo.UndoRedoExecutor;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 
 /**
  * Represents a professional in the hospital staff.
  */
-public class Professional {
+public class Professional implements UndoRedoExecutor {
 
 	/**
 	 * Static counter to generate unique IDs
@@ -349,7 +350,7 @@ public class Professional {
 	 * @param dueBy - date when the task is due by
 	 * @return true or false whether the addition was successful
 	 */
-	public boolean addTask(String taskName, String description, Date dueBy)
+	public boolean addTask(String taskName, String description, LocalDate dueBy)
 	{
 		Task toAdd = new Task(taskName, description, dueBy);
 		return tasks.addTask(toAdd);
