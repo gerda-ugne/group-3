@@ -1,5 +1,7 @@
 package hospital.staff;
 
+import java.io.Serializable;
+import java.time.DayOfWeek;
 import java.time.*;
 import java.util.*;
 import java.util.function.Predicate;
@@ -10,7 +12,7 @@ import org.jasypt.util.password.StrongPasswordEncryptor;
 /**
  * Represents a professional in the hospital staff.
  */
-public class Professional {
+public class Professional implements Serializable {
 
 	/**
 	 * Static counter to generate unique IDs
@@ -444,5 +446,14 @@ public class Professional {
 	 */
 	public ElectronicDiary getDiary() {
 		return this.diary;
+	}
+
+	public Appointment getAppointment(long appointmentId) {
+		return null;
+	}
+
+	@Override
+	public String toString() {
+		return firstName + " " + lastName + " (" + id + ")";
 	}
 }

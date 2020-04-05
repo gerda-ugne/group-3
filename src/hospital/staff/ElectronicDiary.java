@@ -1,12 +1,13 @@
 package hospital.staff;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.*;
 
 /**
  * Represents an electronic diary of a professional. Contains appointments.
  */
-public class ElectronicDiary {
+public class ElectronicDiary implements Serializable {
 
 	/**
 	 * The list of appointments the professional has

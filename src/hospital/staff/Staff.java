@@ -3,6 +3,7 @@ package hospital.staff;
 import hospital.undo_redo.UndoRedoExecutor;
 import hospital.timeLogger.TimeLogger;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
  * Members can be added and removed from the staff.
  *
  */
-public class Staff implements UndoRedoExecutor {
+public class Staff implements UndoRedoExecutor, Serializable {
 
 	/**
 	 * The set of professionals the staff is consists of.

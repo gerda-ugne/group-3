@@ -7,6 +7,7 @@ import hospital.staff.Professional;
 import hospital.staff.Staff;
 import hospital.undo_redo.UndoRedoHandler;
 
+import java.io.*;
 import java.util.*;
 
 /**
@@ -79,11 +80,96 @@ public class Menu {
 	}
 
 	/**
-	 * TODO
+	 * Method to process users choice from the menu and activate corresponding function.
+	 * Please note that it uses a Genio class written by UoD to handle data input.
+	 * @return int userChoice
+	 * @throws Exception is a standard switch case Exception to handle input errors.
 	 */
-	private void displayDiary() {
-		// TODO - implement Menu.displayDiary
-		
+
+	public int processUserChoice() throws Exception {
+
+		int userChoice = -1;
+		boolean loggedIn = true;
+
+		while (loggedIn) {
+
+			showMenu();
+			userChoice = Genio.getInteger();
+
+			switch (userChoice) {
+
+				case 0:
+					System.out.println("You have been logged out successfully!");
+					loggedIn = false;
+					break;
+
+				case 1:
+					addAppointment();
+					break;
+
+				case 2:
+					editAppointment();
+					break;
+
+				case 3:
+					deleteAppointment();
+					break;
+
+				case 4:
+					// TODO undo
+					break;
+
+				case 5:
+					//TODO redo
+					break;
+
+				case 6:
+					displayDiary(staff, activeUser.getId());
+					break;
+
+				case 7:
+					backupDiary();
+					break;
+
+				case 8:
+					restoreDiary();
+					break;
+
+				case 9:
+					//TODO addTask
+					break;
+
+				case 10:
+					//TODO deleteTask
+					break;
+
+				case 11:
+					//TODO displayTask
+					break;
+
+				case 12:
+					//TODO change password
+					break;
+
+				case 13:
+					//TODO change personal details
+					break;
+
+				default:
+					System.out.println("Something went wrong");
+			}
+		} return userChoice;
+	}
+
+	/**
+	 * This method displays diary. Gets list of professionals, streams over each professional with filter
+	 * based on professionalID. flatMap makes it possible access from professional to ElectornicDiary
+	 * and from ElectronicDiary to Appointment.
+	 */
+	private void displayDiary(Staff staff, Long professionalId) {
+		Set<Professional> professionals = staff.getStaff();
+		professionals.stream().filter(professional -> Objects.nonNull(professionalId) && professional.getId() == professionalId).
+				flatMap(professional -> professional.getDiary().getAppointments().stream()).forEach(System.out::println);
 	}
 
 	/**
@@ -176,19 +262,36 @@ public class Menu {
 
 
 	/**
-	 * TODO
+	 * Iterate Over the professional and get all the appointment and save them as a backup
 	 */
-	private void backupDiary() {
-		// TODO - implement Menu.backupDiary
-		
+	private void backupDiary() throws Exception {
+		save(staff);
+	}
+
+
+	/**
+	 * Try-with-resources method allowing to save data to txt file.
+	 * Note there is no finally block because it's try-with-resources statement
+	 */
+	private void save(Staff staff) throws Exception {
+		try(FileOutputStream out = new FileOutputStream("c:\\backupDiary.txt");
+			ObjectOutputStream oos = new ObjectOutputStream(out)) {
+			oos.writeObject(staff);
+		}
 	}
 
 	/**
-	 * TODO
+	 * Restore all the backup Diary.
+	 * Note there is no finally block because it's try-with-resources statement
 	 */
-	private void restoreDiary() {
-		// TODO - implement Menu.restoreDiary
-		
+	private void restoreDiary() throws IOException {
+		try (FileInputStream fin = new FileInputStream("c:\\backupDiary.txt");
+			 ObjectInputStream ois = new ObjectInputStream(fin)) {
+			Staff staff = (Staff) ois.readObject();
+			displayDiary(staff, null);
+		} catch (Exception exp) {
+			exp.printStackTrace();
+		}
 	}
 
 	/**
