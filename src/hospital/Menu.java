@@ -101,67 +101,54 @@ public class Menu {
 
 				case 1:
 					addAppointment();
-					processUserChoice();
 					break;
 
 				case 2:
 					editAppointment();
-					processUserChoice();
 					break;
 
 				case 3:
 					deleteAppointment();
-					processUserChoice();
 					break;
 
 				case 4:
 					// TODO undo
-					processUserChoice();
 					break;
 
 				case 5:
 					//TODO redo
-					processUserChoice();
 					break;
 
 				case 6:
 					displayDiary(staff, activeUser.getId());
-					processUserChoice();
 					break;
 
 				case 7:
 					backupDiary();
-					processUserChoice();
 					break;
 
 				case 8:
 					restoreDiary();
-					processUserChoice();
 					break;
 
 				case 9:
 					//TODO addTask
-					processUserChoice();
 					break;
 
 				case 10:
 					//TODO deleteTask
-					processUserChoice();
 					break;
 
 				case 11:
 					//TODO displayTask
-					processUserChoice();
 					break;
 
 				case 12:
 					//TODO change password
-					processUserChoice();
 					break;
 
 				case 13:
 					//TODO change personal details
-					processUserChoice();
 					break;
 
 				default:
