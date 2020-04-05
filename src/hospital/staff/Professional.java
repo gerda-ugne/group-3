@@ -104,7 +104,7 @@ public class Professional {
 		this.workingHours = new HashMap<>(7);
 		this.id = counter++;
 		setPassword("default");
-		username = this.firstName.substring(0) + lastName;
+		username = (firstName + lastName).toLowerCase();
 	}
 
 	/**
@@ -358,22 +358,21 @@ public class Professional {
 	/**
 	 * Task is deleted off the personal task list.
 	 * @param taskName task name to delete
-	 * @return the deleted task
+	 * @return true/false whether the task was deleted
 	 */
-	public Task deleteTask(String taskName)
+	public boolean deleteTask(String taskName)
 	{
-		Task toDelete = null;
-
 		//Finds a task with the same task name in the list
 		//Copies the content of the found task onto the
 		//toDelete node
 		for (Task task : tasks.getTaskList()) {
 			if (task.getTaskName().equals(taskName)) {
-				toDelete = task;
+				task = null;
+				return true;
 			}
 		}
-		if (tasks.deleteTask(toDelete)) return toDelete;
-		else return null;
+
+		return false;
 	}
 
 	/**
@@ -444,5 +443,16 @@ public class Professional {
 	 */
 	public ElectronicDiary getDiary() {
 		return this.diary;
+	}
+
+	/**
+	 * Updates the username of the professional.
+	 * Method is used in case of first or last name change
+	 * when updating the details.
+	 *
+	 */
+	public void updateUsername()
+	{
+		username = (firstName + lastName).toLowerCase();
 	}
 }
