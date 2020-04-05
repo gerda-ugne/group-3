@@ -362,7 +362,7 @@ public class Menu {
 			description = s.nextLine();
 
 
-			System.out.println("Enter the date when your task is due by (day-month-year in digits format):");
+			System.out.println("Enter the date when your task is due by (day-month-year format, e.g. 05-12-2020):");
 			dueBy = s.nextLine();
 			SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 			Date dueByDate = null;
@@ -380,11 +380,11 @@ public class Menu {
 			System.out.println("Description: " + description);
 			System.out.println("Due by:" + dueBy);
 
-			System.out.println("\nConfirm the task by entering Y, or continue by providing any other input.");
+			System.out.println("\nConfirm the task by entering Y, or retry by providing any other input.");
 			input = s.nextLine();
 
 			if(input.equals("Y")) activeUser.addTask(taskName,description,dueByDate);
-			else System.out.println("Task was not confirmed. Try again.");
+			else System.out.println("Task was not confirmed. Please retry.");
 
 		} while ((input.equals("Y")));
 
