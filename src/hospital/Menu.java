@@ -293,6 +293,7 @@ public class Menu {
 
 					System.out.println("Enter your new name:");
 					newName = name.nextLine();
+					String oldName = activeUser.getFirstName();
 
 					activeUser.setFirstName(newName);
 					System.out.println("Name changed successfully.");
@@ -300,7 +301,19 @@ public class Menu {
 					activeUser.updateUsername();
 					System.out.println("Your new username is " + activeUser.getUsername());
 
-
+					try {
+						undoRedoHandler.addAction(new Action(
+								"First Name modification",
+								activeUser,
+								activeUser.getClass().getMethod("setFirstName", String.class),
+								new Object[] {oldName},
+								activeUser.getClass().getMethod("setFirstName", String.class),
+								new Object[] {newName}
+						));
+					} catch (NoSuchMethodException e) {
+						// TODO handle error
+						e.printStackTrace();
+					}
 				}break;
 				case "2":{
 
@@ -310,6 +323,7 @@ public class Menu {
 
 					System.out.println("Enter your new last name:");
 					newName = name.nextLine();
+					String oldName = activeUser.getLastName();
 
 					activeUser.setLastName(newName);
 					System.out.println("Last name changed successfully.");
@@ -317,6 +331,19 @@ public class Menu {
 					activeUser.updateUsername();
 					System.out.println("Your new username is " + activeUser.getUsername());
 
+					try {
+						undoRedoHandler.addAction(new Action(
+								"Last Name modification",
+								activeUser,
+								activeUser.getClass().getMethod("setLastName", String.class),
+								new Object[] {oldName},
+								activeUser.getClass().getMethod("setLastName", String.class),
+								new Object[] {newName}
+						));
+					} catch (NoSuchMethodException e) {
+						// TODO handle error
+						e.printStackTrace();
+					}
 				}break;
 				case "3":
 				{
@@ -325,10 +352,24 @@ public class Menu {
 
 					System.out.println("Enter your new office details:");
 					newOffice = office.nextLine();
+					String oldOffice = activeUser.getOffice();
 
 					activeUser.setOffice(newOffice);
 					System.out.println("Office changed successfully.");
 
+					try {
+						undoRedoHandler.addAction(new Action(
+								"Office modification",
+								activeUser,
+								activeUser.getClass().getMethod("setOffice", String.class),
+								new Object[] {oldOffice},
+								activeUser.getClass().getMethod("setOffice", String.class),
+								new Object[] {newOffice}
+						));
+					} catch (NoSuchMethodException e) {
+						// TODO handle error
+						e.printStackTrace();
+					}
 				}break;
 				case "0": return;
 				default: System.out.println("Wrong input. Please check it and try again.");break;
@@ -390,8 +431,22 @@ public class Menu {
 				success = activeUser.addTask(taskName,description,dueByDate);
 				//Error message printed in TaskList class if duplicate
 
-				if(success) retry = false;
-				else retry = true;
+				if(success) {
+					retry = false;
+					try {
+						undoRedoHandler.addAction(new Action(
+								"New task addition",
+								activeUser,
+								activeUser.getClass().getMethod("deleteTask", String.class),
+								new Object[] {taskName},
+								activeUser.getClass().getMethod("addTask", String.class, String.class, LocalDate.class),
+								new Object[] {taskName, description, dueByDate}
+						));
+					} catch (NoSuchMethodException e) {
+						// TODO handle error
+						e.printStackTrace();
+					}
+				} else retry = true;
 
 			}
 			else
@@ -420,10 +475,25 @@ public class Menu {
 			System.out.println("\n\nPlease enter the task name you would like to delete, or enter 0 to return:");
 			toDelete = s.nextLine();
 			if(toDelete.equals("0")) return;
+			Task task = activeUser.getTasks().findTask(toDelete);
 
 			deleted = activeUser.deleteTask(toDelete);
-			if(deleted) System.out.println("Your task was deleted successfully.");
-			else System.out.println("There was an error finding your task. Please try again.");
+			if(deleted) {
+				System.out.println("Your task was deleted successfully.");
+				try {
+					undoRedoHandler.addAction(new Action(
+							"Task delition",
+							activeUser,
+							activeUser.getClass().getMethod("addTask", String.class, String.class, LocalDate.class),
+							new Object[] {task.getTaskName(), task.getDescription(), task.getDueBy()},
+							activeUser.getClass().getMethod("deleteTask", String.class),
+							new Object[] {toDelete}
+					));
+				} catch (NoSuchMethodException e) {
+					// TODO handle error
+					e.printStackTrace();
+				}
+			} else System.out.println("There was an error finding your task. Please try again.");
 
 		} while (!deleted);
 	}
