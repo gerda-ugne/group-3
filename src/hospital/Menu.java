@@ -332,9 +332,9 @@ public class Menu {
 					activeUser.setOffice(newOffice);
 					System.out.println("Office changed successfully.");
 
-				};
+				}break;
 				case "0": return;
-				default: System.out.println("Wrong input. Please check it and try again.");
+				default: System.out.println("Wrong input. Please check it and try again.");break;
 			}
 		} while (!(userInput.equals("0")));
 
