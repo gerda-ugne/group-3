@@ -372,6 +372,7 @@ public class Menu {
 				dueByDate = dateFormat.parse(dueBy);
 			} catch (ParseException e) {
 				System.out.println("There was an error recording your due-by date, please try again.");
+				return;
 			}
 
 			System.out.println("These are the details of your task:\n");
