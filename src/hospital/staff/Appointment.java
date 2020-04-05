@@ -204,6 +204,7 @@ public class Appointment implements Comparable<Appointment>, Serializable {
 				", endTime=" + endTime +
 				", room='" + room + '\'' +
 				", treatmentType='" + treatmentType + '\'' +
+				", professionals: " + professionals.toString() +
 				'}';
 	}
 }

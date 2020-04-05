@@ -334,4 +334,9 @@ public class Professional implements Serializable {
 	public Appointment getAppointment(long appointmentId) {
 		return null;
 	}
+
+	@Override
+	public String toString() {
+		return firstName + " " + lastName + " (" + id + ")";
+	}
 }
