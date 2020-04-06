@@ -93,6 +93,7 @@ public class TreatmentType {
         for (TreatmentType treatment: treatmentTypes
         ) {
             System.out.println(counter + ". " + treatment.label);
+            counter++;
 
         }
     }
