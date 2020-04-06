@@ -413,7 +413,7 @@ public class Menu {
 				System.out.println("There was an error recording your due-by date, please try again.");
 				retry = true;
 				// TODO ask for new input if there was  a wrong one
-				break;
+				continue;
 			}
 
 			System.out.println("These are the details of your task:\n");
