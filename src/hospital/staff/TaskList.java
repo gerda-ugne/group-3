@@ -1,5 +1,6 @@
 package hospital.staff;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -11,12 +12,12 @@ import java.util.*;
  *
  * This feature is an optional extra.
  */
-public class TaskList {
+public class TaskList implements Serializable {
 
     /**
      * List that contains all professional's tasks
      */
-    List<Task> taskList;
+    private List<Task> taskList;
 
     /**
      * Constructor for the TaskList class
