@@ -37,25 +37,21 @@ public class TreatmentType {
         this.requiredRoles = requiredRoles;
     }
 
-    /**
-     * Private constructor for the TreatmentType class.
-     * Initialises default treatment types.
-     */
-    private TreatmentType()
-    {
+
+    static {
         treatmentTypes.add(new TreatmentType("<undefined>", null));
-        treatmentTypes. add(new TreatmentType("Routine Checkup", Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("GP"))));
-        treatmentTypes. add(new TreatmentType("Emergency Appointment",Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("PhysicianAssistant"),Role.valueOf("OccupationalTherapist"))));
-        treatmentTypes. add(new TreatmentType("Mental Health Services",Arrays.asList(Role.valueOf("Therapist"))));
-        treatmentTypes. add(new TreatmentType("Vaccinations",Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("Nurse"))));
-        treatmentTypes. add(new TreatmentType("Eye care",Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("Optometrist"))));
-        treatmentTypes. add(new TreatmentType("X-ray scan",Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("GP"))));
-        treatmentTypes. add(new TreatmentType("Radiology",Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("GP"))));
-        treatmentTypes. add(new TreatmentType("Sick note",Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("GP"))));
-        treatmentTypes. add(new TreatmentType("Dental Appointment",Arrays.asList(Role.valueOf("ClinicalAssistant"),Role.valueOf("Dentist"))));
-        treatmentTypes. add(new TreatmentType("Surgery",Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("Nurse"), Role.valueOf("Surgeon"), Role.valueOf("ClinicalAssistant"), Role.valueOf("PhysicianAssistant"))));
-        treatmentTypes. add(new TreatmentType("Minor Surgery",Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("Surgeon"), Role.valueOf("ClinicalAssistant"))));
-        treatmentTypes. add(new TreatmentType("Sexual Health Services",Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("Nurse"), Role.valueOf("ClinicalAssistant"))));
+        treatmentTypes.add(new TreatmentType("Routine Checkup", Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("GP"))));
+        treatmentTypes.add(new TreatmentType("Emergency Appointment",Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("PhysicianAssistant"),Role.valueOf("OccupationalTherapist"))));
+        treatmentTypes.add(new TreatmentType("Mental Health Services",Arrays.asList(Role.valueOf("Therapist"))));
+        treatmentTypes.add(new TreatmentType("Vaccinations",Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("Nurse"))));
+        treatmentTypes.add(new TreatmentType("Eye care",Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("Optometrist"))));
+        treatmentTypes.add(new TreatmentType("X-ray scan",Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("GP"))));
+        treatmentTypes.add(new TreatmentType("Radiology",Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("GP"))));
+        treatmentTypes.add(new TreatmentType("Sick note",Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("GP"))));
+        treatmentTypes.add(new TreatmentType("Dental Appointment",Arrays.asList(Role.valueOf("ClinicalAssistant"),Role.valueOf("Dentist"))));
+        treatmentTypes.add(new TreatmentType("Surgery",Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("Nurse"), Role.valueOf("Surgeon"), Role.valueOf("ClinicalAssistant"), Role.valueOf("PhysicianAssistant"))));
+        treatmentTypes.add(new TreatmentType("Minor Surgery",Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("Surgeon"), Role.valueOf("ClinicalAssistant"))));
+        treatmentTypes.add(new TreatmentType("Sexual Health Services",Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("Nurse"), Role.valueOf("ClinicalAssistant"))));
     }
 
     /**
@@ -93,6 +89,7 @@ public class TreatmentType {
         for (TreatmentType treatment: treatmentTypes
         ) {
             System.out.println(counter + ". " + treatment.label);
+            counter ++;
 
         }
     }
