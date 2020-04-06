@@ -142,7 +142,7 @@ public class Task implements Comparable<Task> {
 
         LocalDate today = LocalDate.now();
         int comparator = (getDueBy().compareTo(today));
-        if(comparator > 0) System.out.println("\nTHE DUE BY DATE HAS PASSED. PLEASE REMOVE THE TASK.");
+        if(comparator < 0) System.out.println("\nTHE DUE BY DATE HAS PASSED. PLEASE REMOVE THE TASK.");
     }
 
 }

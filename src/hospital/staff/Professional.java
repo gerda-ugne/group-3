@@ -15,42 +15,11 @@ import org.jasypt.util.password.StrongPasswordEncryptor;
 /**
  * Represents a professional in the hospital staff.
  */
-public class Professional implements Serializable, UndoRedoExecutor {
+public class Professional extends User{
+
 
 	/**
-	 * Static counter to generate unique IDs
-	 */
-	private static long counter = 0;
-
-	/**
-	 * The unique ID of the professional.
-	 */
-	private final long id;
-
-	// TODO add title
-
-	/**
-	 * The first name of the professional.
-	 */
-	private String firstName;
-
-	/**
-	 * The last name of the professional.
-	 */
-	private String lastName;
-
-	/**
-	 * The office name/number of the professional.
-	 */
-	private String office;
-
-	/**
-	 * The role of the professional, e.g. nurse, dermatologist, etc.
-	 */
-	private String role;
-
-	/**
-	 * The personal electronic diary of the professional with booked appointments.
+	 * 	The personal electronic diary of the professional with booked appointments.
 	 */
 	private ElectronicDiary diary;
 
@@ -58,7 +27,6 @@ public class Professional implements Serializable, UndoRedoExecutor {
 	 * The personal task list for the professional
 	 */
 	private TaskList tasks;
-
 
 	/**
 	 * The schedule when the professional is working in a week.
@@ -80,7 +48,7 @@ public class Professional implements Serializable, UndoRedoExecutor {
 	 * Constructor with no parameters for the Professional class
 	 */
 	public Professional() {
-		this("<undefined>", "<undefined>", "<undefined>", "<undefined>");
+		super("<undefined>", "<undefined>", "<undefined>", "<undefined>");
 	}
 
 	/**
@@ -90,7 +58,7 @@ public class Professional implements Serializable, UndoRedoExecutor {
 	 * @param role role of the professional
 	 */
 	public Professional(String firstName, String lastName, String role) {
-		this(firstName, lastName, role, "<undefined>");
+		super(firstName, lastName, role);
 	}
 
 	/**
@@ -101,32 +69,10 @@ public class Professional implements Serializable, UndoRedoExecutor {
 	 * @param office office of the professional
 	 */
 	public Professional(String firstName, String lastName, String role, String office) {
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.role = role;
-		this.office = office;
+		super(firstName, lastName, role, office);
 		this.diary = new ElectronicDiary();
 		this.tasks = new TaskList();
 		this.workingHours = new HashMap<>(7);
-		this.id = counter++;
-		setPassword("default");
-		username = (firstName + lastName).toLowerCase();
-	}
-
-	/**
-	 * Getter method for the username
-	 * @return username of the professional
-	 */
-	public String getUsername() {
-		return username;
-	}
-
-	/**
-	 * Setter method for the username
-	 * @param username username to be set
-	 */
-	public void setUsername(String username) {
-		this.username = username;
 	}
 
 	/**
@@ -169,50 +115,7 @@ public class Professional implements Serializable, UndoRedoExecutor {
 		this.workingHours = workingHours;
 	}
 
-	/**
-	 * Getter of the ID of the professional.
-	 *
-	 * @return the unique ID of the professional.
-	 */
-	public long getId() {
-		return this.id;
-	}
 
-	/**
-	 * Getter of the first name of the professional.
-	 *
-	 * @return the first name of the professional.
-	 */
-	public String getFirstName() {
-		return this.firstName;
-	}
-
-	/**
-	 * Sets the first name of the professional.
-	 *
-	 * @param firstName The first name to set to the professional.
-	 */
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	/**
-	 * Getter of the last name of the professional.
-	 *
-	 * @return the last name of the professional.
-	 */
-	public String getLastName() {
-		return this.lastName;
-	}
-
-	/**
-	 * Sets the last name of the professional.
-	 *
-	 * @param lastName the last name to set to the professional.
-	 */
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
 
 	/**
 	 * Finds all available slots for a possible appointment
@@ -379,93 +282,18 @@ public class Professional implements Serializable, UndoRedoExecutor {
 
 	}
 
-	/**
-	 * Sets a new password for the professional.
-	 * The set password is encrypted in the password field.
-	 *
-	 * @param password password to be set
-	 */
-	public void setPassword(String password)
-	{
-		StrongPasswordEncryptor encryption = new StrongPasswordEncryptor();
-		encryptedPassword = encryption.encryptPassword(password);
-
-	}
-
-	/**
-	 * Checks if the entered password is true
-	 *
-	 * @param input user's input
-	 * @return true/false whether the passwords match
-	 */
-	public boolean checkPassword(String input)
-	{
-		StrongPasswordEncryptor encryption = new StrongPasswordEncryptor();
-		return encryption.checkPassword(input, encryptedPassword);
-	}
-
-	/**
-	 * Getter of the professional's office
-	 *
-	 * @return the professional's office name/number
-	 */
-	public String getOffice() {
-		return this.office;
-	}
-
-	/**
-	 * Sets the name/number of the professional's office.
-	 *
-	 * @param office The name/number to set the professional office to.
-	 */
-	public void setOffice(String office) {
-		this.office = office;
-	}
-
-	/**
-	 * Getter of the professional's role.
-	 *
-	 * @return the role of the professional.
-	 */
-	public String getRole() {
-		return this.role;
-	}
-
-	/**
-	 * Sets the role of the professional.
-	 *
-	 * @param role The role to set to the professional.
-	 */
-	public void setRole(String role) {
-		this.role = role;
-	}
 
 	/**
 	 * Getter of the professional's electronic diary.
-	 *
 	 * @return the professional's electronic diary.
 	 */
 	public ElectronicDiary getDiary() {
 		return this.diary;
 	}
 
+
 	public Appointment getAppointment(long appointmentId) {
 		return null;
 	}
 
-	@Override
-	public String toString() {
-		return firstName + " " + lastName + " (" + id + ")";
-	}
-
-	/**
-	 * Updates the username of the professional.
-	 * Method is used in case of first or last name change
-	 * when updating the details.
-	 *
-	 */
-	public void updateUsername()
-	{
-		username = (firstName + lastName).toLowerCase();
-	}
 }

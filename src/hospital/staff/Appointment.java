@@ -214,7 +214,7 @@ public class Appointment implements Comparable<Appointment>, Serializable {
      */
 	@Override
 	public int compareTo(Appointment o) {
-		return getStartTime().compareTo(o.getStartTime());
+		return o.getStartTime().compareTo(getStartTime());
 	}
 
 

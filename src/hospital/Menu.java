@@ -24,7 +24,7 @@ public class Menu {
 	/**
 	 * The staff member who currently using the system. Null if nobody is logged in.
 	 */
-	private Professional activeUser;
+	private User activeUser;
 
 	/**
 	 * The handler which responsible for the undo/redo function of the system.
@@ -36,8 +36,10 @@ public class Menu {
 	 * TODO
 	 */
 	public Menu() {
-		// TODO restore from save
+
+		//TODO handle exceptions
 		staff = new Staff();
+		restoreStaff();
 
 		activeUser = null;
 		undoRedoHandler = new UndoRedoHandler();
@@ -48,7 +50,31 @@ public class Menu {
 	 *
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args){
+
+		Menu menu = new Menu();
+		String input;
+
+		//Displays start menu to the user
+		do {
+
+			input = menu.startMenu();
+			if(input.equals("1"))
+			{
+				//User logs in
+				String detectUser = menu.logIn();
+
+				//Appropriate menu is shown depending on user type
+				if(detectUser.equals("admin")) menu.processAdminChoice();
+				//TODO handle exceptions
+				else if(detectUser.equals("professional"))  menu.processUserChoice();
+				else continue;
+			}
+			else{
+				System.out.println("You have exited the system.");
+				System.exit(1);
+			}
+		} while (true);
 
 	}
 
@@ -82,13 +108,76 @@ public class Menu {
 	}
 
 	/**
+	 * Displays the menu for the administrator
+	 */
+	private void showAdminMenu()
+	{
+		System.out.println("\nStaff management:\n");
+		System.out.println("1. Add a new staff member");
+		System.out.println("2. Remove a staff member");
+		System.out.println("\nTreatment type management:\n");
+		System.out.println("3. Add a new treatment type");
+		System.out.println("\nOther:\n");
+		System.out.println("4. Edit personal information");
+		System.out.println("5. Change password");
+		System.out.println("\n0. Log out");
+
+
+	}
+
+	/**
+	 * Processes administrator choices.
+	 */
+	public void processAdminChoice() {
+
+		String userChoice;
+		Scanner s = new Scanner(System.in);
+		boolean loggedIn = true;
+
+		while (loggedIn) {
+
+			showAdminMenu();
+			userChoice = s.nextLine();
+
+			switch (userChoice) {
+
+				case "0":
+					logOut();
+					loggedIn = false;
+					break;
+
+				case "1":
+					addStaffMember();
+					break;
+
+				case "2":
+					removeStaffMember();
+					break;
+
+				case "3":
+					addTreatmentType();
+					break;
+				case "4":
+					changeDetails();
+					break;
+				case "5":
+					changePassword();
+					break;
+				default:
+					System.out.println("Invalid user input. Please try again.");
+					break;
+			}
+		}
+	}
+
+	/**
 	 * Method to process users choice from the menu and activate corresponding function.
 	 * Please note that it uses a Genio class written by UoD to handle data input.
 	 * @return int userChoice
 	 * @throws Exception is a standard switch case Exception to handle input errors.
 	 */
 
-	public int processUserChoice() throws Exception {
+	public int processUserChoice() {
 
 		int userChoice = -1;
 		boolean loggedIn = true;
@@ -96,12 +185,13 @@ public class Menu {
 		while (loggedIn) {
 
 			showMenu();
+
 			userChoice = Genio.getInteger();
 
 			switch (userChoice) {
 
 				case 0:
-					System.out.println("You have been logged out successfully!");
+					logOut();
 					loggedIn = false;
 					break;
 
@@ -130,41 +220,43 @@ public class Menu {
 					break;
 
 				case 7:
-					backupDiary();
+					backupStaff();
 					break;
 
 				case 8:
-					restoreDiary();
+					restoreStaff();
 					break;
 
 				case 9:
-					//TODO addTask
+					addTask();
 					break;
 
 				case 10:
-					//TODO deleteTask
+					removeTask();
 					break;
 
 				case 11:
-					//TODO displayTask
+					displayTaskList();
 					break;
 
 				case 12:
-					//TODO change password
+					changePassword();
 					break;
 
 				case 13:
-					//TODO change personal details
+					changeDetails();
 					break;
 
 				default:
-					System.out.println("Something went wrong");
+					System.out.println("Invalid user input. Please try again.");
+					break;
 			}
 		} return userChoice;
 	}
 
 	/**
-	 * This method displays diary. Gets list of professionals, streams over each professional with filter
+	 * This method displays diary.
+	 * Gets list of professionals, streams over each professional with filter
 	 * based on professionalID. flatMap makes it possible access from professional to ElectornicDiary
 	 * and from ElectronicDiary to Appointment.
 	 */
@@ -190,7 +282,7 @@ public class Menu {
 		LocalDateTime startTime = LocalDateTime.now();
 		LocalDateTime endTime = LocalDateTime.now();
 		String room = "";
-		String treatmentType = "";
+		String treatmentType = "<undefined>";
 		// TODO get input from user
 		Appointment newAppointment = staff.bookAppointment(professionals, startTime, endTime, room, treatmentType);
 		if (newAppointment != null) {
@@ -219,7 +311,7 @@ public class Menu {
 		LocalDateTime startTime = LocalDateTime.now();
 		LocalDateTime endTime = LocalDateTime.now();
 		String room = "";
-		String treatmentType = "";
+		TreatmentType treatmentType = TreatmentType.searchForTreatment("<undefined>");
 		// TODO get input from user
 		Appointment oldAppointment = staff.searchAppointment(activeUser.getId(), appointmentId);
 		Appointment modifiedAppointment = staff.editAppointment(activeUser.getId(), appointmentId, professionals, startTime, endTime, room, treatmentType);
@@ -264,35 +356,37 @@ public class Menu {
 
 
 	/**
-	 * Iterate Over the professional and get all the appointment and save them as a backup
+	 * Safe staff and all of its data to be able to restore later
 	 */
-	private void backupDiary() throws Exception {
-		save(staff);
-	}
-
-
-	/**
-	 * Try-with-resources method allowing to save data to txt file.
-	 * Note there is no finally block because it's try-with-resources statement
-	 */
-	private void save(Staff staff) throws Exception {
-		try(FileOutputStream out = new FileOutputStream("c:\\backupDiary.txt");
+	private void backupStaff() {
+		try(FileOutputStream out = new FileOutputStream("backupStaff.txt");
 			ObjectOutputStream oos = new ObjectOutputStream(out)) {
 			oos.writeObject(staff);
+		} catch (FileNotFoundException e) {
+			System.out.println("No backup file found for restoring the Staff's data.");
+		} catch (IOException e) {
+			// TODO handle exception
+			e.printStackTrace();
 		}
 	}
 
 	/**
-	 * Restore all the backup Diary.
-	 * Note there is no finally block because it's try-with-resources statement
+	 * Restore the staff and all of its data.
 	 */
-	private void restoreDiary() throws IOException {
-		try (FileInputStream fin = new FileInputStream("c:\\backupDiary.txt");
+	private void restoreStaff() {
+		try (FileInputStream fin = new FileInputStream("backupStaff.txt");
 			 ObjectInputStream ois = new ObjectInputStream(fin)) {
 			Staff staff = (Staff) ois.readObject();
 			displayDiary(staff, null);
-		} catch (Exception exp) {
-			exp.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// TODO handle exception
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO handle exception
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO handle exception
+			e.printStackTrace();
 		}
 	}
 
@@ -315,20 +409,53 @@ public class Menu {
 	}
 
 	/**
+	 * Start menu that is shown upon starting the program.
+	 * Allows to user to either login or to exit the system.
+	 *
+	 * @return received input of the user: 1 for login, 0 to exit the system
+	 */
+	private String startMenu()
+	{
+		do {
+			System.out.println("\nWelcome to hospital scheduler.\n");
+			System.out.println("Please choose one of the following options:\n");
+
+			System.out.println("1. Log-in");
+			System.out.println("0. Exit");
+
+			Scanner s = new Scanner(System.in);
+			String input = s.nextLine();
+
+			switch (input)
+			{
+				case "1":
+				case "0":
+					return input;
+
+				default: System.out.println("Wrong user input. Please try again."); break;
+			}
+		} while (true);
+
+
+	}
+	/**
 	 * Logs the user out of the system.
 	 */
 	private void logOut() {
 
 		System.out.println("Thank you for using the system.");
 		activeUser = null;
+		undoRedoHandler.clearHistory();
 
 		//Do we need to reset the undo-redo handler here too?
 	}
 
 	/**
 	 * Prompts the user to log-in
+	 * @return "admin" or "professional" depending on
+	 * who logged in to the system, or null if logging in was unsuccessful.
 	 */
-	private void logIn()
+	private String logIn()
 	{
 		Scanner s = new Scanner(System.in);
 		String username, password;
@@ -337,13 +464,17 @@ public class Menu {
 
 		do {
 			try {
-				System.out.println("Please log-in to access the system.\n");
+				System.out.println("Please log-in to access the system, or enter 0 to go back.\n");
 				System.out.println("If you're logging in for the first time, your password is set to be 'default'.");
-				System.out.println("Your username is your first and last name combined in lowercase letters.\n");
+				System.out.println("Your username is your first and last name combined in lowercase letters, or 'admin' by default if you're an administrator.\n");
 				System.out.println("Enter your username:");
 
 				username = s.nextLine();
-				activeUser = staff.searchByUsername(username);
+				if(username.equals("0")) return "noUser";
+
+				//TODO add an instance of administrator to staff
+				if(username.equals(staff.getAdmin().getUsername())) activeUser = staff.getAdmin();
+				else activeUser = staff.searchByUsername(username);
 
 				System.out.println("\nEnter your password:");
 				password = s.nextLine();
@@ -354,6 +485,10 @@ public class Menu {
 					System.out.println("You've successfully logged in! Welcome, " + activeUser.getFirstName() +".");
 					if(activeUser.checkPassword("default")) System.out.println("Please don't forget to change the default password.");
 					retry = false;
+
+					//Informs system whether admin or a professional has logged in
+					if(activeUser.getRole().equals("Administrator")) return "admin";
+					else return "professional";
 				}
 				else{
 					System.out.println("Your password is incorrect. Please try again.");
@@ -365,6 +500,8 @@ public class Menu {
 				retry = true;
 			}
 		} while (retry);
+
+		return null;
 
 	}
 
@@ -499,6 +636,10 @@ public class Menu {
 			System.out.println("Enter the task name:");
 			taskName = s.nextLine();
 			if(taskName.equals("0")) return;
+			else if (((Professional)activeUser).getTasks().findTask(taskName)!=null) {
+				System.out.println("Task with this label already exists, try again.");
+				continue;
+			}
 
 
 			System.out.println("Enter the task description:");
@@ -523,16 +664,16 @@ public class Menu {
 			System.out.println("These are the details of your task:\n");
 			System.out.println("Task name: " + taskName);
 			System.out.println("Description: " + description);
-			System.out.println("Due by:" + dueBy);
+			System.out.println("Due by: " + dueBy);
 
 			System.out.println("\nConfirm the task by entering Y, or retry by providing any other input.");
 			input = s.nextLine();
 
-			if(input.equals("Y"))
+			if(input.equals("Y") || input.equals("y"))
 			{
 				//Checks for duplicates
 				boolean success;
-				success = activeUser.addTask(taskName,description,dueByDate);
+				success = (((Professional)activeUser).addTask(taskName,description,dueByDate));
 				//Error message printed in TaskList class if duplicate
 
 				if(success) {
@@ -579,14 +720,14 @@ public class Menu {
 			System.out.println("\n\nPlease enter the task name you would like to delete, or enter 0 to return:");
 			toDelete = s.nextLine();
 			if(toDelete.equals("0")) return;
-			Task task = activeUser.getTasks().findTask(toDelete);
+			Task task = (((Professional)activeUser).getTasks().findTask(toDelete));
 
-			deleted = activeUser.deleteTask(toDelete);
+			deleted = (((Professional)activeUser).deleteTask(toDelete));
 			if(deleted) {
 				System.out.println("Your task was deleted successfully.");
 				try {
 					undoRedoHandler.addAction(new Action(
-							"Task delition",
+							"Task deletion",
 							activeUser,
 							activeUser.getClass().getMethod("addTask", String.class, String.class, LocalDate.class),
 							new Object[] {task.getTaskName(), task.getDescription(), task.getDueBy()},
@@ -608,6 +749,220 @@ public class Menu {
 	private void displayTaskList()
 	{
 		System.out.println("Your personal task list:\n");
-		activeUser.getTasks().displayTaskList();
+		((Professional)activeUser).getTasks().displayTaskList();
+	}
+
+	/**
+	 * Adds a new staff member to the crew.
+	 * Part of administrator management.
+	 */
+	private void addStaffMember()
+	{
+		Scanner s = new Scanner(System.in);
+		boolean exists, invalidRole = true, retry = false;
+		String firstName, lastName, role, office, input;
+
+
+		do {
+			System.out.println("\nPlease specify the details about the new staff member, or 0 to return:\n");
+			System.out.println("Please enter the first name of the professional:");
+			firstName = s.nextLine();
+
+			if(firstName.equals("0")) return;
+
+			System.out.println("\nPlease enter the last name of the professional:");
+			lastName = s.nextLine();
+
+			do {
+				System.out.println("\nPlease specify the role of the professional:");
+				role = s.nextLine();
+
+				exists = Role.checkIfRoleExists(role);
+				if(!exists) {
+					System.out.println("No such role. Please try again and choose one of the following roles.");
+					Role.printRoles();
+					invalidRole = true;
+				}
+				else invalidRole = false;
+
+			} while (invalidRole);
+
+			System.out.println("\nPlease specify the office of the professional:");
+			office = s.nextLine();
+
+			System.out.println("\nThese are the details of the new professional.\n");
+			System.out.println("First name: " + firstName);
+			System.out.println("Last name: " + lastName);
+			System.out.println("Role: " + role);
+			System.out.println("Office: " + office);
+
+			System.out.println( "\nEnter Y to confirm");
+			input = s.nextLine();
+
+			if(input.equals("Y") || input.equals("y"))
+			{
+
+				Professional newMember = new Professional(firstName,lastName,role,office);
+				staff.addMember(newMember);
+				try {
+					undoRedoHandler.addAction(new Action(
+							"New staff member addition",
+							staff,
+							staff.getClass().getMethod("removeMember", Professional.class),
+							new Object[] {newMember},
+							staff.getClass().getMethod("addMember", Professional.class),
+							new Object[] {newMember}
+					));
+				} catch (NoSuchMethodException e) {
+					// TODO handle exception
+					e.printStackTrace();
+				}
+
+				System.out.println("\nStaff member added successfully.");
+				retry = false;
+			}
+			else {
+				System.out.println("\nAddition was not confirmed. Please try again.");
+				retry = true;
+			}
+
+
+		} while (retry);
+
+	}
+
+	/**
+	 * Removes a staff member from the crew.
+	 * Part of administrator management.
+	 */
+	private void removeStaffMember()
+	{
+		Scanner s = new Scanner(System.in);
+		Professional toDelete;
+		boolean retry = false;
+		String firstName, lastName, input;
+
+
+		do {
+			System.out.println("\nPlease specify the details about the staff member to delete, or 0 to return:\n");
+			System.out.println("Please enter the first name of the professional:");
+			firstName = s.nextLine();
+
+			if (firstName.equals("0")) return;
+
+			System.out.println("\nPlease enter the last name of the professional:");
+			lastName = s.nextLine();
+
+			toDelete = staff.searchByUsername((firstName + lastName).toLowerCase());
+			if (toDelete == null)
+			{
+				System.out.println("No such professional found. Try again.");
+				retry = true;
+				continue;
+			}
+
+			System.out.println("\nThese are the details of the professional to delete.\n");
+			System.out.println("First name: " + firstName);
+			System.out.println("Last name: " + lastName);
+
+			System.out.println( "Enter Y to confirm deletion.");
+			input = s.nextLine();
+
+			if(input.equals("Y") || input.equals("y"))
+			{
+				staff.removeMember(toDelete);
+				try {
+					undoRedoHandler.addAction(new Action(
+							"Staff member deletion",
+							staff,
+							staff.getClass().getMethod("addMember", Professional.class),
+							new Object[] {toDelete},
+							staff.getClass().getMethod("removeMember", Professional.class),
+							new Object[] {toDelete}
+							));
+				} catch (NoSuchMethodException e) {
+					// TODO handle exception
+					e.printStackTrace();
+				}
+
+				System.out.println("\nStaff member deleted successfully.");
+				retry = false;
+			}
+			else {
+				System.out.println("Deletion was not confirmed. Please try again.");
+				retry = true;
+			}
+
+
+		} while (retry);
+
+	}
+
+	/**
+	 * Adds a new treatment type to the hospital.
+	 * Part of administrator management.
+	 */
+	private void addTreatmentType()
+	{
+		Scanner s = new Scanner(System.in);
+		Scanner scanRole = new Scanner(System.in);
+		Scanner integer = new Scanner(System.in);
+		boolean retry = false, integerValid = false, exists;
+
+
+		int numberOfProfessionals = 0;
+		String label, role;
+		List<Role> requirements = new ArrayList<>();
+
+		do {
+
+			System.out.println("Please provide the label for the new treatment type, or enter 0 to return:");
+			label = s.nextLine();
+
+			if(label.equals("0")) return;
+			//Checks whether treatment already exists
+			if (TreatmentType.searchForTreatment(label) !=null){
+				System.out.println("This treatment already exists. Please try again.");
+				retry = true;
+				continue;
+			}
+
+			//Loop to handle wrong integer input.
+			do {
+				System.out.println("Please specify how many professionals are needed for the treatment:");
+				try {
+					numberOfProfessionals = integer.nextInt();
+					integerValid = true;
+
+				} catch (InputMismatchException e) {
+					System.out.println("Invalid input. Try again.");
+					integerValid = false;
+				}
+			} while (!integerValid);
+
+
+				int counter = 0;
+				while(counter < numberOfProfessionals) {
+
+					System.out.println(counter + 1 + "out of " + numberOfProfessionals + ": please specify the role of the professional:");
+					role = scanRole.nextLine();
+
+					exists = Role.checkIfRoleExists(role);
+					if (exists) {
+						//If role exists, it's added to the requirements
+						requirements.add(Role.valueOf(role));
+						counter++;
+					} else {
+
+						System.out.println("No such role. Try again.");
+						continue;
+					}
+				}
+
+			TreatmentType.addTreatmentType(label, requirements);
+			System.out.println("Treatment was successfully added to the database.");
+			retry = false;
+
+		} while (retry);
 	}
 }

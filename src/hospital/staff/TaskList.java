@@ -57,13 +57,10 @@ public class TaskList {
 
     /**
      * Sorts tasks by due by date.
-     * @return sorted taskList
      */
-    public List<Task> sortTasksByDueByDate()
+    public void sortTasksByDueByDate()
     {
-        List<Task> copy = new ArrayList<>((taskList));
-        Collections.sort(copy);
-        return copy;
+        Collections.sort(taskList);
     }
 
     /**
@@ -87,6 +84,7 @@ public class TaskList {
      */
     public void displayTaskList()
     {
+        if(taskList.isEmpty()) System.out.println("The task list is currently empty.");
         for (Task task:taskList
              ) {
             task.printData();
