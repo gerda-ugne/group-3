@@ -36,7 +36,8 @@ public class Menu {
 	 * TODO
 	 */
 	public Menu() {
-		// TODO restore from save
+
+		restoreDiary();
 		staff = new Staff();
 
 		activeUser = null;
