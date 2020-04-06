@@ -6,13 +6,16 @@ import java.time.*;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.Date;
+
+import hospital.undo_redo.UndoRedoExecutor;
+
+import hospital.undo_redo.UndoRedoExecutor;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 
 /**
  * Represents a professional in the hospital staff.
  */
-public class Professional implements Serializable {
+public class Professional implements Serializable, UndoRedoExecutor {
 
 	/**
 	 * Static counter to generate unique IDs
@@ -106,7 +109,7 @@ public class Professional implements Serializable {
 		this.workingHours = new HashMap<>(7);
 		this.id = counter++;
 		setPassword("default");
-		username = this.firstName.substring(0) + lastName;
+		username = (firstName + lastName).toLowerCase();
 	}
 
 	/**
@@ -351,7 +354,7 @@ public class Professional implements Serializable {
 	 * @param dueBy - date when the task is due by
 	 * @return true or false whether the addition was successful
 	 */
-	public boolean addTask(String taskName, String description, Date dueBy)
+	public boolean addTask(String taskName, String description, LocalDate dueBy)
 	{
 		Task toAdd = new Task(taskName, description, dueBy);
 		return tasks.addTask(toAdd);
@@ -360,22 +363,19 @@ public class Professional implements Serializable {
 	/**
 	 * Task is deleted off the personal task list.
 	 * @param taskName task name to delete
-	 * @return the deleted task
+	 * @return true/false whether the task was deleted
 	 */
-	public Task deleteTask(String taskName)
+	public boolean deleteTask(String taskName)
 	{
-		Task toDelete = null;
-
-		//Finds a task with the same task name in the list
-		//Copies the content of the found task onto the
-		//toDelete node
-		for (Task task : tasks.getTaskList()) {
-			if (task.getTaskName().equals(taskName)) {
-				toDelete = task;
-			}
+		Task toDelete = tasks.findTask(taskName);
+		if(toDelete == null) return false;
+		else
+		{
+			tasks.deleteTask(toDelete);
+			return true;
 		}
-		if (tasks.deleteTask(toDelete)) return toDelete;
-		else return null;
+
+
 	}
 
 	/**
@@ -455,5 +455,16 @@ public class Professional implements Serializable {
 	@Override
 	public String toString() {
 		return firstName + " " + lastName + " (" + id + ")";
+	}
+
+	/**
+	 * Updates the username of the professional.
+	 * Method is used in case of first or last name change
+	 * when updating the details.
+	 *
+	 */
+	public void updateUsername()
+	{
+		username = (firstName + lastName).toLowerCase();
 	}
 }

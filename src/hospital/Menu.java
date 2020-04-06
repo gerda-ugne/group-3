@@ -1,12 +1,12 @@
 package hospital;
 
-import hospital.staff.DeleteAppointmentAction;
+import hospital.staff.*;
 import hospital.undo_redo.Action;
-import hospital.staff.Appointment;
-import hospital.staff.Professional;
-import hospital.staff.Staff;
 import hospital.undo_redo.UndoRedoHandler;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -45,6 +45,7 @@ public class Menu {
 
 	/**
 	 * TODO
+	 *
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -178,7 +179,7 @@ public class Menu {
 	 */
 	private void searchAppointment() {
 		// TODO - implement Menu.searchAppointment
-		
+
 	}
 
 	/**
@@ -296,6 +297,24 @@ public class Menu {
 	}
 
 	/**
+	 * Allows the active user to change the password.
+	 */
+	private void changePassword()
+	{
+		Scanner s = new Scanner(System.in);
+		String password, confirmPassword;
+
+		System.out.println("Please enter your new password:");
+		password = s.nextLine();
+
+		System.out.println("\nPlease confirm your new password:");
+		confirmPassword = s.nextLine();
+
+		if(password.equals(confirmPassword)) activeUser.setPassword(password);
+		else System.out.println("Passwords do no match. Try again later.");
+	}
+
+	/**
 	 * Logs the user out of the system.
 	 */
 	private void logOut() {
@@ -320,7 +339,7 @@ public class Menu {
 			try {
 				System.out.println("Please log-in to access the system.\n");
 				System.out.println("If you're logging in for the first time, your password is set to be 'default'.");
-				System.out.println("Your username is the first letter of your name, followed by your last name.\n");
+				System.out.println("Your username is your first and last name combined in lowercase letters.\n");
 				System.out.println("Enter your username:");
 
 				username = s.nextLine();
@@ -347,5 +366,248 @@ public class Menu {
 			}
 		} while (retry);
 
+	}
+
+	/**
+	 * Updates the user details.
+	 * User is able to change their first and last names and the office.
+	 *
+	 */
+	private void changeDetails()
+	{
+		Scanner s = new Scanner(System.in);
+		String userInput;
+		String warning = "\nWARNING! This will change your username. Proceed with caution.\n";
+
+		do {
+			System.out.println("\nPlease specify which data you want to change:");
+			System.out.println("1. First name");
+			System.out.println("2. Last name");
+			System.out.println("3. Office");
+			System.out.println("0. Exit");
+
+			userInput = s.nextLine();
+
+			switch (userInput)
+			{
+				case "1":{
+					System.out.println(warning);
+					Scanner name = new Scanner(System.in);
+					String newName;
+
+					System.out.println("Enter your new name:");
+					newName = name.nextLine();
+					String oldName = activeUser.getFirstName();
+
+					activeUser.setFirstName(newName);
+					System.out.println("Name changed successfully.");
+
+					activeUser.updateUsername();
+					System.out.println("Your new username is " + activeUser.getUsername());
+
+					try {
+						undoRedoHandler.addAction(new Action(
+								"First Name modification",
+								activeUser,
+								activeUser.getClass().getMethod("setFirstName", String.class),
+								new Object[] {oldName},
+								activeUser.getClass().getMethod("setFirstName", String.class),
+								new Object[] {newName}
+						));
+					} catch (NoSuchMethodException e) {
+						// TODO handle error
+						e.printStackTrace();
+					}
+				}break;
+				case "2":{
+
+					System.out.println(warning);
+					Scanner name = new Scanner(System.in);
+					String newName;
+
+					System.out.println("Enter your new last name:");
+					newName = name.nextLine();
+					String oldName = activeUser.getLastName();
+
+					activeUser.setLastName(newName);
+					System.out.println("Last name changed successfully.");
+
+					activeUser.updateUsername();
+					System.out.println("Your new username is " + activeUser.getUsername());
+
+					try {
+						undoRedoHandler.addAction(new Action(
+								"Last Name modification",
+								activeUser,
+								activeUser.getClass().getMethod("setLastName", String.class),
+								new Object[] {oldName},
+								activeUser.getClass().getMethod("setLastName", String.class),
+								new Object[] {newName}
+						));
+					} catch (NoSuchMethodException e) {
+						// TODO handle error
+						e.printStackTrace();
+					}
+				}break;
+				case "3":
+				{
+					Scanner office = new Scanner(System.in);
+					String newOffice;
+
+					System.out.println("Enter your new office details:");
+					newOffice = office.nextLine();
+					String oldOffice = activeUser.getOffice();
+
+					activeUser.setOffice(newOffice);
+					System.out.println("Office changed successfully.");
+
+					try {
+						undoRedoHandler.addAction(new Action(
+								"Office modification",
+								activeUser,
+								activeUser.getClass().getMethod("setOffice", String.class),
+								new Object[] {oldOffice},
+								activeUser.getClass().getMethod("setOffice", String.class),
+								new Object[] {newOffice}
+						));
+					} catch (NoSuchMethodException e) {
+						// TODO handle error
+						e.printStackTrace();
+					}
+				}break;
+				case "0": return;
+				default: System.out.println("Wrong input. Please check it and try again.");break;
+			}
+		} while (!(userInput.equals("0")));
+
+	}
+
+	/**
+	 * Adds a task to the active user's task list.
+	 */
+	private void addTask()
+	{
+		String taskName, description, input, dueBy;
+		boolean retry = false;
+
+		Scanner s = new Scanner(System.in);
+		Scanner dateScanner = new Scanner(System.in);
+
+		do {
+			System.out.println("Please enter the task details, or 0 to return:\n");
+
+			System.out.println("Enter the task name:");
+			taskName = s.nextLine();
+			if(taskName.equals("0")) return;
+
+
+			System.out.println("Enter the task description:");
+			description = s.nextLine();
+
+
+			System.out.println("Enter the date when your task is due by (day-month-year format, e.g. 05-12-2020):");
+			dueBy = s.nextLine();
+			DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-uuuu");
+			LocalDate dueByDate = null;
+
+			try {
+				//Parsing the String
+				dueByDate = LocalDate.parse(dueBy, dateFormat);
+			} catch (DateTimeParseException e) {
+				System.out.println("There was an error recording your due-by date, please try again.");
+				retry = true;
+				// TODO ask for new input if there was  a wrong one
+				continue;
+			}
+
+			System.out.println("These are the details of your task:\n");
+			System.out.println("Task name: " + taskName);
+			System.out.println("Description: " + description);
+			System.out.println("Due by:" + dueBy);
+
+			System.out.println("\nConfirm the task by entering Y, or retry by providing any other input.");
+			input = s.nextLine();
+
+			if(input.equals("Y"))
+			{
+				//Checks for duplicates
+				boolean success;
+				success = activeUser.addTask(taskName,description,dueByDate);
+				//Error message printed in TaskList class if duplicate
+
+				if(success) {
+					retry = false;
+					try {
+						undoRedoHandler.addAction(new Action(
+								"New task addition",
+								activeUser,
+								activeUser.getClass().getMethod("deleteTask", String.class),
+								new Object[] {taskName},
+								activeUser.getClass().getMethod("addTask", String.class, String.class, LocalDate.class),
+								new Object[] {taskName, description, dueByDate}
+						));
+					} catch (NoSuchMethodException e) {
+						// TODO handle error
+						e.printStackTrace();
+					}
+				} else retry = true;
+
+			}
+			else
+			{
+				System.out.println("Task was not confirmed. Please retry.");
+				retry = true;
+			}
+
+		} while (retry);
+
+	}
+
+	/**
+	 * Removes a task from the active user's diary.
+	 */
+	private void removeTask()
+	{
+		Scanner s = new Scanner(System.in);
+		String toDelete;
+
+		boolean deleted = false;
+
+		do {
+
+			displayTaskList();
+			System.out.println("\n\nPlease enter the task name you would like to delete, or enter 0 to return:");
+			toDelete = s.nextLine();
+			if(toDelete.equals("0")) return;
+			Task task = activeUser.getTasks().findTask(toDelete);
+
+			deleted = activeUser.deleteTask(toDelete);
+			if(deleted) {
+				System.out.println("Your task was deleted successfully.");
+				try {
+					undoRedoHandler.addAction(new Action(
+							"Task delition",
+							activeUser,
+							activeUser.getClass().getMethod("addTask", String.class, String.class, LocalDate.class),
+							new Object[] {task.getTaskName(), task.getDescription(), task.getDueBy()},
+							activeUser.getClass().getMethod("deleteTask", String.class),
+							new Object[] {toDelete}
+					));
+				} catch (NoSuchMethodException e) {
+					// TODO handle error
+					e.printStackTrace();
+				}
+			} else System.out.println("There was an error finding your task. Please try again.");
+
+		} while (!deleted);
+	}
+
+	/**
+	 * Displays the task list of the active user.
+	 */
+	private void displayTaskList()
+	{
+		System.out.println("Your personal task list:\n");
+		activeUser.getTasks().displayTaskList();
 	}
 }
