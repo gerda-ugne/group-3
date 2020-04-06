@@ -1,21 +1,15 @@
 package hospital.staff;
 
-import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.*;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import hospital.undo_redo.UndoRedoExecutor;
-
-import hospital.undo_redo.UndoRedoExecutor;
-import org.jasypt.util.password.StrongPasswordEncryptor;
-
 /**
  * Represents a professional in the hospital staff.
  */
-public class Professional extends User{
+public class Professional extends User {
 
 
 	/**
@@ -48,7 +42,7 @@ public class Professional extends User{
 	 * Constructor with no parameters for the Professional class
 	 */
 	public Professional() {
-		super("<undefined>", "<undefined>", "<undefined>", "<undefined>");
+		super("<undefined>", "<undefined>", null, "<undefined>");
 	}
 
 	/**
@@ -57,7 +51,7 @@ public class Professional extends User{
 	 * @param lastName last name of the professional
 	 * @param role role of the professional
 	 */
-	public Professional(String firstName, String lastName, String role) {
+	public Professional(String firstName, String lastName, Role role) {
 		super(firstName, lastName, role);
 	}
 
@@ -68,7 +62,7 @@ public class Professional extends User{
 	 * @param role role of the professional
 	 * @param office office of the professional
 	 */
-	public Professional(String firstName, String lastName, String role, String office) {
+	public Professional(String firstName, String lastName, Role role, String office) {
 		super(firstName, lastName, role, office);
 		this.diary = new ElectronicDiary();
 		this.tasks = new TaskList();

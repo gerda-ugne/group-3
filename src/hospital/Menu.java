@@ -487,7 +487,7 @@ public class Menu {
 					retry = false;
 
 					//Informs system whether admin or a professional has logged in
-					if(activeUser.getRole().equals("Administrator")) return "admin";
+					if(activeUser.getRole().equals(Role.Administrator)) return "admin";
 					else return "professional";
 				}
 				else{
@@ -802,7 +802,7 @@ public class Menu {
 			if(input.equals("Y") || input.equals("y"))
 			{
 
-				Professional newMember = new Professional(firstName,lastName,role,office);
+				Professional newMember = new Professional(firstName, lastName, Role.valueOf(role), office);
 				staff.addMember(newMember);
 				try {
 					undoRedoHandler.addAction(new Action(

@@ -105,9 +105,9 @@ public class Staff implements UndoRedoExecutor, Serializable {
 	 * @param role role to filter by
 	 * @return list of professionals only with the given role
 	 */
-	public List<Professional> sortByRole(List<Professional> professionals, String role)
+	public List<Professional> sortByRole(List<Professional> professionals, Role role)
 	{
-		List<Professional> professionalsOfRole = new ArrayList<Professional>(professionals)
+		List<Professional> professionalsOfRole = new ArrayList<>(professionals)
 				.stream()
 				.filter(professional -> {
 					if(professional.getRole().equals(role)) return true;
