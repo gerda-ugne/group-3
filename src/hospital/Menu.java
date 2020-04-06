@@ -38,8 +38,8 @@ public class Menu {
 	public Menu() {
 
 		//TODO handle exceptions
-		restoreDiary();
 		staff = new Staff();
+		restoreStaff();
 
 		activeUser = null;
 		undoRedoHandler = new UndoRedoHandler();
@@ -789,6 +789,19 @@ public class Menu {
 
 				Professional newMember = new Professional(firstName,lastName,role,office);
 				staff.addMember(newMember);
+				try {
+					undoRedoHandler.addAction(new Action(
+							"New staff member addition",
+							staff,
+							staff.getClass().getMethod("removeMember", Professional.class),
+							new Object[] {newMember},
+							staff.getClass().getMethod("addMember", Professional.class),
+							new Object[] {newMember}
+					));
+				} catch (NoSuchMethodException e) {
+					// TODO handle exception
+					e.printStackTrace();
+				}
 
 				System.out.println("\nStaff member added successfully.");
 				retry = false;
@@ -843,6 +856,19 @@ public class Menu {
 			if(input.equals("Y") || input.equals("y"))
 			{
 				staff.removeMember(toDelete);
+				try {
+					undoRedoHandler.addAction(new Action(
+							"NStaff member deletion",
+							staff,
+							staff.getClass().getMethod("addMember", Professional.class),
+							new Object[] {toDelete},
+							staff.getClass().getMethod("removeMember", Professional.class),
+							new Object[] {toDelete}
+							));
+				} catch (NoSuchMethodException e) {
+					// TODO handle exception
+					e.printStackTrace();
+				}
 
 				System.out.println("\nStaff member deleted successfully.");
 				retry = false;
