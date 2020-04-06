@@ -166,7 +166,7 @@ public class Menu {
 	 * @throws Exception is a standard switch case Exception to handle input errors.
 	 */
 
-	public int processUserChoice() throws Exception {
+	public int processUserChoice() {
 
 		int userChoice = -1;
 		boolean loggedIn = true;
@@ -209,11 +209,11 @@ public class Menu {
 					break;
 
 				case 7:
-					backupDiary();
+					backupStaff();
 					break;
 
 				case 8:
-					restoreDiary();
+					restoreStaff();
 					break;
 
 				case 9:
@@ -345,35 +345,37 @@ public class Menu {
 
 
 	/**
-	 * Iterate Over the professional and get all the appointment and save them as a backup
+	 * Safe staff and all of its data to be able to restore later
 	 */
-	private void backupDiary() throws Exception {
-		save(staff);
-	}
-
-
-	/**
-	 * Try-with-resources method allowing to save data to txt file.
-	 * Note there is no finally block because it's try-with-resources statement
-	 */
-	private void save(Staff staff) throws Exception {
-		try(FileOutputStream out = new FileOutputStream("c:\\backupDiary.txt");
+	private void backupStaff() {
+		try(FileOutputStream out = new FileOutputStream("backupStaff.txt");
 			ObjectOutputStream oos = new ObjectOutputStream(out)) {
 			oos.writeObject(staff);
+		} catch (FileNotFoundException e) {
+			System.out.println("No backup file found for restoring the Staff's data.");
+		} catch (IOException e) {
+			// TODO handle exception
+			e.printStackTrace();
 		}
 	}
 
 	/**
-	 * Restore all the backup Diary.
-	 * Note there is no finally block because it's try-with-resources statement
+	 * Restore the staff and all of its data.
 	 */
-	private void restoreDiary() throws IOException {
-		try (FileInputStream fin = new FileInputStream("c:\\backupDiary.txt");
+	private void restoreStaff() {
+		try (FileInputStream fin = new FileInputStream("backupStaff.txt");
 			 ObjectInputStream ois = new ObjectInputStream(fin)) {
 			Staff staff = (Staff) ois.readObject();
 			displayDiary(staff, null);
-		} catch (Exception exp) {
-			exp.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// TODO handle exception
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO handle exception
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO handle exception
+			e.printStackTrace();
 		}
 	}
 
