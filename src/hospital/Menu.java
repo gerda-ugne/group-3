@@ -171,12 +171,8 @@ public class Menu {
 		while (loggedIn) {
 
 			showMenu();
-			try {
-				userChoice = Genio.getInteger();
-			} catch (Exception e) {
-				System.out.println("Input is not valid. Please try again.");
-				continue;
-			}
+
+			userChoice = Genio.getInteger();
 
 			switch (userChoice) {
 
