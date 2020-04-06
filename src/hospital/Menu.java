@@ -48,7 +48,27 @@ public class Menu {
 	 *
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args){
+
+		Menu menu = new Menu();
+		String input;
+
+		//Displays start menu to the user
+		input = menu.startMenu();
+		if(input.equals("1"))
+		{
+			//User logs in
+			String detectUser = menu.logIn();
+
+			//Appropriate menu is shown depending on user type
+			if(detectUser.equals("admin")) menu.processAdminChoice();
+			else if(detectUser.equals("professional"))  menu.processUserChoice();
+			else System.out.println("Error has occurred: unidentified user. Please try again.");
+		}
+		else{
+			System.out.println("You have exited the system.");
+			System.exit(1);
+		}
 
 	}
 
@@ -151,7 +171,12 @@ public class Menu {
 		while (loggedIn) {
 
 			showMenu();
-			userChoice = Genio.getInteger();
+			try {
+				userChoice = Genio.getInteger();
+			} catch (Exception e) {
+				System.out.println("Input is not valid. Please try again.");
+				continue;
+			}
 
 			switch (userChoice) {
 
@@ -371,6 +396,36 @@ public class Menu {
 		else System.out.println("Passwords do no match. Try again later.");
 	}
 
+	/**
+	 * Start menu that is shown upon starting the program.
+	 * Allows to user to either login or to exit the system.
+	 *
+	 * @return received input of the user: 1 for login, 0 to exit the system
+	 */
+	private String startMenu()
+	{
+		do {
+			System.out.println("\nWelcome to hospital scheduler.\n");
+			System.out.println("Please choose one of the following options:\n");
+
+			System.out.println("1. Log-in");
+			System.out.println("0. Exit");
+
+			Scanner s = new Scanner(System.in);
+			String input = s.nextLine();
+
+			switch (input)
+			{
+				case "1":
+				case "0":
+					return input;
+
+				default: System.out.println("Wrong user input. Please try again."); break;
+			}
+		} while (true);
+
+
+	}
 	/**
 	 * Logs the user out of the system.
 	 */
