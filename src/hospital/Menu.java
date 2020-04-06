@@ -495,6 +495,7 @@ public class Menu {
 				}
 				else{
 					System.out.println("Your password is incorrect. Please try again.");
+					activeUser = null;
 					retry = true;
 				}
 
