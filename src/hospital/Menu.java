@@ -117,6 +117,9 @@ public class Menu {
 		System.out.println("2. Remove a staff member");
 		System.out.println("\nTreatment type management:\n");
 		System.out.println("3. Add a new treatment type");
+		System.out.println("\nOther:\n");
+		System.out.println("4. Edit personal information");
+		System.out.println("5. Change password");
 		System.out.println("\n0. Log out");
 
 
@@ -154,7 +157,12 @@ public class Menu {
 				case "3":
 					addTreatmentType();
 					break;
-
+				case "4":
+					changeDetails();
+					break;
+				case "5":
+					changePassword();
+					break;
 				default:
 					System.out.println("Invalid user input. Please try again.");
 					break;
