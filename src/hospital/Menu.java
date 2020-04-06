@@ -36,7 +36,9 @@ public class Menu {
 	 * TODO
 	 */
 	public Menu() {
-		// TODO restore from save
+
+		//TODO handle exceptions
+		restoreDiary();
 		staff = new Staff();
 
 		activeUser = null;
@@ -64,6 +66,7 @@ public class Menu {
 
 				//Appropriate menu is shown depending on user type
 				if(detectUser.equals("admin")) menu.processAdminChoice();
+				//TODO handle exceptions
 				else if(detectUser.equals("professional"))  menu.processUserChoice();
 				else System.out.println("Error has occurred: unidentified user. Please try again.");
 			}
