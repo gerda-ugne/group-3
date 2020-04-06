@@ -1,18 +1,23 @@
 package hospital.staff;
 
-import java.util.*;
+import java.io.Serializable;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * This class represents an appointment in one or more professional's electronic diary.
  * Stores and sets data about the appointment.
  */
-public class Appointment implements Comparable<Appointment> {
+public class Appointment implements Comparable<Appointment>, Serializable {
 
 	/**
 	 * Treatment duration in milliseconds.
 	 * Right now it's one hour.
 	 */
-	public static final int TREATMENT_DURATION = 3600000;
+	public static final Duration TREATMENT_DURATION = Duration.ofHours(1);
 
 	/**
 	 * Static counter used to generate unique IDs for every appointment.
@@ -27,12 +32,12 @@ public class Appointment implements Comparable<Appointment> {
 	/**
 	 * The time when the appointment starts
 	 */
-	private Date startTime;
+	private LocalDateTime startTime;
 
 	/**
 	 * The time when the appointment ends
 	 */
-	private Date endTime;
+	private LocalDateTime endTime;
 
 	/**
 	 * The room the appointment takes place in
@@ -59,16 +64,29 @@ public class Appointment implements Comparable<Appointment> {
 		this(null, null, "<undefined>",  new ArrayList<>(), "<undefined>");
 	}
 
-	public Appointment(Date startTime, Date endTime) {
+	/**
+	 * Constructor for the Appointment class.
+	 * @param startTime time when the appointment starts
+	 * @param endTime time when the appointment ends
+	 */
+	public Appointment(LocalDateTime startTime, LocalDateTime endTime) {
 		this(startTime, endTime, "<undefined>",  new ArrayList<>(), "<undefined>");
 	}
 
-	public Appointment(Date startTime, Date endTime, String room, List<Professional> professionals, String treatmentType) {
+	/**
+	 * Constructor for the Appointment class
+	 * @param startTime time when the appointment starts
+	 * @param endTime time when the appointment ends
+	 * @param room room where appointment takes place
+	 * @param treatmentType treatment type of the appointment
+	 * @param professionals professionals needed for the appointment
+	 */
+	public Appointment(LocalDateTime startTime, LocalDateTime endTime, String room, List<Professional> professionals, String treatmentType) {
 		this.id = counter++;
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.room = room;
-		assignTreatment("<undefined>");
+		assignTreatment(treatmentType);
 		this.professionals = professionals;
 	}
 
@@ -86,7 +104,7 @@ public class Appointment implements Comparable<Appointment> {
 	 *
 	 * @return the starting time of the appointment
 	 */
-	public Date getStartTime() {
+	public LocalDateTime getStartTime() {
 		return startTime;
 	}
 
@@ -95,7 +113,7 @@ public class Appointment implements Comparable<Appointment> {
 	 *
 	 * @param startTime the time to set as starting time to the appointment
 	 */
-	public void setStartTime(Date startTime) {
+	public void setStartTime(LocalDateTime startTime) {
 		this.startTime = startTime;
 	}
 
@@ -104,7 +122,7 @@ public class Appointment implements Comparable<Appointment> {
 	 *
 	 * @return the ending time of the appointment
 	 */
-	public Date getEndTime() {
+	public LocalDateTime getEndTime() {
 		return endTime;
 	}
 
@@ -113,7 +131,7 @@ public class Appointment implements Comparable<Appointment> {
 	 *
 	 * @param endTime The time to set as ending time to the appointment.
 	 */
-	public void setEndTime(Date endTime) {
+	public void setEndTime(LocalDateTime endTime) {
 		this.endTime = endTime;
 	}
 
@@ -200,4 +218,14 @@ public class Appointment implements Comparable<Appointment> {
 	}
 
 
+	@Override
+	public String toString() {
+		return "Appointment{" +
+				"startTime=" + startTime +
+				", endTime=" + endTime +
+				", room='" + room + '\'' +
+				", treatmentType='" + treatmentType + '\'' +
+				", professionals: " + professionals.toString() +
+				'}';
+	}
 }

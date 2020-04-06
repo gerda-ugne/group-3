@@ -1,14 +1,21 @@
 package hospital.staff;
 
+import java.io.Serializable;
 import java.time.DayOfWeek;
+import java.time.*;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import hospital.undo_redo.UndoRedoExecutor;
+
+import hospital.undo_redo.UndoRedoExecutor;
+import org.jasypt.util.password.StrongPasswordEncryptor;
+
 /**
  * Represents a professional in the hospital staff.
  */
-public class Professional {
+public class Professional implements Serializable, UndoRedoExecutor {
 
 	/**
 	 * Static counter to generate unique IDs
@@ -47,6 +54,9 @@ public class Professional {
 	 */
 	private ElectronicDiary diary;
 
+	/**
+	 * The personal task list for the professional
+	 */
 	private TaskList tasks;
 
 
@@ -55,14 +65,41 @@ public class Professional {
 	 */
 	private Map<DayOfWeek, WorkingHours> workingHours;
 
+	/**
+	 * Encrypted password of the professional, which is used to log in.
+	 */
+	private String encryptedPassword;
+
+	/**
+	 * Username used in the login system.
+	 * Contains first name letter and last name
+	 */
+	private String username;
+
+	/**
+	 * Constructor with no parameters for the Professional class
+	 */
 	public Professional() {
 		this("<undefined>", "<undefined>", "<undefined>", "<undefined>");
 	}
 
+	/**
+	 * Constructor for the Professional class
+	 * @param firstName name of the professional
+	 * @param lastName last name of the professional
+	 * @param role role of the professional
+	 */
 	public Professional(String firstName, String lastName, String role) {
 		this(firstName, lastName, role, "<undefined>");
 	}
 
+	/**
+	 * Constructor for the Professional class
+	 * @param firstName name of the professional
+	 * @param lastName last name of the professional
+	 * @param role role of the professional
+	 * @param office office of the professional
+	 */
 	public Professional(String firstName, String lastName, String role, String office) {
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -72,6 +109,64 @@ public class Professional {
 		this.tasks = new TaskList();
 		this.workingHours = new HashMap<>(7);
 		this.id = counter++;
+		setPassword("default");
+		username = (firstName + lastName).toLowerCase();
+	}
+
+	/**
+	 * Getter method for the username
+	 * @return username of the professional
+	 */
+	public String getUsername() {
+		return username;
+	}
+
+	/**
+	 * Setter method for the username
+	 * @param username username to be set
+	 */
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	/**
+	 * Setter method for Electronic diary
+	 * @param diary diary to be set
+	 */
+	public void setDiary(ElectronicDiary diary) {
+		this.diary = diary;
+	}
+
+	/**
+	 * Getter method for the TaskList
+	 * @return the task list
+	 */
+	public TaskList getTasks() {
+		return tasks;
+	}
+
+	/**
+	 * Setter method for the TaskList
+	 * @param tasks task list to be set
+	 */
+	public void setTasks(TaskList tasks) {
+		this.tasks = tasks;
+	}
+
+	/**
+	 * Getter method for the Working Hours
+	 * @return working hours
+	 */
+	public Map<DayOfWeek, WorkingHours> getWorkingHours() {
+		return workingHours;
+	}
+
+	/**
+	 * Setter method for the working hours
+	 * @param workingHours to be set
+	 */
+	public void setWorkingHours(Map<DayOfWeek, WorkingHours> workingHours) {
+		this.workingHours = workingHours;
 	}
 
 	/**
@@ -129,41 +224,80 @@ public class Professional {
 	 * @return List of free slots for appointments that has data of
 	 * start and end time
 	 */
-	public List<Appointment> searchAvailability(Date from, Date to) {
+	public List<Appointment> searchAvailability(LocalDateTime from, LocalDateTime to) {
 
 		//Start time is converted into seconds
-		long startTime = from.getTime();
+		LocalDateTime startTime = from;
 
 		//End time of an appointment is calculated
-		long endTime = from.getTime() + Appointment.TREATMENT_DURATION;
+		LocalDateTime endTime = from.plus(Appointment.TREATMENT_DURATION);
 
 		//New list for empty available slots is created
-		List<Appointment> availableSlots = new ArrayList<Appointment>();
+		List<Appointment> availableSlots = new ArrayList<>();
 
 		//While there is more time to add empty appointments
-		while (endTime < to.getTime()) {
+		while (!endTime.isAfter(to)) {
 
 			//Add an empty appointment with defined start and end time
-			availableSlots.add(new Appointment(new Date(startTime), new Date(endTime)));
+			availableSlots.add(new Appointment(startTime, endTime));
 
 			//Adjust the time for the next instance
 			startTime = endTime;
-			endTime = startTime + Appointment.TREATMENT_DURATION;
+			endTime = startTime.plus(Appointment.TREATMENT_DURATION);
 		}
 
 		// Check if an appointment is in the given time-range
+		// Filters by from/to dates
 		Predicate<Appointment> checkTimeRange = appointment -> {
-			Date start = appointment.getStartTime();
-			Date end = appointment.getEndTime();
-			if (start.compareTo(from) <= 0 && start.compareTo(to) >= 0 &&
-					end.compareTo(from) >= 0 && end.compareTo(to) <= 0) return true;
+			LocalDateTime start = appointment.getStartTime();
+			LocalDateTime end = appointment.getEndTime();
+
+			if (!start.isBefore(from) && !start.isAfter(to) &&
+					!end.isBefore(from) && !end.isAfter(to)
+			) return true;
 			else return false;
+		};
+
+		// Filters appointments by working hours of the professional
+		Predicate <Appointment> checkWorkingHourRange = appointment -> {
+
+			//Get the hours of the day when the appointment starts and ends
+			LocalTime start = appointment.getStartTime().toLocalTime();
+			LocalTime end = appointment.getEndTime().toLocalTime();
+
+			// Gets days of week for start/end dates
+			// The values are of 1-7 for each week day
+			DayOfWeek startDay =  appointment.getStartTime().getDayOfWeek();
+			DayOfWeek endDay = appointment.getEndTime().getDayOfWeek();
+
+			//Iterates through the map
+			for (Map.Entry<DayOfWeek, WorkingHours> entry : workingHours.entrySet()) {
+
+				//If the day of the week match of the appointment and the working hours set,
+				// i.e the appointment is happening on Monday and the iterator reaches
+				// Monday working hour definition
+				if(entry.getKey().equals(startDay) && entry.getKey().equals(endDay))
+				{
+					//Checks if appointment is within the working hour range
+					//Starting and ending hours have to be:
+					//equal or after the working shift start hour AND
+					//before or equal to the working shit start hour
+					if (!start.isBefore(entry.getValue().getStartHour()) &&
+							!start.isAfter(entry.getValue().getEndHour()) &&
+							!end.isBefore(entry.getValue().getStartHour()) &&
+							!end.isAfter(entry.getValue().getEndHour()))
+					return true;
+				}
+			}
+
+			return false;
+
 		};
 
 		//Appointments are filtered to be in the provided time range
 		List<Appointment> bookedAppointments = diary.sortByDate()
 				.stream()
-				.filter(checkTimeRange)
+				.filter(checkTimeRange.and(checkWorkingHourRange))
 				.sorted()
 				.collect(Collectors.toList());
 
@@ -196,8 +330,10 @@ public class Professional {
 	 * @param appointment the new appointment to register in the professional's electronic diary.
 	 */
 	public boolean addAppointment(Appointment appointment) {
-		// TODO check for conflicts. Here or in the diary?
-		return diary.addAppointment(appointment);
+		if(diary.searchIfTimeAvailable(appointment.getStartTime())) {
+			return diary.addAppointment(this, appointment);
+		}
+		return false;
 	}
 
 	/**
@@ -207,8 +343,9 @@ public class Professional {
 	 * @return the deleted appointment.
 	 */
 	public Appointment deleteAppointment(long appointmentId) {
-		// TODO - implement Professional.deleteAppointment
-		return null;
+		Appointment deletedAppointment = diary.getAppointment(appointmentId);
+		if(deletedAppointment != null) diary.deleteAppointment(appointmentId);
+		return deletedAppointment;
 	}
 
 	/**
@@ -218,7 +355,7 @@ public class Professional {
 	 * @param dueBy - date when the task is due by
 	 * @return true or false whether the addition was successful
 	 */
-	public boolean addTask(String taskName, String description, Date dueBy)
+	public boolean addTask(String taskName, String description, LocalDate dueBy)
 	{
 		Task toAdd = new Task(taskName, description, dueBy);
 		return tasks.addTask(toAdd);
@@ -227,22 +364,44 @@ public class Professional {
 	/**
 	 * Task is deleted off the personal task list.
 	 * @param taskName task name to delete
-	 * @return the deleted task
+	 * @return true/false whether the task was deleted
 	 */
-	public Task deleteTask(String taskName)
+	public boolean deleteTask(String taskName)
 	{
-		Task toDelete = null;
-
-		//Finds a task with the same task name in the list
-		//Copies the content of the found task onto the
-		//toDelete node
-		for (Task task : tasks.getTaskList()) {
-			if (task.getTaskName().equals(taskName)) {
-				toDelete = task;
-			}
+		Task toDelete = tasks.findTask(taskName);
+		if(toDelete == null) return false;
+		else
+		{
+			tasks.deleteTask(toDelete);
+			return true;
 		}
-		if (tasks.deleteTask(toDelete)) return toDelete;
-		else return null;
+
+
+	}
+
+	/**
+	 * Sets a new password for the professional.
+	 * The set password is encrypted in the password field.
+	 *
+	 * @param password password to be set
+	 */
+	public void setPassword(String password)
+	{
+		StrongPasswordEncryptor encryption = new StrongPasswordEncryptor();
+		encryptedPassword = encryption.encryptPassword(password);
+
+	}
+
+	/**
+	 * Checks if the entered password is true
+	 *
+	 * @param input user's input
+	 * @return true/false whether the passwords match
+	 */
+	public boolean checkPassword(String input)
+	{
+		StrongPasswordEncryptor encryption = new StrongPasswordEncryptor();
+		return encryption.checkPassword(input, encryptedPassword);
 	}
 
 	/**
@@ -290,4 +449,23 @@ public class Professional {
 		return this.diary;
 	}
 
+	public Appointment getAppointment(long appointmentId) {
+		return null;
+	}
+
+	@Override
+	public String toString() {
+		return firstName + " " + lastName + " (" + id + ")";
+	}
+
+	/**
+	 * Updates the username of the professional.
+	 * Method is used in case of first or last name change
+	 * when updating the details.
+	 *
+	 */
+	public void updateUsername()
+	{
+		username = (firstName + lastName).toLowerCase();
+	}
 }

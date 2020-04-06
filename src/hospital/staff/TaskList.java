@@ -13,10 +13,13 @@ import java.util.*;
  */
 public class TaskList {
 
+    /**
+     * List that contains all professional's tasks
+     */
     List<Task> taskList;
 
     /**
-     * Default constructor for TaskList class
+     * Constructor for the TaskList class
      */
     public TaskList()
     {
@@ -37,7 +40,7 @@ public class TaskList {
            return false;
        }
         else taskList.add(newTask);
-        sortTasksByInitialisedDate();
+        sortTasksByDueByDate();
         return true;
     }
 
@@ -53,20 +56,28 @@ public class TaskList {
 
 
     /**
-     * Sorts tasks by initialise date.
+     * Sorts tasks by due by date.
      * @return sorted taskList
      */
-    public List<Task> sortTasksByInitialisedDate()
+    public List<Task> sortTasksByDueByDate()
     {
         List<Task> copy = new ArrayList<>((taskList));
         Collections.sort(copy);
         return copy;
     }
 
+    /**
+     * Getter method for the task list.
+     * @return the task list
+     */
     public List<Task> getTaskList() {
         return taskList;
     }
 
+    /**
+     * Setter method for the task list.
+     * @param taskList task list to be set
+     */
     public void setTaskList(List<Task> taskList) {
         this.taskList = taskList;
     }
@@ -81,6 +92,23 @@ public class TaskList {
             task.printData();
             System.out.println();
         }
+    }
+
+    /**
+     * Finds a task in the task list
+     * @param taskName task to find
+     * @return task if found, null if not
+     */
+    public Task findTask(String taskName)
+    {
+        for (Task task : taskList) {
+            if (task.getTaskName().equals(taskName)) {
+
+                return task;
+            }
+        }
+
+        return null;
     }
 
 }
