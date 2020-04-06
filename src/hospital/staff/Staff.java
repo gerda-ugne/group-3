@@ -145,7 +145,7 @@ public class Staff implements UndoRedoExecutor, Serializable {
 		}
 
 		//creates new appointment instance with the given parameters
-		Appointment newAppointment = new Appointment(startTime, endTime, room,  involvedProfessionals,treatmentType);
+		Appointment newAppointment = new Appointment(startTime, endTime, room, involvedProfessionals,treatmentType);
 
 		//creates new appointment list of available slots at the given time for all involved professionals, should only have one list item
 		List<Appointment> freeSlots=searchAvailability(involvedProfessionals,startTime,endTime);
@@ -320,5 +320,21 @@ public class Staff implements UndoRedoExecutor, Serializable {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Getter method for the administrator
+	 * @return administrator
+	 */
+	public Administrator getAdmin() {
+		return admin;
+	}
+
+	/**
+	 * Setter method for the administrator
+	 * @param admin administrator to be set
+	 */
+	public void setAdmin(Administrator admin) {
+		this.admin = admin;
 	}
 }

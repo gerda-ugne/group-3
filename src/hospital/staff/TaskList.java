@@ -87,6 +87,7 @@ public class TaskList {
      */
     public void displayTaskList()
     {
+        if(taskList.isEmpty()) System.out.println("The task list is currently empty.");
         for (Task task:taskList
              ) {
             task.printData();

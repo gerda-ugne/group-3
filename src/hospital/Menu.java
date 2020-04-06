@@ -24,7 +24,7 @@ public class Menu {
 	/**
 	 * The staff member who currently using the system. Null if nobody is logged in.
 	 */
-	private Professional activeUser;
+	private User activeUser;
 
 	/**
 	 * The handler which responsible for the undo/redo function of the system.
@@ -274,7 +274,7 @@ public class Menu {
 		LocalDateTime startTime = LocalDateTime.now();
 		LocalDateTime endTime = LocalDateTime.now();
 		String room = "";
-		String treatmentType = "";
+		String treatmentType = "<undefined>";
 		// TODO get input from user
 		Appointment newAppointment = staff.bookAppointment(professionals, startTime, endTime, room, treatmentType);
 		if (newAppointment != null) {
@@ -465,7 +465,8 @@ public class Menu {
 				if(username.equals("0")) return "noUser";
 
 				//TODO add an instance of administrator to staff
-				activeUser = staff.searchByUsername(username);
+				if(username.equals(staff.getAdmin().getUsername())) activeUser = staff.getAdmin();
+				else activeUser = staff.searchByUsername(username);
 
 				System.out.println("\nEnter your password:");
 				password = s.nextLine();
@@ -627,6 +628,10 @@ public class Menu {
 			System.out.println("Enter the task name:");
 			taskName = s.nextLine();
 			if(taskName.equals("0")) return;
+			else if (((Professional)activeUser).getTasks().findTask(taskName)!=null) {
+				System.out.println("Task with this label already exists, try again.");
+				continue;
+			}
 
 
 			System.out.println("Enter the task description:");
@@ -651,7 +656,7 @@ public class Menu {
 			System.out.println("These are the details of your task:\n");
 			System.out.println("Task name: " + taskName);
 			System.out.println("Description: " + description);
-			System.out.println("Due by:" + dueBy);
+			System.out.println("Due by: " + dueBy);
 
 			System.out.println("\nConfirm the task by entering Y, or retry by providing any other input.");
 			input = s.nextLine();
@@ -660,7 +665,7 @@ public class Menu {
 			{
 				//Checks for duplicates
 				boolean success;
-				success = activeUser.addTask(taskName,description,dueByDate);
+				success = (((Professional)activeUser).addTask(taskName,description,dueByDate));
 				//Error message printed in TaskList class if duplicate
 
 				if(success) {
@@ -707,9 +712,9 @@ public class Menu {
 			System.out.println("\n\nPlease enter the task name you would like to delete, or enter 0 to return:");
 			toDelete = s.nextLine();
 			if(toDelete.equals("0")) return;
-			Task task = activeUser.getTasks().findTask(toDelete);
+			Task task = (((Professional)activeUser).getTasks().findTask(toDelete));
 
-			deleted = activeUser.deleteTask(toDelete);
+			deleted = (((Professional)activeUser).deleteTask(toDelete));
 			if(deleted) {
 				System.out.println("Your task was deleted successfully.");
 				try {
@@ -736,7 +741,7 @@ public class Menu {
 	private void displayTaskList()
 	{
 		System.out.println("Your personal task list:\n");
-		activeUser.getTasks().displayTaskList();
+		((Professional)activeUser).getTasks().displayTaskList();
 	}
 
 	/**
