@@ -858,7 +858,7 @@ public class Menu {
 				staff.removeMember(toDelete);
 				try {
 					undoRedoHandler.addAction(new Action(
-							"NStaff member deletion",
+							"Staff member deletion",
 							staff,
 							staff.getClass().getMethod("addMember", Professional.class),
 							new Object[] {toDelete},
