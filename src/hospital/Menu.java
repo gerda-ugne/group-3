@@ -68,7 +68,7 @@ public class Menu {
 				if(detectUser.equals("admin")) menu.processAdminChoice();
 				//TODO handle exceptions
 				else if(detectUser.equals("professional"))  menu.processUserChoice();
-				else System.out.println("Error has occurred: unidentified user. Please try again.");
+				else continue;
 			}
 			else{
 				System.out.println("You have exited the system.");
@@ -456,12 +456,14 @@ public class Menu {
 
 		do {
 			try {
-				System.out.println("Please log-in to access the system.\n");
+				System.out.println("Please log-in to access the system, or enter 0 to go back.\n");
 				System.out.println("If you're logging in for the first time, your password is set to be 'default'.");
 				System.out.println("Your username is your first and last name combined in lowercase letters, or 'admin' by default if you're an administrator.\n");
 				System.out.println("Enter your username:");
 
 				username = s.nextLine();
+				if(username.equals("0")) return "noUser";
+
 				//TODO add an instance of administrator to staff
 				activeUser = staff.searchByUsername(username);
 
