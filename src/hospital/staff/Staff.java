@@ -28,7 +28,14 @@ public class Staff implements UndoRedoExecutor, Serializable {
 	 */
 	public Staff() {
 		staff = new HashSet<>();
-		admin = new Administrator();
+		admin = new Administrator("Admin", "Chief", "Heaven");
+		if (staff.isEmpty()) {
+			for (Role role : Role.values()) {
+				for (int i = 0; i < 5; i++) {
+					staff.add(new Professional(role.toString(), String.valueOf(i), role, role.toString() + "Office" + i));
+				}
+			}
+		}
 	}
 
 	/**
