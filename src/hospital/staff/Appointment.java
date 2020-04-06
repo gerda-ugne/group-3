@@ -42,7 +42,7 @@ public class Appointment implements Comparable<Appointment> {
 	/**
 	 * The type of the treatment
 	 */
-	private Map.Entry<String,List<Role>> treatmentType;
+	private TreatmentType treatmentType;
 
 	/**
 	 * The professionals who participate in the treatment
@@ -68,7 +68,7 @@ public class Appointment implements Comparable<Appointment> {
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.room = room;
-		assignTreatment(treatmentType);
+		assignTreatment("<undefined>");
 		this.professionals = professionals;
 	}
 
@@ -139,7 +139,7 @@ public class Appointment implements Comparable<Appointment> {
 	 *
 	 * @return the appointment's treatment type.
 	 */
-	public Map.Entry<String, List<Role>> getTreatmentType() {
+	public TreatmentType getTreatmentType() {
 		return treatmentType;
 	}
 
@@ -148,7 +148,7 @@ public class Appointment implements Comparable<Appointment> {
 	 *
 	 * @param treatmentType the type of treatment to set to the appointment
 	 */
-	public void setTreatmentType(Map.Entry<String, List<Role>> treatmentType) {
+	public void setTreatmentType(TreatmentType treatmentType) {
 		this.treatmentType = treatmentType;
 	}
 
@@ -178,7 +178,7 @@ public class Appointment implements Comparable<Appointment> {
 	public boolean assignTreatment(String treatmentType)
 	{
 		try {
-			this.treatmentType = TreatmentList.findATreatment(treatmentType);
+			this.treatmentType = TreatmentType.searchForTreatment(treatmentType);
 			return true;
 		} catch (NullPointerException e) {
 
