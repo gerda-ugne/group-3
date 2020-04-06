@@ -21,12 +21,14 @@ public class Staff implements UndoRedoExecutor, Serializable {
 	 * The set of professionals the staff is consists of.
 	 */
 	private Set<Professional> staff;
+	private Administrator admin;
 
 	/**
 	 * Constructor for Staff class
 	 */
 	public Staff() {
 		staff = new HashSet<>();
+		admin = new Administrator();
 	}
 
 	/**
