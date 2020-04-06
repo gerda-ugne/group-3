@@ -82,6 +82,61 @@ public class Menu {
 	}
 
 	/**
+	 * Displays the menu for the administrator
+	 */
+	private void showAdminMenu()
+	{
+		System.out.println("\nStaff management:\n");
+		System.out.println("1. Add a new staff member");
+		System.out.println("2. Remove a staff member");
+		System.out.println("\nTreatment type management:\n");
+		System.out.println("3. Add a new treatment type");
+		System.out.println("\n0. Log out");
+
+
+	}
+
+	/**
+	 * Processes administrator choices.
+	 */
+	public void processAdminChoice() {
+
+		String userChoice;
+		Scanner s = new Scanner(System.in);
+		boolean loggedIn = true;
+
+		while (loggedIn) {
+
+			showAdminMenu();
+			userChoice = s.nextLine();
+
+			switch (userChoice) {
+
+				case "0":
+					logOut();
+					loggedIn = false;
+					break;
+
+				case "1":
+					addStaffMember();
+					break;
+
+				case "2":
+					removeStaffMember();
+					break;
+
+				case "3":
+					addTreatmentType();
+					break;
+
+				default:
+					System.out.println("Invalid user input. Please try again.");
+					break;
+			}
+		}
+	}
+
+	/**
 	 * Method to process users choice from the menu and activate corresponding function.
 	 * Please note that it uses a Genio class written by UoD to handle data input.
 	 * @return int userChoice
@@ -101,7 +156,7 @@ public class Menu {
 			switch (userChoice) {
 
 				case 0:
-					System.out.println("You have been logged out successfully!");
+					logOut();
 					loggedIn = false;
 					break;
 
@@ -138,33 +193,35 @@ public class Menu {
 					break;
 
 				case 9:
-					//TODO addTask
+					addTask();
 					break;
 
 				case 10:
-					//TODO deleteTask
+					removeTask();
 					break;
 
 				case 11:
-					//TODO displayTask
+					displayTaskList();
 					break;
 
 				case 12:
-					//TODO change password
+					changePassword();
 					break;
 
 				case 13:
-					//TODO change personal details
+					changeDetails();
 					break;
 
 				default:
-					System.out.println("Something went wrong");
+					System.out.println("Invalid user input. Please try again.");
+					break;
 			}
 		} return userChoice;
 	}
 
 	/**
-	 * This method displays diary. Gets list of professionals, streams over each professional with filter
+	 * This method displays diary.
+	 * Gets list of professionals, streams over each professional with filter
 	 * based on professionalID. flatMap makes it possible access from professional to ElectornicDiary
 	 * and from ElectronicDiary to Appointment.
 	 */
@@ -219,7 +276,7 @@ public class Menu {
 		LocalDateTime startTime = LocalDateTime.now();
 		LocalDateTime endTime = LocalDateTime.now();
 		String room = "";
-		String treatmentType = "";
+		TreatmentType treatmentType = TreatmentType.searchForTreatment("<undefined>");
 		// TODO get input from user
 		Appointment oldAppointment = staff.searchAppointment(activeUser.getId(), appointmentId);
 		Appointment modifiedAppointment = staff.editAppointment(activeUser.getId(), appointmentId, professionals, startTime, endTime, room, treatmentType);
@@ -327,8 +384,10 @@ public class Menu {
 
 	/**
 	 * Prompts the user to log-in
+	 * @return "admin" or "professional" depending on
+	 * who logged in to the system, or null if logging in was unsuccessful.
 	 */
-	private void logIn()
+	private String logIn()
 	{
 		Scanner s = new Scanner(System.in);
 		String username, password;
@@ -339,10 +398,11 @@ public class Menu {
 			try {
 				System.out.println("Please log-in to access the system.\n");
 				System.out.println("If you're logging in for the first time, your password is set to be 'default'.");
-				System.out.println("Your username is your first and last name combined in lowercase letters.\n");
+				System.out.println("Your username is your first and last name combined in lowercase letters, or 'admin' by default if you're an administrator.\n");
 				System.out.println("Enter your username:");
 
 				username = s.nextLine();
+				//TODO add an instance of administrator to staff
 				activeUser = staff.searchByUsername(username);
 
 				System.out.println("\nEnter your password:");
@@ -354,6 +414,10 @@ public class Menu {
 					System.out.println("You've successfully logged in! Welcome, " + activeUser.getFirstName() +".");
 					if(activeUser.checkPassword("default")) System.out.println("Please don't forget to change the default password.");
 					retry = false;
+
+					//Informs system whether admin or a professional has logged in
+					if(activeUser.getRole().equals("Administrator")) return "admin";
+					else return "professional";
 				}
 				else{
 					System.out.println("Your password is incorrect. Please try again.");
@@ -365,6 +429,8 @@ public class Menu {
 				retry = true;
 			}
 		} while (retry);
+
+		return null;
 
 	}
 
@@ -528,7 +594,7 @@ public class Menu {
 			System.out.println("\nConfirm the task by entering Y, or retry by providing any other input.");
 			input = s.nextLine();
 
-			if(input.equals("Y"))
+			if(input.equals("Y") || input.equals("y"))
 			{
 				//Checks for duplicates
 				boolean success;
@@ -586,7 +652,7 @@ public class Menu {
 				System.out.println("Your task was deleted successfully.");
 				try {
 					undoRedoHandler.addAction(new Action(
-							"Task delition",
+							"Task deletion",
 							activeUser,
 							activeUser.getClass().getMethod("addTask", String.class, String.class, LocalDate.class),
 							new Object[] {task.getTaskName(), task.getDescription(), task.getDueBy()},
@@ -609,5 +675,193 @@ public class Menu {
 	{
 		System.out.println("Your personal task list:\n");
 		activeUser.getTasks().displayTaskList();
+	}
+
+	/**
+	 * Adds a new staff member to the crew.
+	 * Part of administrator management.
+	 */
+	private void addStaffMember()
+	{
+		Scanner s = new Scanner(System.in);
+		boolean exists, invalidRole = true, retry = false;
+		String firstName, lastName, role, office, input;
+
+
+		do {
+			System.out.println("\nPlease specify the details about the new staff member, or 0 to return:\n");
+			System.out.println("Please enter the first name of the professional:");
+			firstName = s.nextLine();
+
+			if(firstName.equals("0")) return;
+
+			System.out.println("\nPlease enter the last name of the professional:");
+			lastName = s.nextLine();
+
+			do {
+				System.out.println("\nPlease specify the role of the professional:");
+				role = s.nextLine();
+
+				exists = Role.checkIfRoleExists(role);
+				if(!exists) {
+					System.out.println("No such role. Please try again and choose one of the following roles.");
+					Role.printRoles();
+					invalidRole = true;
+				}
+				else invalidRole = false;
+
+			} while (invalidRole);
+
+			System.out.println("\nPlease specify the office of the professional:");
+			office = s.nextLine();
+
+			System.out.println("\nThese are the details of the new professional.\n");
+			System.out.println("First name: " + firstName);
+			System.out.println("Last name: " + lastName);
+			System.out.println("Role: " + role);
+			System.out.println("Office: " + office);
+
+			System.out.println( "\nEnter Y to confirm");
+			input = s.nextLine();
+
+			if(input.equals("Y") || input.equals("y"))
+			{
+
+				Professional newMember = new Professional(firstName,lastName,role,office);
+				staff.addMember(newMember);
+
+				System.out.println("\nStaff member added successfully.");
+				retry = false;
+			}
+			else {
+				System.out.println("\nAddition was not confirmed. Please try again.");
+				retry = true;
+			}
+
+
+		} while (retry);
+
+	}
+
+	/**
+	 * Removes a staff member from the crew.
+	 * Part of administrator management.
+	 */
+	private void removeStaffMember()
+	{
+		Scanner s = new Scanner(System.in);
+		Professional toDelete;
+		boolean retry = false;
+		String firstName, lastName, input;
+
+
+		do {
+			System.out.println("\nPlease specify the details about the staff member to delete, or 0 to return:\n");
+			System.out.println("Please enter the first name of the professional:");
+			firstName = s.nextLine();
+
+			if (firstName.equals("0")) return;
+
+			System.out.println("\nPlease enter the last name of the professional:");
+			lastName = s.nextLine();
+
+			toDelete = staff.searchByUsername((firstName + lastName).toLowerCase());
+			if (toDelete == null)
+			{
+				System.out.println("No such professional found. Try again.");
+				retry = true;
+				continue;
+			}
+
+			System.out.println("\nThese are the details of the professional to delete.\n");
+			System.out.println("First name: " + firstName);
+			System.out.println("Last name: " + lastName);
+
+			System.out.println( "Enter Y to confirm deletion.");
+			input = s.nextLine();
+
+			if(input.equals("Y") || input.equals("y"))
+			{
+				staff.removeMember(toDelete);
+
+				System.out.println("\nStaff member deleted successfully.");
+				retry = false;
+			}
+			else {
+				System.out.println("Deletion was not confirmed. Please try again.");
+				retry = true;
+			}
+
+
+		} while (retry);
+
+	}
+
+	/**
+	 * Adds a new treatment type to the hospital.
+	 * Part of administrator management.
+	 */
+	private void addTreatmentType()
+	{
+		Scanner s = new Scanner(System.in);
+		Scanner scanRole = new Scanner(System.in);
+		Scanner integer = new Scanner(System.in);
+		boolean retry = false, integerValid = false, exists;
+
+
+		int numberOfProfessionals = 0;
+		String label, role;
+		List<Role> requirements = new ArrayList<>();
+
+		do {
+
+			System.out.println("Please provide the label for the new treatment type, or enter 0 to return:");
+			label = s.nextLine();
+
+			if(label.equals("0")) return;
+			//Checks whether treatment already exists
+			if (TreatmentType.searchForTreatment(label) !=null){
+				System.out.println("This treatment already exists. Please try again.");
+				retry = true;
+				continue;
+			}
+
+			//Loop to handle wrong integer input.
+			do {
+				System.out.println("Please specify how many professionals are needed for the treatment:");
+				try {
+					numberOfProfessionals = integer.nextInt();
+					integerValid = true;
+
+				} catch (InputMismatchException e) {
+					System.out.println("Invalid input. Try again.");
+					integerValid = false;
+				}
+			} while (!integerValid);
+
+
+				int counter = 0;
+				while(counter < numberOfProfessionals) {
+
+					System.out.println(counter + 1 + "out of " + numberOfProfessionals + ": please specify the role of the professional:");
+					role = scanRole.nextLine();
+
+					exists = Role.checkIfRoleExists(role);
+					if (exists) {
+						//If role exists, it's added to the requirements
+						requirements.add(Role.findRole(role));
+						counter++;
+					} else {
+
+						System.out.println("No such role. Try again.");
+						continue;
+					}
+				}
+
+			TreatmentType.addTreatmentType(label, requirements);
+			System.out.println("Treatment was successfully added to the database.");
+			retry = false;
+
+		} while (retry);
 	}
 }

@@ -143,7 +143,7 @@ public class Staff implements UndoRedoExecutor, Serializable {
 		}
 
 		//creates new appointment instance with the given parameters
-		Appointment newAppointment = new Appointment(startTime, endTime, room, treatmentType, involvedProfessionals);
+		Appointment newAppointment = new Appointment(startTime, endTime, room,  involvedProfessionals,treatmentType);
 
 		//creates new appointment list of available slots at the given time for all involved professionals, should only have one list item
 		List<Appointment> freeSlots=searchAvailability(involvedProfessionals,startTime,endTime);
@@ -177,7 +177,7 @@ public class Staff implements UndoRedoExecutor, Serializable {
 	 * 			It is possible, that the modification was unsuccessful, and the returned appointment is the unmodified one.
 	 * 			The return can be null, if the appointment could not have been found.
 	 */
-	public Appointment editAppointment(long professionalId, long appointmentId, List<Long> professionals, LocalDateTime startTime, LocalDateTime endTime, String room, String treatmentType) {
+	public Appointment editAppointment(long professionalId, long appointmentId, List<Long> professionals, LocalDateTime startTime, LocalDateTime endTime, String room, TreatmentType treatmentType) {
 
 		List<Professional> involvedProfessionals = new ArrayList<>();
 
@@ -214,6 +214,7 @@ public class Staff implements UndoRedoExecutor, Serializable {
 					appointmentToChange.setEndTime(endTime);
 					appointmentToChange.setProfessionals(involvedProfessionals);
 					appointmentToChange.setRoom(room);
+
 					appointmentToChange.setTreatmentType(treatmentType);
 				}
 		}
