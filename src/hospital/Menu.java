@@ -432,6 +432,7 @@ public class Menu {
 
 		System.out.println("Thank you for using the system.");
 		activeUser = null;
+		undoRedoHandler.clearHistory();
 
 		//Do we need to reset the undo-redo handler here too?
 	}
