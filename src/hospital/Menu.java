@@ -315,7 +315,7 @@ public class Menu {
 		// TODO get input from user
 		Appointment oldAppointment = staff.searchAppointment(activeUser.getId(), appointmentId);
 		Appointment modifiedAppointment = staff.editAppointment(activeUser.getId(), appointmentId, professionals, startTime, endTime, room, treatmentType);
-		if (!modifiedAppointment.equals(oldAppointment)) {
+		if (modifiedAppointment != null && !modifiedAppointment.equals(oldAppointment)) {
 			try {
 				undoRedoHandler.addAction(new Action(
 						"Edit appointment",
