@@ -15,7 +15,7 @@ import org.jasypt.util.password.StrongPasswordEncryptor;
 /**
  * Represents a professional in the hospital staff.
  */
-public class Professional extends User implements Serializable, UndoRedoExecutor {
+public class Professional extends User{
 
 
 	/**
@@ -75,7 +75,10 @@ public class Professional extends User implements Serializable, UndoRedoExecutor
 		this.workingHours = new HashMap<>(7);
 	}
 
-
+	/**
+	 * Setter method for Electronic diary
+	 * @param diary diary to be set
+	 */
 	public void setDiary(ElectronicDiary diary) {
 		this.diary = diary;
 	}

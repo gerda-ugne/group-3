@@ -44,12 +44,12 @@ public abstract class User implements Serializable, UndoRedoExecutor {
     /**
      * Encrypted password of the user, which is used to log in.
      */
-    private String encryptedPassword;
+    protected String encryptedPassword;
 
     /**
      * Username used in the login system.
      */
-    private String username;
+    protected String username;
 
 
     /**
