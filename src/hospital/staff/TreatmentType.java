@@ -110,4 +110,12 @@ public class TreatmentType {
 
         return  null;
     }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public List<Role> getRequiredRoles() {
+        return requiredRoles;
+    }
 }
