@@ -16,6 +16,7 @@ public class TreatmentType {
      * Set that contains default treatments
      */
     private static Set<TreatmentType> treatmentTypes;
+    // TODO change to hashmap
 
     /**
      * Label of the treatment

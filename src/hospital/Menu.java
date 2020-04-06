@@ -72,6 +72,8 @@ public class Menu {
 			}
 			else{
 				System.out.println("You have exited the system.");
+				menu.backupStaff();
+				// TODO backup treatmentTypes, and any other important static fields.
 				System.exit(1);
 			}
 		} while (true);
@@ -174,7 +176,6 @@ public class Menu {
 	 * Method to process users choice from the menu and activate corresponding function.
 	 * Please note that it uses a Genio class written by UoD to handle data input.
 	 * @return int userChoice
-	 * @throws Exception is a standard switch case Exception to handle input errors.
 	 */
 
 	public int processUserChoice() {
@@ -221,10 +222,12 @@ public class Menu {
 
 				case 7:
 					backupStaff();
+					// TODO remove this menu item
 					break;
 
 				case 8:
 					restoreStaff();
+					// TODO remove this menu item
 					break;
 
 				case 9:
@@ -453,7 +456,7 @@ public class Menu {
 	/**
 	 * Prompts the user to log-in
 	 * @return "admin" or "professional" depending on
-	 * who logged in to the system, or null if logging in was unsuccessful.
+	 * who logged in to the system, or "noUser" if logging in was unsuccessful.
 	 */
 	private String logIn()
 	{

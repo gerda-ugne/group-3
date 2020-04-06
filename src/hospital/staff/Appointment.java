@@ -82,6 +82,7 @@ public class Appointment implements Comparable<Appointment>, Serializable {
 	 * @param professionals professionals needed for the appointment
 	 */
 	public Appointment(LocalDateTime startTime, LocalDateTime endTime, String room, List<Professional> professionals, String treatmentType) {
+		// TODO change treatmentType from String to TreatmentType
 		this.id = counter++;
 		this.startTime = startTime;
 		this.endTime = endTime;
