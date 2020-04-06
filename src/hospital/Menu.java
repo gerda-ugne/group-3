@@ -54,21 +54,24 @@ public class Menu {
 		String input;
 
 		//Displays start menu to the user
-		input = menu.startMenu();
-		if(input.equals("1"))
-		{
-			//User logs in
-			String detectUser = menu.logIn();
+		do {
 
-			//Appropriate menu is shown depending on user type
-			if(detectUser.equals("admin")) menu.processAdminChoice();
-			else if(detectUser.equals("professional"))  menu.processUserChoice();
-			else System.out.println("Error has occurred: unidentified user. Please try again.");
-		}
-		else{
-			System.out.println("You have exited the system.");
-			System.exit(1);
-		}
+			input = menu.startMenu();
+			if(input.equals("1"))
+			{
+				//User logs in
+				String detectUser = menu.logIn();
+
+				//Appropriate menu is shown depending on user type
+				if(detectUser.equals("admin")) menu.processAdminChoice();
+				else if(detectUser.equals("professional"))  menu.processUserChoice();
+				else System.out.println("Error has occurred: unidentified user. Please try again.");
+			}
+			else{
+				System.out.println("You have exited the system.");
+				System.exit(1);
+			}
+		} while (true);
 
 	}
 
