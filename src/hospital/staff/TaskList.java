@@ -57,13 +57,10 @@ public class TaskList {
 
     /**
      * Sorts tasks by due by date.
-     * @return sorted taskList
      */
-    public List<Task> sortTasksByDueByDate()
+    public void sortTasksByDueByDate()
     {
-        List<Task> copy = new ArrayList<>((taskList));
-        Collections.sort(copy);
-        return copy;
+        Collections.sort(taskList);
     }
 
     /**
