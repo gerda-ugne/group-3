@@ -904,7 +904,7 @@ public class Menu {
 					exists = Role.checkIfRoleExists(role);
 					if (exists) {
 						//If role exists, it's added to the requirements
-						requirements.add(Role.findRole(role));
+						requirements.add(Role.valueOf(role));
 						counter++;
 					} else {
 

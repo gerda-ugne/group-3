@@ -35,20 +35,6 @@ public enum Role{
         return false;
     }
 
-    /**
-     * Iterates over the enum to find the role.
-     * @param role role to be found
-     * @return found role or null if not found
-     */
-    public static Role findRole(String role)
-    {
-        for (Role current : Role.values()) {
-
-            if(current.toString().equals(role)) return current;
-        }
-
-        return null;
-    }
 
     /**
      * Prints out all the enums.
