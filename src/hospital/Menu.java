@@ -323,9 +323,9 @@ public class Menu {
 				undoRedoHandler.addAction(new Action(
 						"Edit appointment",
 						staff,
-						staff.getClass().getMethod("editAppointment", long.class, long.class, List.class, LocalDateTime.class, LocalDateTime.class, String.class, String.class),
+						staff.getClass().getMethod("editAppointment", long.class, long.class, List.class, LocalDateTime.class, LocalDateTime.class, String.class, TreatmentType.class),
 						new Object[]{activeUser.getId(), oldAppointment.getId(), oldAppointment.getProfessionals(), oldAppointment.getStartTime(), oldAppointment.getEndTime(), oldAppointment.getRoom(), oldAppointment.getTreatmentType()},
-						staff.getClass().getMethod("editAppointment", long.class, long.class, List.class, LocalDateTime.class, LocalDateTime.class, String.class, String.class),
+						staff.getClass().getMethod("editAppointment", long.class, long.class, List.class, LocalDateTime.class, LocalDateTime.class, String.class, TreatmentType.class),
 						new Object[]{activeUser.getId(), oldAppointment.getId(), oldAppointment.getProfessionals(), oldAppointment.getStartTime(), oldAppointment.getEndTime(), oldAppointment.getRoom(), oldAppointment.getTreatmentType()}
 				));
 			} catch (NoSuchMethodException e) {
@@ -685,9 +685,9 @@ public class Menu {
 						undoRedoHandler.addAction(new Action(
 								"New task addition",
 								activeUser,
-								activeUser.getClass().getMethod("deleteTask", String.class),
+								Professional.class.getMethod("deleteTask", String.class),
 								new Object[] {taskName},
-								activeUser.getClass().getMethod("addTask", String.class, String.class, LocalDate.class),
+								Professional.class.getMethod("addTask", String.class, String.class, LocalDate.class),
 								new Object[] {taskName, description, dueByDate}
 						));
 					} catch (NoSuchMethodException e) {
@@ -732,9 +732,9 @@ public class Menu {
 					undoRedoHandler.addAction(new Action(
 							"Task deletion",
 							activeUser,
-							activeUser.getClass().getMethod("addTask", String.class, String.class, LocalDate.class),
+							Professional.class.getMethod("addTask", String.class, String.class, LocalDate.class),
 							new Object[] {task.getTaskName(), task.getDescription(), task.getDueBy()},
-							activeUser.getClass().getMethod("deleteTask", String.class),
+							Professional.class.getMethod("deleteTask", String.class),
 							new Object[] {toDelete}
 					));
 				} catch (NoSuchMethodException e) {
