@@ -59,6 +59,7 @@ public class Professional implements Serializable, UndoRedoExecutor {
 	 */
 	private TaskList tasks;
 
+
 	/**
 	 * The schedule when the professional is working in a week.
 	 */

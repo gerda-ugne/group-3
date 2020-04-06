@@ -47,19 +47,21 @@ public class Appointment implements Comparable<Appointment>, Serializable {
 	/**
 	 * The type of the treatment
 	 */
-	private String treatmentType;
+	private TreatmentType treatmentType;
 
 	/**
 	 * The professionals who participate in the treatment
 	 */
 	private List<Professional> professionals;
 
+
+
 	/**
 	 * Creates and empty appointment without data, in which only the ID is unique.
 	 */
 	public Appointment() {
 		// TODO check for existing ids or make sure that counter is restored too with the appointments (from save)
-		this(null, null, "<undefined>", "<undefined>", new ArrayList<>());
+		this(null, null, "<undefined>",  new ArrayList<>(), "<undefined>");
 	}
 
 	/**
@@ -68,7 +70,7 @@ public class Appointment implements Comparable<Appointment>, Serializable {
 	 * @param endTime time when the appointment ends
 	 */
 	public Appointment(LocalDateTime startTime, LocalDateTime endTime) {
-		this(startTime, endTime, "<undefined>", "<undefined>", new ArrayList<>());
+		this(startTime, endTime, "<undefined>",  new ArrayList<>(), "<undefined>");
 	}
 
 	/**
@@ -79,12 +81,12 @@ public class Appointment implements Comparable<Appointment>, Serializable {
 	 * @param treatmentType treatment type of the appointment
 	 * @param professionals professionals needed for the appointment
 	 */
-	public Appointment(LocalDateTime startTime, LocalDateTime endTime, String room, String treatmentType, List<Professional> professionals) {
+	public Appointment(LocalDateTime startTime, LocalDateTime endTime, String room, List<Professional> professionals, String treatmentType) {
 		this.id = counter++;
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.room = room;
-		this.treatmentType = treatmentType;
+		assignTreatment(treatmentType);
 		this.professionals = professionals;
 	}
 
@@ -155,7 +157,7 @@ public class Appointment implements Comparable<Appointment>, Serializable {
 	 *
 	 * @return the appointment's treatment type.
 	 */
-	public String getTreatmentType() {
+	public TreatmentType getTreatmentType() {
 		return treatmentType;
 	}
 
@@ -164,7 +166,7 @@ public class Appointment implements Comparable<Appointment>, Serializable {
 	 *
 	 * @param treatmentType the type of treatment to set to the appointment
 	 */
-	public void setTreatmentType(String treatmentType) {
+	public void setTreatmentType(TreatmentType treatmentType) {
 		this.treatmentType = treatmentType;
 	}
 
@@ -177,12 +179,30 @@ public class Appointment implements Comparable<Appointment>, Serializable {
 		return professionals;
 	}
 
+
 	/**
 	 * Sets the professionals who participate in the treatment
 	 * @param professionals
 	 */
 	public void setProfessionals(List<Professional> professionals) {
 		this.professionals = professionals;
+	}
+
+	/**
+	 * Assigns a treatment to the appointment.
+	 * @param treatmentType name of the treatment to assign
+	 * @return true/false whether the assignment was successful
+	 */
+	public boolean assignTreatment(String treatmentType)
+	{
+		try {
+			this.treatmentType = TreatmentType.searchForTreatment(treatmentType);
+			return true;
+		} catch (NullPointerException e) {
+
+			System.out.println("Treatment type not found in the database.");
+			return false;
+		}
 	}
 
     /**
