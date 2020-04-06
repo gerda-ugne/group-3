@@ -1,5 +1,6 @@
 package hospital.staff;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.List;
  * This class represents an appointment in one or more professional's electronic diary.
  * Stores and sets data about the appointment.
  */
-public class Appointment implements Comparable<Appointment> {
+public class Appointment implements Comparable<Appointment>, Serializable {
 
 	/**
 	 * Treatment duration in milliseconds.
@@ -54,7 +55,6 @@ public class Appointment implements Comparable<Appointment> {
 	private List<Professional> professionals;
 
 	/**
-	 * Constructor for the Appointment class.
 	 * Creates and empty appointment without data, in which only the ID is unique.
 	 */
 	public Appointment() {
@@ -195,5 +195,17 @@ public class Appointment implements Comparable<Appointment> {
 	@Override
 	public int compareTo(Appointment o) {
 		return getStartTime().compareTo(o.getStartTime());
+	}
+
+
+	@Override
+	public String toString() {
+		return "Appointment{" +
+				"startTime=" + startTime +
+				", endTime=" + endTime +
+				", room='" + room + '\'' +
+				", treatmentType='" + treatmentType + '\'' +
+				", professionals: " + professionals.toString() +
+				'}';
 	}
 }

@@ -1,9 +1,13 @@
 package hospital.staff;
 
+import java.io.Serializable;
+import java.time.DayOfWeek;
 import java.time.*;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import hospital.undo_redo.UndoRedoExecutor;
 
 import hospital.undo_redo.UndoRedoExecutor;
 import org.jasypt.util.password.StrongPasswordEncryptor;
@@ -11,7 +15,7 @@ import org.jasypt.util.password.StrongPasswordEncryptor;
 /**
  * Represents a professional in the hospital staff.
  */
-public class Professional implements UndoRedoExecutor {
+public class Professional implements Serializable, UndoRedoExecutor {
 
 	/**
 	 * Static counter to generate unique IDs
@@ -442,6 +446,15 @@ public class Professional implements UndoRedoExecutor {
 	 */
 	public ElectronicDiary getDiary() {
 		return this.diary;
+	}
+
+	public Appointment getAppointment(long appointmentId) {
+		return null;
+	}
+
+	@Override
+	public String toString() {
+		return firstName + " " + lastName + " (" + id + ")";
 	}
 
 	/**
