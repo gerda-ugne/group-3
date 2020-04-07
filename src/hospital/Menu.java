@@ -19,7 +19,7 @@ public class Menu {
 	/**
 	 * The collection of employees in the hospital (doctors, nurses, etc.)
 	 */
-	private final Staff staff;
+	private Staff staff;
 
 	/**
 	 * The staff member who currently using the system. Null if nobody is logged in.
@@ -417,7 +417,7 @@ public class Menu {
 	private void restoreStaff() {
 		try (FileInputStream fin = new FileInputStream("backupStaff.txt");
 			 ObjectInputStream ois = new ObjectInputStream(fin)) {
-			Staff staff = (Staff) ois.readObject();
+			staff = (Staff) ois.readObject();
 			displayDiary(staff, null);
 		} catch (FileNotFoundException e) {
 			// TODO handle exception
