@@ -37,18 +37,23 @@ public class Staff implements UndoRedoExecutor, Serializable {
 	public void addMember(Professional newMember) {
 
 		staff.add(newMember);
-
 	}
 
 	/**
-	 * Removes a professional from the staff
+	 * Removes a professional from the staff, also removing them from each of their appointments
 	 * @param member member to remove
 	 * @return false/true whether the member was removed
 	 */
 	public boolean removeMember(Professional member) {
 
+		ElectronicDiary diary = member.getDiary();
+		for(Appointment app : diary.getAppointments())
+		{
+			List<Professional> appProfessionals=app.getProfessionals();
+			appProfessionals.remove(member);
+			app.setProfessionals(appProfessionals);
+		}
 		return staff.remove(member);
-
 	}
 
 	/**
