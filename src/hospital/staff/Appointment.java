@@ -3,6 +3,7 @@ package hospital.staff;
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -205,9 +206,10 @@ public class Appointment implements Comparable<Appointment>, Serializable {
 
 	@Override
 	public String toString() {
+		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-uuuu HH");
 		return "Appointment{" +
-				"startTime=" + startTime +
-				", endTime=" + endTime +
+				"startTime=" + startTime.format(dateFormat) +
+				", endTime=" + endTime.format(dateFormat) +
 				", room='" + room + '\'' +
 				", treatmentType='" + treatmentType + '\'' +
 				", professionals: " + professionals.toString() +

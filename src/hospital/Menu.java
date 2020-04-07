@@ -289,11 +289,12 @@ public class Menu {
 		LocalDateTime until = LocalDateTime.now();
 		String room = "<undefined>";
 		TreatmentType treatmentType;
+		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-uuuu HH");
 
 		// Get input for treatment
 		List<TreatmentType> treatments = new ArrayList<>(TreatmentType.getTreatmentTypes());
 		int treatInput = -1;
-        while (treatInput >= treatments.size() || treatInput < 0) {
+		while (treatInput >= treatments.size() || treatInput < 0) {
 			System.out.println("\nPlease choose a treatment type you'd like to book an appointment for:");
 			for (int i = 0; i < treatments.size(); i++) {
 				System.out.println((i + 1) + ". " + treatments.get(i).getLabel());
@@ -304,19 +305,18 @@ public class Menu {
 				in.nextLine();
 				System.out.println("Invalid input.");
 			}
-        }
+		}
 		treatmentType = treatments.get(treatInput - 1);
 
-        // Collect all the competent professionals needed for the treatment
+		// Collect all the competent professionals needed for the treatment
 		Map<Role, List<Professional>> competentProfessionals = new HashMap<>(treatmentType.getRequiredRoles().size());
 		for (Role role : treatmentType.getRequiredRoles()) {
 			competentProfessionals.put(role, staff.getProfessionalsByRole(role));
 		}
 
-        // Get input for the time interval
+		// Get input for the time interval
 		List<Appointment> availableSlots = new ArrayList<>();
 		while (availableSlots.size() == 0) {
-			DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-uuuu HH");
 			System.out.println("\nPlease provide an interval you'd like to book the appointment in. (dd-mm-year hh) or 0 to return");
 			while (true) {
 				System.out.print("From: ");
@@ -359,10 +359,11 @@ public class Menu {
 			System.out.println("\nChoose one of the available slots for the appointment:\n");
 			for (int i = 0; i < availableSlots.size(); i++) {
 				Appointment appointment = availableSlots.get(i);
-				System.out.println(i + ". " + appointment.getStartTime().toString());
+				System.out.println(i + ". " + appointment.getStartTime().format(dateFormat));
 			}
 			if (in.hasNextInt()) {
 				slotInput = in.nextInt();
+				in.nextLine();
 			} else {
 				in.nextLine();
 				System.out.println("Invalid input.");
@@ -383,7 +384,7 @@ public class Menu {
 						staff,
 						newAppointment
 				));
-			} catch (NoSuchMethodException e) {
+			} catch (NoSuchMethodException | IllegalArgumentException e) {
 				// TODO handle exception
 				e.printStackTrace();
 			}
@@ -435,7 +436,7 @@ public class Menu {
 						staff,
 						deletedAppointment
 				));
-			} catch (NoSuchMethodException e) {
+			} catch (NoSuchMethodException | IllegalArgumentException e) {
 				// TODO handle exception
 				e.printStackTrace();
 			}

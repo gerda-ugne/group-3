@@ -23,7 +23,7 @@ public class DeleteAppointmentAction extends Action {
 	 * @throws NoSuchMethodException If the Staff has no bookAppointment() method with the defined arguments.
 	 */
 	public DeleteAppointmentAction(String actionName, Staff staff, Appointment appointment)
-			throws NoSuchMethodException {
+			throws NoSuchMethodException, IllegalArgumentException {
 		super(actionName,
 				staff,
 				// For undo re-add the appointment (it will have a different ID)

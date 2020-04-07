@@ -6,7 +6,6 @@ import hospital.undo_redo.UndoNotPossibleException;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Represents an appointment deletion in the hospital booking system. Supports undo and redo actions
@@ -24,7 +23,7 @@ public class BookAppointmentAction extends Action {
      * @throws NoSuchMethodException If the Staff has no bookAppointment() method with the defined arguments.
      */
     public BookAppointmentAction(String actionName, Staff staff, Appointment appointment)
-            throws NoSuchMethodException {
+            throws NoSuchMethodException, IllegalArgumentException {
         super(actionName,
                 staff,
                 // For undo delete the appointment
