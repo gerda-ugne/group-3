@@ -171,13 +171,13 @@ public class Staff implements UndoRedoExecutor, Serializable {
 		// TODO make it faster if have time
 		List<Professional> involvedProfessionals = new ArrayList<>();
 
-		boolean appointmentFound=false;
-		Appointment appointmentToChange=null;
+		boolean appointmentFound = false;
+		Appointment appointmentToChange = null;
 
 		//searches through all given IDs and the staff to find the matching professionals
-		for(long profID:professionals)
+		for(long profID : professionals)
 		{
-			for(Professional professional:staff)
+			for(Professional professional : staff)
 			{
 				if(professional.getId()==profID)
 				{

@@ -1,8 +1,6 @@
 package hospital.staff;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Treatment type class defines default treatments
@@ -15,7 +13,7 @@ public class TreatmentType {
     /**
      * Set that contains default treatments
      */
-    private static Set<TreatmentType> treatmentTypes;
+    private static final Set<TreatmentType> treatmentTypes = new HashSet<>();
     // TODO change to hashmap
 
     /**
