@@ -1054,7 +1054,7 @@ public class Menu {
 			do {
 
 
-				System.out.println("Please choose which working hours you would like to edit:");
+				System.out.println("Please choose which working day you would like to edit:");
 				System.out.println("1. Monday");
 				System.out.println("2. Tuesday");
 				System.out.println("3. Wednesday");
