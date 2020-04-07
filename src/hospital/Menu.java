@@ -103,7 +103,7 @@ public class Menu {
 		System.out.println("\nOther:\n");
 		System.out.println("12. Change your password");
 		System.out.println("13. Change your personal details");
-		System.out.println("0. Log out");
+		System.out.println("\n0. Log out");
 
 	}
 
@@ -117,9 +117,10 @@ public class Menu {
 		System.out.println("2. Remove a staff member");
 		System.out.println("\nTreatment type management:\n");
 		System.out.println("3. Add a new treatment type");
+		System.out.println("4. Show available treatment types");
 		System.out.println("\nOther:\n");
-		System.out.println("4. Edit personal information");
-		System.out.println("5. Change password");
+		System.out.println("5. Edit personal information");
+		System.out.println("6. Change password");
 		System.out.println("\n0. Log out");
 
 
@@ -158,9 +159,12 @@ public class Menu {
 					addTreatmentType();
 					break;
 				case "4":
-					changeDetails();
+					TreatmentType.displayTreatments();
 					break;
 				case "5":
+					changeDetails();
+					break;
+				case "6":
 					changePassword();
 					break;
 				default:
@@ -446,8 +450,6 @@ public class Menu {
 		System.out.println("Thank you for using the system.");
 		activeUser = null;
 		undoRedoHandler.clearHistory();
-
-		//Do we need to reset the undo-redo handler here too?
 	}
 
 	/**
@@ -944,9 +946,11 @@ public class Menu {
 				int counter = 0;
 				while(counter < numberOfProfessionals) {
 
-					System.out.println(counter + 1 + "out of " + numberOfProfessionals + ": please specify the role of the professional:");
+					System.out.println(counter+1  + " out of " + numberOfProfessionals + ": please specify the role of the professional:");
 					role = scanRole.nextLine();
 
+					//Adjusts the input to match the enum grammar
+					role = role.substring(0,1).toUpperCase() + role.substring(1).toLowerCase();
 					exists = Role.checkIfRoleExists(role);
 					if (exists) {
 						//If role exists, it's added to the requirements
