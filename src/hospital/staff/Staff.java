@@ -48,10 +48,24 @@ public class Staff implements UndoRedoExecutor, Serializable {
 
 		ElectronicDiary diary = member.getDiary();
 		List<Appointment> appList = diary.getAppointments();
+		String role = member.getRole();
+		List<Professional> eligibleProfs = new ArrayList<>();
+		for(Professional prof : staff)
+		{
+			if(prof.getRole().equals(role)) eligibleProfs.add(prof);
+		}
 		for(Appointment app : appList)
 		{
 			List<Professional> appProfessionals=app.getProfessionals();
 			appProfessionals.remove(member);
+			for(Professional p : eligibleProfs)
+			{
+				if(!p.searchAvailability(app.getStartTime(),app.getEndTime()).isEmpty())
+				{
+					appProfessionals.add(p);
+					break;
+				}
+			}
 			app.setProfessionals(appProfessionals);
 		}
 		return staff.remove(member);
