@@ -24,7 +24,7 @@ public class TaskList implements Serializable {
      */
     public TaskList()
     {
-        taskList = new ArrayList<Task>();
+        taskList = new ArrayList<>();
     }
 
     /**

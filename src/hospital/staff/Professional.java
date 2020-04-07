@@ -1,6 +1,5 @@
 package hospital.staff;
 
-import java.time.DayOfWeek;
 import java.time.*;
 import java.util.*;
 import java.util.function.Predicate;
@@ -26,17 +25,6 @@ public class Professional extends User {
 	 * The schedule when the professional is working in a week.
 	 */
 	private Map<DayOfWeek, WorkingHours> workingHours;
-
-	/**
-	 * Encrypted password of the professional, which is used to log in.
-	 */
-	private String encryptedPassword;
-
-	/**
-	 * Username used in the login system.
-	 * Contains first name letter and last name
-	 */
-	private String username;
 
 	/**
 	 * Constructor with no parameters for the Professional class
@@ -228,7 +216,7 @@ public class Professional extends User {
 	 */
 	public boolean addAppointment(Appointment appointment) {
 		if(diary.searchIfTimeAvailable(appointment.getStartTime())) {
-			return diary.addAppointment(this, appointment);
+			return diary.addAppointment(appointment);
 		}
 		return false;
 	}
@@ -287,7 +275,7 @@ public class Professional extends User {
 
 
 	public Appointment getAppointment(long appointmentId) {
-		return null;
+		return diary.getAppointment(appointmentId);
 	}
 
 }

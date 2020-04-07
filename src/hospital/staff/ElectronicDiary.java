@@ -12,7 +12,7 @@ public class ElectronicDiary implements Serializable {
 	/**
 	 * The list of appointments the professional has
 	 */
-	private List<Appointment> appointments;
+	private final List<Appointment> appointments;
 
 	/**
 	 * Constructor for the Electronic diary class.
@@ -36,7 +36,7 @@ public class ElectronicDiary implements Serializable {
 	 *
 	 * @param newAppointment The appointment to add into the diary
 	 */
-	public boolean addAppointment(Professional professional, Appointment newAppointment) {
+	public boolean addAppointment(Appointment newAppointment) {
 		//gets appointment start time
 		LocalDateTime from = newAppointment.getStartTime();
 

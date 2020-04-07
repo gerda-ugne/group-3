@@ -21,12 +21,12 @@ public class TreatmentType {
     /**
      * Label of the treatment
      */
-    private String label;
+    private final String label;
 
     /**
      * Role requirement for the treatment
      */
-    private List<Role> requiredRoles;
+    private final List<Role> requiredRoles;
 
     /**
      * Private constructor for the TreatmentType class.

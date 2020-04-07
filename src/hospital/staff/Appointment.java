@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,7 +26,7 @@ public class Appointment implements Comparable<Appointment>, Serializable {
 	/**
 	 * The unique ID of the appointment
 	 */
-	private long id;
+	private final long id;
 
 	/**
 	 * The time when the appointment starts
@@ -139,7 +138,7 @@ public class Appointment implements Comparable<Appointment>, Serializable {
 	/**
 	 * The getter of the room, where the appointment take place
 	 *
-	 * @return the room where the appointment take place
+	 * @return the room where the appointment takes place
 	 */
 	public String getRoom() {
 		return room;
@@ -147,7 +146,8 @@ public class Appointment implements Comparable<Appointment>, Serializable {
 
 	/**
 	 * Sets the room where the appointment takes place
-	 * @param room
+	 *
+	 * @param room the room where the appointment takes place
 	 */
 	public void setRoom(String room) {
 		this.room = room;
@@ -183,7 +183,8 @@ public class Appointment implements Comparable<Appointment>, Serializable {
 
 	/**
 	 * Sets the professionals who participate in the treatment
-	 * @param professionals
+	 *
+	 * @param professionals the list of professionals who participate in the treatment
 	 */
 	public void setProfessionals(List<Professional> professionals) {
 		this.professionals = professionals;
@@ -191,6 +192,7 @@ public class Appointment implements Comparable<Appointment>, Serializable {
 
 	/**
 	 * Assigns a treatment to the appointment.
+	 *
 	 * @param treatmentType name of the treatment to assign
 	 * @return true/false whether the assignment was successful
 	 */

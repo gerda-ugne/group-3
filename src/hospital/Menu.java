@@ -19,7 +19,7 @@ public class Menu {
 	/**
 	 * The collection of employees in the hospital (doctors, nurses, etc.)
 	 */
-	private Staff staff;
+	private final Staff staff;
 
 	/**
 	 * The staff member who currently using the system. Null if nobody is logged in.
@@ -30,7 +30,7 @@ public class Menu {
 	 * The handler which responsible for the undo/redo function of the system.
 	 * Every action which needs to be undoable have to be registered by this handler.
 	 */
-	private UndoRedoHandler undoRedoHandler;
+	private final UndoRedoHandler undoRedoHandler;
 
 	/**
 	 * TODO
@@ -65,23 +65,25 @@ public class Menu {
 				String detectUser = menu.logIn();
 
 				//Appropriate menu is shown depending on user type
-				if(detectUser.equals("admin")) menu.processAdminChoice();
-				//TODO handle exceptions
-				else if(detectUser.equals("professional"))  menu.processUserChoice();
-				else continue;
-			}
-			else{
+				if (detectUser != null) {
+					if(detectUser.equals("admin")) menu.processAdminChoice();
+					//TODO handle exceptions
+					else if(detectUser.equals("professional"))  menu.processUserChoice();
+					else continue;
+				}
+			} else if (input.equals("0")) {
 				System.out.println("You have exited the system.");
 				menu.backupStaff();
-				// TODO backup treatmentTypes, and any other important static fields.
+				// TODO backup treatmentTypes, id counters, and any other important static fields.
 				System.exit(1);
+			} else {
+				System.out.println("Not a valid input");
 			}
 		} while (true);
 
 	}
 
 	/**
-	 * TODO
 	 * Displays the menu options
 	 */
 	private void showMenu() {
@@ -175,10 +177,9 @@ public class Menu {
 	/**
 	 * Method to process users choice from the menu and activate corresponding function.
 	 * Please note that it uses a Genio class written by UoD to handle data input.
-	 * @return int userChoice
 	 */
 
-	public int processUserChoice() {
+	public void processUserChoice() {
 
 		int userChoice = -1;
 		boolean loggedIn = true;
@@ -222,7 +223,7 @@ public class Menu {
 
 				case 7:
 					backupStaff();
-					// TODO remove this menu item
+					// TODO remove this menu item, add searchAppointment
 					break;
 
 				case 8:
@@ -254,7 +255,7 @@ public class Menu {
 					System.out.println("Invalid user input. Please try again.");
 					break;
 			}
-		} return userChoice;
+		}
 	}
 
 	/**
@@ -449,8 +450,6 @@ public class Menu {
 		System.out.println("Thank you for using the system.");
 		activeUser = null;
 		undoRedoHandler.clearHistory();
-
-		//Do we need to reset the undo-redo handler here too?
 	}
 
 	/**
@@ -559,7 +558,7 @@ public class Menu {
 						// TODO handle error
 						e.printStackTrace();
 					}
-				}break;
+				} break;
 				case "2":{
 
 					System.out.println(warning);
@@ -589,7 +588,7 @@ public class Menu {
 						// TODO handle error
 						e.printStackTrace();
 					}
-				}break;
+				} break;
 				case "3":
 				{
 					Scanner office = new Scanner(System.in);
@@ -615,8 +614,7 @@ public class Menu {
 						// TODO handle error
 						e.printStackTrace();
 					}
-				}break;
-				case "0": return;
+				} break;
 				default: System.out.println("Wrong input. Please check it and try again.");break;
 			}
 		} while (!(userInput.equals("0")));
@@ -632,7 +630,6 @@ public class Menu {
 		boolean retry = false;
 
 		Scanner s = new Scanner(System.in);
-		Scanner dateScanner = new Scanner(System.in);
 
 		do {
 			System.out.println("Please enter the task details, or 0 to return:\n");
@@ -653,7 +650,7 @@ public class Menu {
 			System.out.println("Enter the date when your task is due by (day-month-year format, e.g. 05-12-2020):");
 			dueBy = s.nextLine();
 			DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-uuuu");
-			LocalDate dueByDate = null;
+			LocalDate dueByDate;
 
 			try {
 				//Parsing the String
