@@ -1069,12 +1069,12 @@ public class Menu {
 				switch(input)
 				{
 					case "1": chosenDay = DayOfWeek.valueOf("MONDAY"); validInput = true;break;
-					case "2": chosenDay = DayOfWeek.TUESDAY.valueOf("TUESDAY");validInput = true; break;
-					case "3": chosenDay = DayOfWeek.WEDNESDAY.valueOf("WEDNESDAY");validInput = true; break;
-					case "4": chosenDay = DayOfWeek.THURSDAY.valueOf("THURSDAY");validInput = true; break;
-					case "5": chosenDay = DayOfWeek.FRIDAY.valueOf("FRIDAY");validInput = true; break;
-					case "6": chosenDay = DayOfWeek.SATURDAY.valueOf("SATURDAY");validInput = true; break;
-					case "7": chosenDay = DayOfWeek.SUNDAY.valueOf("SUNDAY");validInput = true; break;
+					case "2": chosenDay = DayOfWeek.valueOf("TUESDAY");validInput = true; break;
+					case "3": chosenDay = DayOfWeek.valueOf("WEDNESDAY");validInput = true; break;
+					case "4": chosenDay = DayOfWeek.valueOf("THURSDAY");validInput = true; break;
+					case "5": chosenDay = DayOfWeek.valueOf("FRIDAY");validInput = true; break;
+					case "6": chosenDay = DayOfWeek.valueOf("SATURDAY");validInput = true; break;
+					case "7": chosenDay = DayOfWeek.valueOf("SUNDAY");validInput = true; break;
 					case "0": return;
 					default:System.out.println("Invalid input, try again."); validInput = false;
 				}
