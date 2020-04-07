@@ -33,7 +33,7 @@ public class Menu {
 	private UndoRedoHandler undoRedoHandler;
 
 	/**
-	 * TODO
+	 * Constructor of the Menu class.
 	 */
 	public Menu() {
 
@@ -83,7 +83,7 @@ public class Menu {
 	 * Displays the menu options
 	 */
 	private void showMenu() {
-		// TODO - implement Menu.showMenu
+
 		System.out.println("\nAppointment management:\n");
 		System.out.println("1. Add a new appointment");
 		System.out.println("2. Edit an existing appointment");
@@ -474,7 +474,6 @@ public class Menu {
 				username = s.nextLine();
 				if(username.equals("0")) return "noUser";
 
-				//TODO add an instance of administrator to staff
 				if(username.equals(staff.getAdmin().getUsername())) activeUser = staff.getAdmin();
 				else activeUser = staff.searchByUsername(username);
 
@@ -663,7 +662,6 @@ public class Menu {
 			} catch (DateTimeParseException e) {
 				System.out.println("There was an error recording your due-by date, please try again.");
 				retry = true;
-				// TODO ask for new input if there was  a wrong one
 				continue;
 			}
 
