@@ -75,7 +75,8 @@ public class Staff implements UndoRedoExecutor, Serializable {
 					break;
 				}
 			}
-			app.setProfessionals(appProfessionals);
+			if(appProfessionals.isEmpty()) deleteAppointment(member.getId(),app.getId());
+			else app.setProfessionals(appProfessionals);
 		}
 		return staff.remove(member);
 	}
