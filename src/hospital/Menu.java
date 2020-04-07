@@ -87,7 +87,6 @@ public class Menu {
 	 * Displays the menu options
 	 */
 	private void showMenu() {
-		// TODO - implement Menu.showMenu
 		System.out.println("\nAppointment management:\n");
 		System.out.println("1. Add a new appointment");
 		System.out.println("2. Edit an existing appointment");
@@ -286,9 +285,15 @@ public class Menu {
 		LocalDateTime startTime = LocalDateTime.now();
 		LocalDateTime endTime = LocalDateTime.now();
 		String room = "";
-		String treatmentType = "<undefined>";
+		String treatmentType = "";
+
 		// TODO get input from user
-		Appointment newAppointment = staff.bookAppointment(professionals, startTime, endTime, room, treatmentType);
+        while (true) {
+			System.out.println("\nPlease choose a treatment type you'd like to book an appointment for:\n");
+
+        }
+
+		Appointment newAppointment = staff.bookAppointment(professionals, startTime, endTime, room, TreatmentType.searchForTreatment(treatmentType));
 		if (newAppointment != null) {
 			try {
 				undoRedoHandler.addAction(new Action(
@@ -442,6 +447,7 @@ public class Menu {
 
 
 	}
+
 	/**
 	 * Logs the user out of the system.
 	 */

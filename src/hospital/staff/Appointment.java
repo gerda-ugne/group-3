@@ -60,7 +60,7 @@ public class Appointment implements Comparable<Appointment>, Serializable {
 	 */
 	public Appointment() {
 		// TODO check for existing ids or make sure that counter is restored too with the appointments (from save)
-		this(null, null, "<undefined>",  new ArrayList<>(), "<undefined>");
+		this(null, null, "<undefined>",  new ArrayList<>(), null);
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class Appointment implements Comparable<Appointment>, Serializable {
 	 * @param endTime time when the appointment ends
 	 */
 	public Appointment(LocalDateTime startTime, LocalDateTime endTime) {
-		this(startTime, endTime, "<undefined>",  new ArrayList<>(), "<undefined>");
+		this(startTime, endTime, "<undefined>",  new ArrayList<>(), null);
 	}
 
 	/**
@@ -80,13 +80,13 @@ public class Appointment implements Comparable<Appointment>, Serializable {
 	 * @param treatmentType treatment type of the appointment
 	 * @param professionals professionals needed for the appointment
 	 */
-	public Appointment(LocalDateTime startTime, LocalDateTime endTime, String room, List<Professional> professionals, String treatmentType) {
+	public Appointment(LocalDateTime startTime, LocalDateTime endTime, String room, List<Professional> professionals, TreatmentType treatmentType) {
 		// TODO change treatmentType from String to TreatmentType
 		this.id = counter++;
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.room = room;
-		assignTreatment(treatmentType);
+		this.treatmentType = treatmentType;
 		this.professionals = professionals;
 	}
 
@@ -188,24 +188,6 @@ public class Appointment implements Comparable<Appointment>, Serializable {
 	 */
 	public void setProfessionals(List<Professional> professionals) {
 		this.professionals = professionals;
-	}
-
-	/**
-	 * Assigns a treatment to the appointment.
-	 *
-	 * @param treatmentType name of the treatment to assign
-	 * @return true/false whether the assignment was successful
-	 */
-	public boolean assignTreatment(String treatmentType)
-	{
-		try {
-			this.treatmentType = TreatmentType.searchForTreatment(treatmentType);
-			return true;
-		} catch (NullPointerException e) {
-
-			System.out.println("Treatment type not found in the database.");
-			return false;
-		}
 	}
 
     /**

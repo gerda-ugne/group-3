@@ -132,7 +132,7 @@ public class Staff implements UndoRedoExecutor, Serializable {
 	 * @param treatmentType The type of treatment the new appointment has.
 	 * @return The newly created appointment or null if the booking was unsuccessful.
 	 */
-	public Appointment bookAppointment(List<Long> professionalIds, LocalDateTime startTime, LocalDateTime endTime, String room, String treatmentType) {
+	public Appointment bookAppointment(List<Long> professionalIds, LocalDateTime startTime, LocalDateTime endTime, String room, TreatmentType treatmentType) {
 
 		List<Professional> involvedProfessionals = new ArrayList<>();
 		//searches through staff for professionals whose IDs match the given ones and adds them to involvedProfessionals list
@@ -147,7 +147,7 @@ public class Staff implements UndoRedoExecutor, Serializable {
 		}
 
 		//creates new appointment instance with the given parameters
-		Appointment newAppointment = new Appointment(startTime, endTime, room, involvedProfessionals,treatmentType);
+		Appointment newAppointment = new Appointment(startTime, endTime, room, involvedProfessionals, treatmentType);
 
 		//creates new appointment list of available slots at the given time for all involved professionals, should only have one list item
 		List<Appointment> freeSlots=searchAvailability(involvedProfessionals,startTime,endTime);
