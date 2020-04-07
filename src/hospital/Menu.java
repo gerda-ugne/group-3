@@ -12,6 +12,7 @@ import java.time.format.DateTimeParseException;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Represents the menu in the Hospital Booking System.
@@ -328,24 +329,109 @@ public class Menu {
 	 * Get inputs from the user for a new appointment, verify it and adds it to the database.
 	 */
 	private void addAppointment() {
-		List<Long> professionals = new ArrayList<>();
-		LocalDateTime startTime = LocalDateTime.now();
-		LocalDateTime endTime = LocalDateTime.now();
-		String room = "";
-		String treatmentType = "<undefined>";
-		// TODO get input from user
-		Appointment newAppointment = staff.bookAppointment(professionals, startTime, endTime, room, treatmentType);
+		// The objects needed to book a new appointment
+		Scanner in = new Scanner(System.in);
+		List<Professional> professionals = new ArrayList<>();
+		LocalDateTime from = LocalDateTime.now();
+		LocalDateTime until = LocalDateTime.now();
+		String room = "<undefined>";
+		TreatmentType treatmentType;
+		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-uuuu HH");
+
+		// Get input for treatment
+		List<TreatmentType> treatments = new ArrayList<>(TreatmentType.getTreatmentTypes());
+		int treatInput = -1;
+		while (treatInput >= treatments.size() || treatInput < 0) {
+			System.out.println("\nPlease choose a treatment type you'd like to book an appointment for:");
+			for (int i = 0; i < treatments.size(); i++) {
+				System.out.println((i + 1) + ". " + treatments.get(i).getLabel());
+			}
+			if (in.hasNextInt()) {
+				treatInput = in.nextInt();
+			} else {
+				in.nextLine();
+				System.out.println("Invalid input.");
+			}
+		}
+		treatmentType = treatments.get(treatInput - 1);
+
+		// Collect all the competent professionals needed for the treatment
+		Map<Role, List<Professional>> competentProfessionals = new HashMap<>(treatmentType.getRequiredRoles().size());
+		for (Role role : treatmentType.getRequiredRoles()) {
+			competentProfessionals.put(role, staff.getProfessionalsByRole(role));
+		}
+
+		// Get input for the time interval
+		List<Appointment> availableSlots = new ArrayList<>();
+		while (availableSlots.size() == 0) {
+			System.out.println("\nPlease provide an interval you'd like to book the appointment in. (dd-mm-year hh) or 0 to return");
+			while (true) {
+				System.out.print("From: ");
+				try {
+					String input = in.nextLine();
+					if (input.equals("0")) return;
+					from = LocalDateTime.parse(in.nextLine(), dateFormat);
+					break;
+				} catch (DateTimeParseException e) {
+					System.out.println("Invalid format. Please use a day-month-year hour format in this way: dd-mm-year hh");
+				}
+			}
+			while (true) {
+				System.out.print("Till: ");
+				try {
+					until = LocalDateTime.parse(in.nextLine(), dateFormat);
+					break;
+				} catch (DateTimeParseException e) {
+					System.out.println("Invalid format. Please use a day-month-year hour format in this way: dd-mm-year hh");
+				}
+			}
+
+			// Choose a professional for every role who has the most empty slot in the given interval.
+			LocalDateTime finalFrom = from;
+			LocalDateTime finalUntil = until;
+			professionals = competentProfessionals.values().stream()
+					.map(professionalList -> professionalList.stream()
+							.max(Comparator.comparingInt(professional -> professional.searchAvailability(finalFrom, finalUntil).size()))
+							.orElse(null))
+					.collect(Collectors.toList());
+			availableSlots = staff.searchAvailability(professionals, from, until);
+			if (availableSlots.size() == 0) {
+				System.out.println("There are no available appointments in the given interval.");
+				System.out.println("Please provide a new one.");
+			}
+		}
+
+		int slotInput = -1;
+		while (slotInput < 0 || slotInput >= availableSlots.size()) {
+			System.out.println("\nChoose one of the available slots for the appointment:\n");
+			for (int i = 0; i < availableSlots.size(); i++) {
+				Appointment appointment = availableSlots.get(i);
+				System.out.println(i + ". " + appointment.getStartTime().format(dateFormat));
+			}
+			if (in.hasNextInt()) {
+				slotInput = in.nextInt();
+				in.nextLine();
+			} else {
+				in.nextLine();
+				System.out.println("Invalid input.");
+			}
+		}
+
+		// Get input for the room
+		System.out.println("\nPlease provide a room where the treatment will take place:");
+		String input = in.nextLine();
+		if (!input.isBlank()) room = input;
+
+		// Book the appointment
+		Appointment newAppointment = staff.bookAppointment(professionals, from, until, room, treatmentType);
 		if (newAppointment != null) {
 			try {
-				undoRedoHandler.addAction(new Action(
+				undoRedoHandler.addAction(new BookAppointmentAction(
 						"Add appointment",
 						staff,
-						staff.getClass().getMethod("deleteAppointment", long.class, long.class),
-						new Object[]{activeUser.getId(), newAppointment.getId()},
-						staff.getClass().getMethod("bookAppointment", List.class, LocalDateTime.class, LocalDateTime.class, String.class, String.class),
-						new Object[]{professionals, startTime, endTime, room, treatmentType}
+						newAppointment
 				));
-			} catch (NoSuchMethodException e) {
+			} catch (NoSuchMethodException | IllegalArgumentException e) {
 				// TODO handle exception
 				e.printStackTrace();
 			}
@@ -412,7 +498,7 @@ public class Menu {
 						staff,
 						deletedAppointment
 				));
-			} catch (NoSuchMethodException e) {
+			} catch (NoSuchMethodException | IllegalArgumentException e) {
 				// TODO handle exception
 				e.printStackTrace();
 			}
@@ -503,6 +589,7 @@ public class Menu {
 
 
 	}
+
 	/**
 	 * Logs the user out of the system.
 	 */
