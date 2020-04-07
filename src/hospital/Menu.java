@@ -516,7 +516,7 @@ public class Menu {
 	{
 		Scanner s = new Scanner(System.in);
 		String userInput;
-		String warning = "\nWARNING! This will change your username. Proceed with caution.\n";
+		String warning = "\nWARNING! If you're a professional, this will change your username. Proceed with caution.\n";
 
 		do {
 			System.out.println("\nPlease specify which data you want to change:");
@@ -541,8 +541,12 @@ public class Menu {
 					activeUser.setFirstName(newName);
 					System.out.println("Name changed successfully.");
 
-					activeUser.updateUsername();
-					System.out.println("Your new username is " + activeUser.getUsername());
+					//If active user is a professional, username is updated
+					if(activeUser.getClass().isInstance(Professional.class))
+					{
+						activeUser.updateUsername();
+						System.out.println("Your new username is " + activeUser.getUsername());
+					}
 
 					try {
 						undoRedoHandler.addAction(new Action(
