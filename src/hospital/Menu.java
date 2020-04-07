@@ -271,11 +271,33 @@ public class Menu {
 	}
 
 	/**
-	 * TODO
+	 * This method displays an appointment's information with the given appointment and professional's IDs
 	 */
 	private void searchAppointment() {
-		// TODO - implement Menu.searchAppointment
 
+		Scanner s = new Scanner(System.in);
+		boolean IDfound=false;
+		long inputID=-1;
+
+		//get the appointment ID from user input
+		while(!IDfound)
+		{
+			System.out.println("Enter appointment ID: ");
+			//check if input is valid ID
+			if(s.hasNextLong()) {
+				inputID = s.nextLong();
+				IDfound=true;
+			}
+			else System.out.println("Input not valid!");
+		}
+
+
+		Appointment foundAppointment = staff.searchAppointment(activeUser.getId(), inputID);
+		if (foundAppointment == null) System.out.println("Appointment not found.");
+		else {
+			System.out.println("Appointment details:");
+			System.out.println(foundAppointment.toString());
+		}
 	}
 
 	/**
@@ -342,8 +364,23 @@ public class Menu {
 	 */
 	private void deleteAppointment() {
 		long appointmentId = 0;
-		// TODO get input from user
+		Scanner s = new Scanner(System.in);
+		boolean IDfound=false;
+
+		//get the appointment ID from user input
+		while(!IDfound)
+		{
+			System.out.println("Enter appointment ID: ");
+			//check if input is valid ID
+			if(s.hasNextLong()) {
+				appointmentId = s.nextLong();
+				IDfound=true;
+			}
+			else System.out.println("Input not valid!");
+		}
+
 		Appointment deletedAppointment = staff.deleteAppointment(activeUser.getId(), appointmentId);
+
 		if (deletedAppointment != null) {
 			try {
 				undoRedoHandler.addAction(new DeleteAppointmentAction(
