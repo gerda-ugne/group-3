@@ -14,6 +14,11 @@ import java.time.LocalTime;
 public class WorkingHours {
 
 	/**
+	 * The day of the week when the working hour is defined
+	 */
+	private DayOfWeek dayOfWeek;
+
+	/**
 	 * Daily work shift starting hour
 	 */
 	private LocalTime startHour;
@@ -25,13 +30,32 @@ public class WorkingHours {
 
 	/**
 	 * Constructor for the WorkingHours class
-	 * @param day day of week (e.g. Monday)
+	 * @param dayOfWeek day of week (e.g. Monday)
 	 * @param startHour shift start hour
 	 * @param endHour shift end hour
 	 */
-	public WorkingHours(DayOfWeek day, LocalTime startHour, LocalTime endHour) {
+	public WorkingHours(DayOfWeek dayOfWeek, LocalTime startHour, LocalTime endHour) {
+		this.dayOfWeek = dayOfWeek;
 		this.startHour = startHour;
 		this.endHour = endHour;
+	}
+
+	/**
+	 * Getter method for the day of week
+	 *
+	 * @return the day when the working hours are defined
+	 */
+	public DayOfWeek getDayOfWeek() {
+		return dayOfWeek;
+	}
+
+	/**
+	 * Setter of the day of week
+	 *
+	 * @param dayOfWeek the day when the working hours are defined
+	 */
+	public void setDayOfWeek(DayOfWeek dayOfWeek) {
+		this.dayOfWeek = dayOfWeek;
 	}
 
 	/**

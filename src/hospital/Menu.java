@@ -19,7 +19,7 @@ public class Menu {
 	/**
 	 * The collection of employees in the hospital (doctors, nurses, etc.)
 	 */
-	private Staff staff;
+	private final Staff staff;
 
 	/**
 	 * The staff member who currently using the system. Null if nobody is logged in.
@@ -30,7 +30,7 @@ public class Menu {
 	 * The handler which responsible for the undo/redo function of the system.
 	 * Every action which needs to be undoable have to be registered by this handler.
 	 */
-	private UndoRedoHandler undoRedoHandler;
+	private final UndoRedoHandler undoRedoHandler;
 
 	/**
 	 * TODO
@@ -65,21 +65,25 @@ public class Menu {
 				String detectUser = menu.logIn();
 
 				//Appropriate menu is shown depending on user type
-				if(detectUser.equals("admin")) menu.processAdminChoice();
-				//TODO handle exceptions
-				else if(detectUser.equals("professional"))  menu.processUserChoice();
-				else continue;
-			}
-			else{
+				if (detectUser != null) {
+					if(detectUser.equals("admin")) menu.processAdminChoice();
+					//TODO handle exceptions
+					else if(detectUser.equals("professional"))  menu.processUserChoice();
+					else continue;
+				}
+			} else if (input.equals("0")) {
 				System.out.println("You have exited the system.");
+				menu.backupStaff();
+				// TODO backup treatmentTypes, id counters, and any other important static fields.
 				System.exit(1);
+			} else {
+				System.out.println("Not a valid input");
 			}
 		} while (true);
 
 	}
 
 	/**
-	 * TODO
 	 * Displays the menu options
 	 */
 	private void showMenu() {
@@ -173,11 +177,9 @@ public class Menu {
 	/**
 	 * Method to process users choice from the menu and activate corresponding function.
 	 * Please note that it uses a Genio class written by UoD to handle data input.
-	 * @return int userChoice
-	 * @throws Exception is a standard switch case Exception to handle input errors.
 	 */
 
-	public int processUserChoice() {
+	public void processUserChoice() {
 
 		int userChoice = -1;
 		boolean loggedIn = true;
@@ -221,10 +223,12 @@ public class Menu {
 
 				case 7:
 					backupStaff();
+					// TODO remove this menu item, add searchAppointment
 					break;
 
 				case 8:
 					restoreStaff();
+					// TODO remove this menu item
 					break;
 
 				case 9:
@@ -251,7 +255,7 @@ public class Menu {
 					System.out.println("Invalid user input. Please try again.");
 					break;
 			}
-		} return userChoice;
+		}
 	}
 
 	/**
@@ -320,9 +324,9 @@ public class Menu {
 				undoRedoHandler.addAction(new Action(
 						"Edit appointment",
 						staff,
-						staff.getClass().getMethod("editAppointment", long.class, long.class, List.class, LocalDateTime.class, LocalDateTime.class, String.class, String.class),
+						staff.getClass().getMethod("editAppointment", long.class, long.class, List.class, LocalDateTime.class, LocalDateTime.class, String.class, TreatmentType.class),
 						new Object[]{activeUser.getId(), oldAppointment.getId(), oldAppointment.getProfessionals(), oldAppointment.getStartTime(), oldAppointment.getEndTime(), oldAppointment.getRoom(), oldAppointment.getTreatmentType()},
-						staff.getClass().getMethod("editAppointment", long.class, long.class, List.class, LocalDateTime.class, LocalDateTime.class, String.class, String.class),
+						staff.getClass().getMethod("editAppointment", long.class, long.class, List.class, LocalDateTime.class, LocalDateTime.class, String.class, TreatmentType.class),
 						new Object[]{activeUser.getId(), oldAppointment.getId(), oldAppointment.getProfessionals(), oldAppointment.getStartTime(), oldAppointment.getEndTime(), oldAppointment.getRoom(), oldAppointment.getTreatmentType()}
 				));
 			} catch (NoSuchMethodException e) {
@@ -446,14 +450,12 @@ public class Menu {
 		System.out.println("Thank you for using the system.");
 		activeUser = null;
 		undoRedoHandler.clearHistory();
-
-		//Do we need to reset the undo-redo handler here too?
 	}
 
 	/**
 	 * Prompts the user to log-in
 	 * @return "admin" or "professional" depending on
-	 * who logged in to the system, or null if logging in was unsuccessful.
+	 * who logged in to the system, or "noUser" if logging in was unsuccessful.
 	 */
 	private String logIn()
 	{
@@ -487,11 +489,12 @@ public class Menu {
 					retry = false;
 
 					//Informs system whether admin or a professional has logged in
-					if(activeUser.getRole().equals("Administrator")) return "admin";
+					if(activeUser.getRole().equals(Role.Administrator)) return "admin";
 					else return "professional";
 				}
 				else{
 					System.out.println("Your password is incorrect. Please try again.");
+					activeUser = null;
 					retry = true;
 				}
 
@@ -555,7 +558,7 @@ public class Menu {
 						// TODO handle error
 						e.printStackTrace();
 					}
-				}break;
+				} break;
 				case "2":{
 
 					System.out.println(warning);
@@ -585,7 +588,7 @@ public class Menu {
 						// TODO handle error
 						e.printStackTrace();
 					}
-				}break;
+				} break;
 				case "3":
 				{
 					Scanner office = new Scanner(System.in);
@@ -611,8 +614,7 @@ public class Menu {
 						// TODO handle error
 						e.printStackTrace();
 					}
-				}break;
-				case "0": return;
+				} break;
 				default: System.out.println("Wrong input. Please check it and try again.");break;
 			}
 		} while (!(userInput.equals("0")));
@@ -628,7 +630,6 @@ public class Menu {
 		boolean retry = false;
 
 		Scanner s = new Scanner(System.in);
-		Scanner dateScanner = new Scanner(System.in);
 
 		do {
 			System.out.println("Please enter the task details, or 0 to return:\n");
@@ -649,7 +650,7 @@ public class Menu {
 			System.out.println("Enter the date when your task is due by (day-month-year format, e.g. 05-12-2020):");
 			dueBy = s.nextLine();
 			DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-uuuu");
-			LocalDate dueByDate = null;
+			LocalDate dueByDate;
 
 			try {
 				//Parsing the String
@@ -682,9 +683,9 @@ public class Menu {
 						undoRedoHandler.addAction(new Action(
 								"New task addition",
 								activeUser,
-								activeUser.getClass().getMethod("deleteTask", String.class),
+								Professional.class.getMethod("deleteTask", String.class),
 								new Object[] {taskName},
-								activeUser.getClass().getMethod("addTask", String.class, String.class, LocalDate.class),
+								Professional.class.getMethod("addTask", String.class, String.class, LocalDate.class),
 								new Object[] {taskName, description, dueByDate}
 						));
 					} catch (NoSuchMethodException e) {
@@ -729,9 +730,9 @@ public class Menu {
 					undoRedoHandler.addAction(new Action(
 							"Task deletion",
 							activeUser,
-							activeUser.getClass().getMethod("addTask", String.class, String.class, LocalDate.class),
+							Professional.class.getMethod("addTask", String.class, String.class, LocalDate.class),
 							new Object[] {task.getTaskName(), task.getDescription(), task.getDueBy()},
-							activeUser.getClass().getMethod("deleteTask", String.class),
+							Professional.class.getMethod("deleteTask", String.class),
 							new Object[] {toDelete}
 					));
 				} catch (NoSuchMethodException e) {
@@ -802,7 +803,7 @@ public class Menu {
 			if(input.equals("Y") || input.equals("y"))
 			{
 
-				Professional newMember = new Professional(firstName,lastName,role,office);
+				Professional newMember = new Professional(firstName, lastName, Role.valueOf(role), office);
 				staff.addMember(newMember);
 				try {
 					undoRedoHandler.addAction(new Action(

@@ -1,5 +1,6 @@
 package hospital.staff;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 /**
@@ -12,24 +13,24 @@ import java.time.LocalDate;
  * This feature is an optional extra.
  *
  */
-public class Task implements Comparable<Task> {
+public class Task implements Comparable<Task>, Serializable {
 
     /**
      * Name of the task
      */
-    String taskName;
+    private String taskName;
     /**
      * Description of the task
      */
-    String description;
+    private String description;
     /**
      * Date when the task was initialised
      */
-    LocalDate initialised;
+    private LocalDate initialised;
     /**
      * Date when the task is dueBy
      */
-    LocalDate dueBy;
+    private LocalDate dueBy;
 
     /**
      * Constructor for the Task class

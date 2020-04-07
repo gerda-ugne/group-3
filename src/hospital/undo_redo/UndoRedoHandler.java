@@ -10,12 +10,12 @@ public class UndoRedoHandler {
     /**
      * The stack of commands executed by the user, for undo feature.
      */
-    private Stack<Action> doneActions;
+    private final Stack<Action> doneActions;
 
     /**
      * The stack of commands undone by the user, for redo feature.
      */
-    private Stack<Action> undoneActions;
+    private final Stack<Action> undoneActions;
 
     /**
      * Default constructor of the class.

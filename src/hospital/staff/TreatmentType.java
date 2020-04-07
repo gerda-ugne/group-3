@@ -1,6 +1,8 @@
 package hospital.staff;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Treatment type class defines default treatments
@@ -13,17 +15,18 @@ public class TreatmentType {
     /**
      * Set that contains default treatments
      */
-    private static final Set<TreatmentType> treatmentTypes = new HashSet<>();
+    private static Set<TreatmentType> treatmentTypes;
+    // TODO change to hashmap
 
     /**
      * Label of the treatment
      */
-    private String label;
+    private final String label;
 
     /**
      * Role requirement for the treatment
      */
-    private List<Role> requiredRoles;
+    private final List<Role> requiredRoles;
 
     /**
      * Private constructor for the TreatmentType class.
@@ -40,7 +43,7 @@ public class TreatmentType {
         treatmentTypes.add(new TreatmentType("<undefined>", null));
         treatmentTypes.add(new TreatmentType("Routine Checkup", Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("GP"))));
         treatmentTypes.add(new TreatmentType("Emergency Appointment",Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("PhysicianAssistant"),Role.valueOf("OccupationalTherapist"))));
-        treatmentTypes.add(new TreatmentType("Mental Health Services", Collections.singletonList(Role.valueOf("Therapist"))));
+        treatmentTypes.add(new TreatmentType("Mental Health Services",Arrays.asList(Role.valueOf("Therapist"))));
         treatmentTypes.add(new TreatmentType("Vaccinations",Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("Nurse"))));
         treatmentTypes.add(new TreatmentType("Eye care",Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("Optometrist"))));
         treatmentTypes.add(new TreatmentType("X-ray scan",Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("GP"))));
@@ -106,5 +109,13 @@ public class TreatmentType {
         }
 
         return  null;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public List<Role> getRequiredRoles() {
+        return requiredRoles;
     }
 }

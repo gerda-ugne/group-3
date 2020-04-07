@@ -28,7 +28,14 @@ public class Staff implements UndoRedoExecutor, Serializable {
 	 */
 	public Staff() {
 		staff = new HashSet<>();
-		admin = new Administrator();
+		admin = new Administrator("Admin", "Chief", "Heaven");
+		if (staff.isEmpty()) {
+			for (Role role : Role.values()) {
+				for (int i = 0; i < 5; i++) {
+					staff.add(new Professional(role.toString(), String.valueOf(i), role, role.toString() + "Office" + i));
+				}
+			}
+		}
 	}
 
 	/**
@@ -69,7 +76,7 @@ public class Staff implements UndoRedoExecutor, Serializable {
 
 		//Local variable for holding personal appointments of one professional at a time
 		List<List<Appointment>> personalFreeSlots = new ArrayList<>();
-		Set <Appointment> allAppointments = new HashSet<Appointment>();
+		Set <Appointment> allAppointments = new HashSet<>();
 
 		//Professional availability is retrieved and recorded into a set
 		for (Professional professional:
@@ -82,13 +89,12 @@ public class Staff implements UndoRedoExecutor, Serializable {
 
 		//The intersection of free common slots is calculated
 
-		for(int o=0; o<personalFreeSlots.size(); o++)
-		{
-			allAppointments.retainAll(personalFreeSlots.get(o));
+		for (List<Appointment> personalFreeSlot : personalFreeSlots) {
+			allAppointments.retainAll(personalFreeSlot);
 		}
 
 		//Converts set into a list type object
-		List<Appointment> listOfAppointments = new ArrayList<Appointment>(allAppointments);
+		List<Appointment> listOfAppointments = new ArrayList<>(allAppointments);
 		//Sorts the list by start date
 		listOfAppointments.sort(Comparator.comparing(Appointment::getStartTime));
 
@@ -105,17 +111,13 @@ public class Staff implements UndoRedoExecutor, Serializable {
 	 * @param role role to filter by
 	 * @return list of professionals only with the given role
 	 */
-	public List<Professional> sortByRole(List<Professional> professionals, String role)
+	public List<Professional> sortByRole(List<Professional> professionals, Role role)
 	{
-		List<Professional> professionalsOfRole = new ArrayList<Professional>(professionals)
-				.stream()
-				.filter(professional -> {
-					if(professional.getRole().equals(role)) return true;
-					else return false;
-				})
-				.collect(Collectors.toList());
 
-		return professionalsOfRole;
+		return new ArrayList<>(professionals)
+				.stream()
+				.filter(professional -> professional.getRole().equals(role))
+				.collect(Collectors.toList());
 
 	}
 
@@ -132,7 +134,7 @@ public class Staff implements UndoRedoExecutor, Serializable {
 	 */
 	public Appointment bookAppointment(List<Long> professionalIds, LocalDateTime startTime, LocalDateTime endTime, String room, String treatmentType) {
 
-		List<Professional> involvedProfessionals = new ArrayList<Professional>();
+		List<Professional> involvedProfessionals = new ArrayList<>();
 		//searches through staff for professionals whose IDs match the given ones and adds them to involvedProfessionals list
 		for (Professional professional: staff)
 		{
@@ -180,7 +182,7 @@ public class Staff implements UndoRedoExecutor, Serializable {
 	 * 			The return can be null, if the appointment could not have been found.
 	 */
 	public Appointment editAppointment(long professionalId, long appointmentId, List<Long> professionals, LocalDateTime startTime, LocalDateTime endTime, String room, TreatmentType treatmentType) {
-
+		// TODO make it faster if have time
 		List<Professional> involvedProfessionals = new ArrayList<>();
 
 		boolean appointmentFound = false;
@@ -232,6 +234,7 @@ public class Staff implements UndoRedoExecutor, Serializable {
 	 * @return The deleted appointment or null, if the deletion was unsuccessful.
 	 */
 	public Appointment deleteAppointment(long professionalId, long appointmentId) {
+		// TODO if have time make it faster
 		Appointment deletedAppointment=null;
 		boolean appointmentFound=false;
 		for (Professional professional: staff)

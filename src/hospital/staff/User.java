@@ -39,7 +39,7 @@ public abstract class User implements Serializable, UndoRedoExecutor {
     /**
      * The role of the user, e.g. nurse, dermatologist, administrator etc.
      */
-    private String role;
+    private Role role;
 
     /**
      * Encrypted password of the user, which is used to log in.
@@ -56,7 +56,7 @@ public abstract class User implements Serializable, UndoRedoExecutor {
      * Constructor with no parameters for User class
      */
     public User() {
-        this("<undefined>", "<undefined>", "<undefined>", "<undefined>");
+        this("<undefined>", "<undefined>", null, "<undefined>");
     }
 
     /**
@@ -65,7 +65,7 @@ public abstract class User implements Serializable, UndoRedoExecutor {
      * @param lastName last name of User
      * @param role role of User
      */
-    public User(String firstName, String lastName, String role) {
+    public User(String firstName, String lastName, Role role) {
         this(firstName, lastName, role, "<undefined>");
     }
 
@@ -76,7 +76,7 @@ public abstract class User implements Serializable, UndoRedoExecutor {
      * @param role role of User
      * @param office office of User
      */
-    public User(String firstName, String lastName, String role, String office) {
+    public User(String firstName, String lastName, Role role, String office) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.role = role;
@@ -165,7 +165,7 @@ public abstract class User implements Serializable, UndoRedoExecutor {
      * Getter of User's role.
      * @return the role of User.
      */
-    public String getRole() {
+    public Role getRole() {
         return this.role;
     }
 
@@ -173,7 +173,7 @@ public abstract class User implements Serializable, UndoRedoExecutor {
      * Sets the role of User.
      * @param role The role to set to the user.
      */
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
