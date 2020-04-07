@@ -421,7 +421,7 @@ public class Menu {
 	private String startMenu()
 	{
 		do {
-			System.out.println("\nWelcome to hospital scheduler.\n");
+			System.out.println("\nWelcome to the hospital scheduler.\n");
 			System.out.println("Please choose one of the following options:\n");
 
 			System.out.println("1. Log-in");
