@@ -268,8 +268,23 @@ public class Menu {
 	 */
 	private void deleteAppointment() {
 		long appointmentId = 0;
-		// TODO get input from user
+		Scanner s = new Scanner(System.in);
+		boolean IDfound=false;
+
+		//get the appointment ID from user input
+		while(!IDfound)
+		{
+			System.out.println("Enter appointment ID: ");
+			//check if input is valid ID
+			if(s.hasNextLong()) {
+				appointmentId = s.nextLong();
+				IDfound=true;
+			}
+			else System.out.println("Input not valid!");
+		}
+
 		Appointment deletedAppointment = staff.deleteAppointment(activeUser.getId(), appointmentId);
+
 		if (deletedAppointment != null) {
 			try {
 				undoRedoHandler.addAction(new DeleteAppointmentAction(
