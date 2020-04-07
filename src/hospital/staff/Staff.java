@@ -81,7 +81,7 @@ public class Staff implements UndoRedoExecutor, Serializable {
 		//Professional availability is retrieved and recorded into a set
 		for (Professional professional:
 			 professionals) {
-
+			if (professional == null) return new ArrayList<>(0);
 			List<Appointment> tempList = professional.searchAvailability(from, to);
 			personalFreeSlots.add(tempList);
 			allAppointments.addAll(tempList);
@@ -107,15 +107,13 @@ public class Staff implements UndoRedoExecutor, Serializable {
 	/**
 	 * List of professionals is filtered by role.
 	 *
-	 * @param professionals list of professionals to filter
 	 * @param role role to filter by
 	 * @return list of professionals only with the given role
 	 */
-	public List<Professional> sortByRole(List<Professional> professionals, Role role)
+	public List<Professional> getProfessionalsByRole(Role role)
 	{
 
-		return new ArrayList<>(professionals)
-				.stream()
+		return new ArrayList<>(staff).stream()
 				.filter(professional -> professional.getRole().equals(role))
 				.collect(Collectors.toList());
 
@@ -125,37 +123,25 @@ public class Staff implements UndoRedoExecutor, Serializable {
 	 * Books an appointment in one or more electronic diaries of the involved professionals.
 	 * It also checks if the given time-slot is free and available for all of the involved professionals.
 	 *
-	 * @param professionalIds A list of the ids of the professionals who are involved in the new appointment.
+	 * @param professionals A list of the ids of the professionals who are involved in the new appointment.
 	 * @param startTime The time when the new appointment starts.
 	 * @param endTime The time when the new appointment ends.
 	 * @param room The name/number of the room where the appointment will take place.
 	 * @param treatmentType The type of treatment the new appointment has.
 	 * @return The newly created appointment or null if the booking was unsuccessful.
 	 */
-	public Appointment bookAppointment(List<Long> professionalIds, LocalDateTime startTime, LocalDateTime endTime, String room, TreatmentType treatmentType) {
-
-		List<Professional> involvedProfessionals = new ArrayList<>();
-		//searches through staff for professionals whose IDs match the given ones and adds them to involvedProfessionals list
-		for (Professional professional: staff)
-		{
-			for (long ID : professionalIds) {
-				if(ID==professional.getId())
-				{
-					involvedProfessionals.add(professional);
-				}
-			}
-		}
+	public Appointment bookAppointment(List<Professional> professionals, LocalDateTime startTime, LocalDateTime endTime, String room, TreatmentType treatmentType) {
 
 		//creates new appointment instance with the given parameters
-		Appointment newAppointment = new Appointment(startTime, endTime, room, involvedProfessionals, treatmentType);
+		Appointment newAppointment = new Appointment(startTime, endTime, room, professionals, treatmentType);
 
 		//creates new appointment list of available slots at the given time for all involved professionals, should only have one list item
-		List<Appointment> freeSlots=searchAvailability(involvedProfessionals,startTime,endTime);
+		List<Appointment> freeSlots = searchAvailability(professionals, startTime, endTime);
 
 		//if the list of free slots isn't empty (all involved professionals have one free slot at the given time), adds the appointment to all of their diaries
 		if(!freeSlots.isEmpty())
 		{
-			for(Professional professional: involvedProfessionals)
+			for(Professional professional: professionals)
 			{
 				professional.addAppointment(newAppointment);
 			}
