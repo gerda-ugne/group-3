@@ -175,11 +175,46 @@ public class Menu {
 	}
 
 	/**
-	 * TODO
+	 * This method displays an appointment's information with the given appointment and professional's IDs
 	 */
 	private void searchAppointment() {
-		// TODO - implement Menu.searchAppointment
 
+		Scanner s = new Scanner(System.in);
+		boolean IDfound=false;
+		long inputID=-1;
+		boolean profIDfound=false;
+		long profInputID=-1;
+
+		//get the appointment ID from user input
+		while(!IDfound)
+		{
+			System.out.println("Enter appointment ID: ");
+			//check if input is valid ID
+			if(s.hasNextLong()) {
+				inputID = s.nextLong();
+				IDfound=true;
+			}
+			else System.out.println("Input not valid!");
+		}
+
+		//get the professional's ID from user input
+		while(!profIDfound)
+		{
+			System.out.println("Enter professional's ID: ");
+			//check if input is valid ID
+			if(s.hasNextLong()) {
+				profInputID = s.nextLong();
+				profIDfound=true;
+			}
+			else System.out.println("Input not valid!");
+		}
+
+		Appointment foundAppointment = staff.searchAppointment(profInputID, inputID);
+		if (foundAppointment == null) System.out.println("Appointment not found.");
+		else {
+			System.out.println("Appointment details:");
+			System.out.println(foundAppointment.toString());
+		}
 	}
 
 	/**
