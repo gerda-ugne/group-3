@@ -30,10 +30,10 @@ public class Menu {
 	 * The handler which responsible for the undo/redo function of the system.
 	 * Every action which needs to be undoable have to be registered by this handler.
 	 */
-	private UndoRedoHandler undoRedoHandler;
+	private final UndoRedoHandler undoRedoHandler;
 
 	/**
-	 * Constructor of the Menu class.
+	 * TODO
 	 */
 	public Menu() {
 
@@ -65,41 +65,49 @@ public class Menu {
 				String detectUser = menu.logIn();
 
 				//Appropriate menu is shown depending on user type
-				if(detectUser.equals("admin")) menu.processAdminChoice();
-				//TODO handle exceptions
-				else if(detectUser.equals("professional"))  menu.processUserChoice();
-				else continue;
-			}
-			else{
+				if (detectUser != null) {
+					if(detectUser.equals("admin")) menu.processAdminChoice();
+					//TODO handle exceptions
+					else if(detectUser.equals("professional"))  menu.processUserChoice();
+					else continue;
+				}
+			} else if (input.equals("0")) {
 				System.out.println("You have exited the system.");
+				menu.backupStaff();
+				// TODO backup treatmentTypes, id counters, and any other important static fields.
 				System.exit(1);
+			} else {
+				System.out.println("Not a valid input");
 			}
 		} while (true);
 
 	}
 
 	/**
-	 * TODO
 	 * Displays the menu options
 	 */
 	private void showMenu() {
-
+		// TODO - implement Menu.showMenu
 		System.out.println("\nAppointment management:\n");
-		System.out.println("1. Display the electronic diary");
-		System.out.println("2. Backup the electronic diary");
-		System.out.println("3. Restore the latest backup of the electronic diary");
+		System.out.println("1. Add a new appointment");
+		System.out.println("2. Edit an existing appointment");
+		System.out.println("3. Remove an appointment");
 		System.out.println("4. Undo last action");
 		System.out.println("5. Redo last action");
+		System.out.println("6. Display the electronic diary");
+		System.out.println("7. Backup the electronic diary");
+		System.out.println("8. Restore the latest backup of the electronic diary");
+
 
 		System.out.println("\nTask management:\n");
-		System.out.println("6. Add a new task");
-		System.out.println("7. Remove a task");
-		System.out.println("8. Display the task list");
+		System.out.println("9. Add a new task");
+		System.out.println("10. Remove a task");
+		System.out.println("11. Display the task list");
 
 		System.out.println("\nOther:\n");
-		System.out.println("9. Change your password");
-		System.out.println("10. Change your personal details");
-		System.out.println("\n0. Log out");
+		System.out.println("12. Change your password");
+		System.out.println("13. Change your personal details");
+		System.out.println("0. Log out");
 
 	}
 
@@ -108,21 +116,14 @@ public class Menu {
 	 */
 	private void showAdminMenu()
 	{
-		System.out.println("\nAppointment management:\n");
-		System.out.println("1. Add a new appointment");
-		System.out.println("2. Edit an existing appointment");
-		System.out.println("3. Remove an appointment");
-		System.out.println("4. Undo last action");
-		System.out.println("5. Redo last action");
 		System.out.println("\nStaff management:\n");
-		System.out.println("6. Add a new staff member");
-		System.out.println("7. Remove a staff member");
+		System.out.println("1. Add a new staff member");
+		System.out.println("2. Remove a staff member");
 		System.out.println("\nTreatment type management:\n");
-		System.out.println("8. Add a new treatment type");
-		System.out.println("9. Show available treatment types");
+		System.out.println("3. Add a new treatment type");
 		System.out.println("\nOther:\n");
-		System.out.println("10. Edit personal information");
-		System.out.println("11. Change password");
+		System.out.println("4. Edit personal information");
+		System.out.println("5. Change password");
 		System.out.println("\n0. Log out");
 
 
@@ -150,49 +151,22 @@ public class Menu {
 					break;
 
 				case "1":
-					addAppointment();
-					break;
-
-				case "2":
-					editAppointment();
-					break;
-
-				case "3":
-					deleteAppointment();
-					break;
-
-				case "4":
-					//TODO add undo
-					break;
-
-				case "5":
-					//TODO add redo
-					break;
-
-				case "6":
 					addStaffMember();
 					break;
 
-				case "7":
+				case "2":
 					removeStaffMember();
 					break;
 
-				case "8":
+				case "3":
 					addTreatmentType();
 					break;
-
-				case "9":
-					TreatmentType.displayTreatments();
-					break;
-
-				case "10":
+				case "4":
 					changeDetails();
 					break;
-
-				case "11":
+				case "5":
 					changePassword();
 					break;
-
 				default:
 					System.out.println("Invalid user input. Please try again.");
 					break;
@@ -203,11 +177,9 @@ public class Menu {
 	/**
 	 * Method to process users choice from the menu and activate corresponding function.
 	 * Please note that it uses a Genio class written by UoD to handle data input.
-	 * @return int userChoice
-	 * @throws Exception is a standard switch case Exception to handle input errors.
 	 */
 
-	public int processUserChoice() {
+	public void processUserChoice() {
 
 		int userChoice = -1;
 		boolean loggedIn = true;
@@ -226,15 +198,15 @@ public class Menu {
 					break;
 
 				case 1:
-					displayDiary(staff, activeUser.getId());
+					addAppointment();
 					break;
 
 				case 2:
-					backupStaff();
+					editAppointment();
 					break;
 
 				case 3:
-					restoreStaff();
+					deleteAppointment();
 					break;
 
 				case 4:
@@ -246,22 +218,36 @@ public class Menu {
 					break;
 
 				case 6:
-					addTask();
+					displayDiary(staff, activeUser.getId());
 					break;
 
 				case 7:
-					removeTask();
+					backupStaff();
+					// TODO remove this menu item, add searchAppointment
 					break;
 
 				case 8:
-					displayTaskList();
+					restoreStaff();
+					// TODO remove this menu item
 					break;
 
 				case 9:
-					changePassword();
+					addTask();
 					break;
 
 				case 10:
+					removeTask();
+					break;
+
+				case 11:
+					displayTaskList();
+					break;
+
+				case 12:
+					changePassword();
+					break;
+
+				case 13:
 					changeDetails();
 					break;
 
@@ -269,7 +255,7 @@ public class Menu {
 					System.out.println("Invalid user input. Please try again.");
 					break;
 			}
-		} return userChoice;
+		}
 	}
 
 	/**
@@ -285,11 +271,33 @@ public class Menu {
 	}
 
 	/**
-	 * TODO
+	 * This method displays an appointment's information with the given appointment and professional's IDs
 	 */
 	private void searchAppointment() {
-		// TODO - implement Menu.searchAppointment
 
+		Scanner s = new Scanner(System.in);
+		boolean IDfound=false;
+		long inputID=-1;
+
+		//get the appointment ID from user input
+		while(!IDfound)
+		{
+			System.out.println("Enter appointment ID: ");
+			//check if input is valid ID
+			if(s.hasNextLong()) {
+				inputID = s.nextLong();
+				IDfound=true;
+			}
+			else System.out.println("Input not valid!");
+		}
+
+
+		Appointment foundAppointment = staff.searchAppointment(activeUser.getId(), inputID);
+		if (foundAppointment == null) System.out.println("Appointment not found.");
+		else {
+			System.out.println("Appointment details:");
+			System.out.println(foundAppointment.toString());
+		}
 	}
 
 	/**
@@ -338,9 +346,9 @@ public class Menu {
 				undoRedoHandler.addAction(new Action(
 						"Edit appointment",
 						staff,
-						staff.getClass().getMethod("editAppointment", long.class, long.class, List.class, LocalDateTime.class, LocalDateTime.class, String.class, String.class),
+						staff.getClass().getMethod("editAppointment", long.class, long.class, List.class, LocalDateTime.class, LocalDateTime.class, String.class, TreatmentType.class),
 						new Object[]{activeUser.getId(), oldAppointment.getId(), oldAppointment.getProfessionals(), oldAppointment.getStartTime(), oldAppointment.getEndTime(), oldAppointment.getRoom(), oldAppointment.getTreatmentType()},
-						staff.getClass().getMethod("editAppointment", long.class, long.class, List.class, LocalDateTime.class, LocalDateTime.class, String.class, String.class),
+						staff.getClass().getMethod("editAppointment", long.class, long.class, List.class, LocalDateTime.class, LocalDateTime.class, String.class, TreatmentType.class),
 						new Object[]{activeUser.getId(), oldAppointment.getId(), oldAppointment.getProfessionals(), oldAppointment.getStartTime(), oldAppointment.getEndTime(), oldAppointment.getRoom(), oldAppointment.getTreatmentType()}
 				));
 			} catch (NoSuchMethodException e) {
@@ -356,8 +364,23 @@ public class Menu {
 	 */
 	private void deleteAppointment() {
 		long appointmentId = 0;
-		// TODO get input from user
+		Scanner s = new Scanner(System.in);
+		boolean IDfound=false;
+
+		//get the appointment ID from user input
+		while(!IDfound)
+		{
+			System.out.println("Enter appointment ID: ");
+			//check if input is valid ID
+			if(s.hasNextLong()) {
+				appointmentId = s.nextLong();
+				IDfound=true;
+			}
+			else System.out.println("Input not valid!");
+		}
+
 		Appointment deletedAppointment = staff.deleteAppointment(activeUser.getId(), appointmentId);
+
 		if (deletedAppointment != null) {
 			try {
 				undoRedoHandler.addAction(new DeleteAppointmentAction(
@@ -394,7 +417,7 @@ public class Menu {
 	private void restoreStaff() {
 		try (FileInputStream fin = new FileInputStream("backupStaff.txt");
 			 ObjectInputStream ois = new ObjectInputStream(fin)) {
-			Staff staff = (Staff) ois.readObject();
+			staff = (Staff) ois.readObject();
 			displayDiary(staff, null);
 		} catch (FileNotFoundException e) {
 			// TODO handle exception
@@ -435,7 +458,7 @@ public class Menu {
 	private String startMenu()
 	{
 		do {
-			System.out.println("\nWelcome to the hospital scheduler.\n");
+			System.out.println("\nWelcome to hospital scheduler.\n");
 			System.out.println("Please choose one of the following options:\n");
 
 			System.out.println("1. Log-in");
@@ -469,7 +492,7 @@ public class Menu {
 	/**
 	 * Prompts the user to log-in
 	 * @return "admin" or "professional" depending on
-	 * who logged in to the system, or null if logging in was unsuccessful.
+	 * who logged in to the system, or "noUser" if logging in was unsuccessful.
 	 */
 	private String logIn()
 	{
@@ -488,6 +511,7 @@ public class Menu {
 				username = s.nextLine();
 				if(username.equals("0")) return "noUser";
 
+				//TODO add an instance of administrator to staff
 				if(username.equals(staff.getAdmin().getUsername())) activeUser = staff.getAdmin();
 				else activeUser = staff.searchByUsername(username);
 
@@ -502,11 +526,12 @@ public class Menu {
 					retry = false;
 
 					//Informs system whether admin or a professional has logged in
-					if(activeUser.getRole().equals("Administrator")) return "admin";
+					if(activeUser.getRole().equals(Role.Administrator)) return "admin";
 					else return "professional";
 				}
 				else{
 					System.out.println("Your password is incorrect. Please try again.");
+					activeUser = null;
 					retry = true;
 				}
 
@@ -529,7 +554,7 @@ public class Menu {
 	{
 		Scanner s = new Scanner(System.in);
 		String userInput;
-		String warning = "\nWARNING! If you're a professional, this will change your username. Proceed with caution.\n";
+		String warning = "\nWARNING! This will change your username. Proceed with caution.\n";
 
 		do {
 			System.out.println("\nPlease specify which data you want to change:");
@@ -554,12 +579,8 @@ public class Menu {
 					activeUser.setFirstName(newName);
 					System.out.println("Name changed successfully.");
 
-					//If active user is a professional, username is updated
-					if(activeUser.getClass().isInstance(Professional.class))
-					{
-						activeUser.updateUsername();
-						System.out.println("Your new username is " + activeUser.getUsername());
-					}
+					activeUser.updateUsername();
+					System.out.println("Your new username is " + activeUser.getUsername());
 
 					try {
 						undoRedoHandler.addAction(new Action(
@@ -574,7 +595,7 @@ public class Menu {
 						// TODO handle error
 						e.printStackTrace();
 					}
-				}break;
+				} break;
 				case "2":{
 
 					System.out.println(warning);
@@ -604,7 +625,7 @@ public class Menu {
 						// TODO handle error
 						e.printStackTrace();
 					}
-				}break;
+				} break;
 				case "3":
 				{
 					Scanner office = new Scanner(System.in);
@@ -630,8 +651,7 @@ public class Menu {
 						// TODO handle error
 						e.printStackTrace();
 					}
-				}break;
-				case "0": return;
+				} break;
 				default: System.out.println("Wrong input. Please check it and try again.");break;
 			}
 		} while (!(userInput.equals("0")));
@@ -647,7 +667,6 @@ public class Menu {
 		boolean retry = false;
 
 		Scanner s = new Scanner(System.in);
-		Scanner dateScanner = new Scanner(System.in);
 
 		do {
 			System.out.println("Please enter the task details, or 0 to return:\n");
@@ -668,7 +687,7 @@ public class Menu {
 			System.out.println("Enter the date when your task is due by (day-month-year format, e.g. 05-12-2020):");
 			dueBy = s.nextLine();
 			DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-uuuu");
-			LocalDate dueByDate = null;
+			LocalDate dueByDate;
 
 			try {
 				//Parsing the String
@@ -676,6 +695,7 @@ public class Menu {
 			} catch (DateTimeParseException e) {
 				System.out.println("There was an error recording your due-by date, please try again.");
 				retry = true;
+				// TODO ask for new input if there was  a wrong one
 				continue;
 			}
 
@@ -696,14 +716,13 @@ public class Menu {
 
 				if(success) {
 					retry = false;
-					System.out.println("Task was added successfully.");
 					try {
 						undoRedoHandler.addAction(new Action(
 								"New task addition",
 								activeUser,
-								activeUser.getClass().getMethod("deleteTask", String.class),
+								Professional.class.getMethod("deleteTask", String.class),
 								new Object[] {taskName},
-								activeUser.getClass().getMethod("addTask", String.class, String.class, LocalDate.class),
+								Professional.class.getMethod("addTask", String.class, String.class, LocalDate.class),
 								new Object[] {taskName, description, dueByDate}
 						));
 					} catch (NoSuchMethodException e) {
@@ -748,9 +767,9 @@ public class Menu {
 					undoRedoHandler.addAction(new Action(
 							"Task deletion",
 							activeUser,
-							activeUser.getClass().getMethod("addTask", String.class, String.class, LocalDate.class),
+							Professional.class.getMethod("addTask", String.class, String.class, LocalDate.class),
 							new Object[] {task.getTaskName(), task.getDescription(), task.getDueBy()},
-							activeUser.getClass().getMethod("deleteTask", String.class),
+							Professional.class.getMethod("deleteTask", String.class),
 							new Object[] {toDelete}
 					));
 				} catch (NoSuchMethodException e) {
@@ -821,7 +840,7 @@ public class Menu {
 			if(input.equals("Y") || input.equals("y"))
 			{
 
-				Professional newMember = new Professional(firstName,lastName,role,office);
+				Professional newMember = new Professional(firstName, lastName, Role.valueOf(role), office);
 				staff.addMember(newMember);
 				try {
 					undoRedoHandler.addAction(new Action(
@@ -963,11 +982,9 @@ public class Menu {
 				int counter = 0;
 				while(counter < numberOfProfessionals) {
 
-					System.out.println(counter+1  + " out of " + numberOfProfessionals + ": please specify the role of the professional:");
+					System.out.println(counter + 1 + "out of " + numberOfProfessionals + ": please specify the role of the professional:");
 					role = scanRole.nextLine();
 
-					//Adjusts the input to match the enum grammar
-					role = role.substring(0,1).toUpperCase() + role.substring(1).toLowerCase();
 					exists = Role.checkIfRoleExists(role);
 					if (exists) {
 						//If role exists, it's added to the requirements

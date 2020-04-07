@@ -12,7 +12,7 @@ public class Administrator extends User{
      */
     public Administrator()
     {
-        super("<undefined>", "<undefined>", "Administrator", "<undefined>");
+        super("<undefined>", "<undefined>", Role.Administrator, "<undefined>");
         setUsername("admin");
     }
 
@@ -23,7 +23,7 @@ public class Administrator extends User{
      * @param office office of the admin
      */
     public Administrator(String firstName, String lastName, String office) {
-        super(firstName, lastName, "Administrator", office);
+        super(firstName, lastName, Role.Administrator, office);
         setUsername("admin");
     }
 
