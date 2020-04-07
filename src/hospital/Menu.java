@@ -192,7 +192,10 @@ public class Menu {
 				inputID = s.nextLong();
 				IDfound=true;
 			}
-			else System.out.println("Input not valid!");
+			else {
+				System.out.println("Input not valid!");
+				s.nextLine();
+			}
 		}
 
 
@@ -280,7 +283,10 @@ public class Menu {
 				appointmentId = s.nextLong();
 				IDfound=true;
 			}
-			else System.out.println("Input not valid!");
+			else {
+				System.out.println("Input not valid!");
+				s.nextLine();
+			}
 		}
 
 		Appointment deletedAppointment = staff.deleteAppointment(activeUser.getId(), appointmentId);
