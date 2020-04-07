@@ -14,16 +14,17 @@ public class TreatmentType {
      * Set that contains default treatments
      */
     private static final Set<TreatmentType> treatmentTypes = new HashSet<>();
+    // TODO change to hashmap
 
     /**
      * Label of the treatment
      */
-    private String label;
+    private final String label;
 
     /**
      * Role requirement for the treatment
      */
-    private List<Role> requiredRoles;
+    private final List<Role> requiredRoles;
 
     /**
      * Private constructor for the TreatmentType class.
@@ -106,5 +107,13 @@ public class TreatmentType {
         }
 
         return  null;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public List<Role> getRequiredRoles() {
+        return requiredRoles;
     }
 }

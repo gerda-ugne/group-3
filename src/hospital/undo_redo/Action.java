@@ -11,32 +11,32 @@ public class Action {
 	/**
 	 * The name which represents this action.
 	 */
-	protected String actionName;
+	protected final String actionName;
 
 	/**
 	 * The object which can undo and redo the action.
 	 */
-	protected UndoRedoExecutor executor;
+	protected final UndoRedoExecutor executor;
 
 	/**
 	 * The method to call on the executor for undo.
 	 */
-	protected Method undo;
+	protected final Method undo;
 
 	/**
 	 * The arguments needed for the undo method.
 	 */
-	protected Object[] undoArgs;
+	protected final Object[] undoArgs;
 
 	/**
 	 * The method to call on the executor for redo.
 	 */
-	protected Method redo;
+	protected final Method redo;
 
 	/**
 	 * The arguments needed for the redo method.
 	 */
-	protected Object[] redoArgs;
+	protected final Object[] redoArgs;
 
 	/**
 	 * Default constructor of the class.
