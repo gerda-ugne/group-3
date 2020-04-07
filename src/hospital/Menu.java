@@ -680,6 +680,7 @@ public class Menu {
 
 				if(success) {
 					retry = false;
+					System.out.println("Task was added successfully.");
 					try {
 						undoRedoHandler.addAction(new Action(
 								"New task addition",
