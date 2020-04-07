@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class AppointmentTest {
 
-    // TODO recreate test with java.time package
+
 //    @Test
 //    void TestCompareTo() {
 //        Calendar calendar = new GregorianCalendar(2020, Calendar.APRIL, 25);

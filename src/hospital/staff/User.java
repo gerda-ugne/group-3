@@ -87,7 +87,6 @@ public abstract class User implements Serializable, UndoRedoExecutor {
     }
 
 
-
     /**
      * Getter method for the username
      * @return username of User
