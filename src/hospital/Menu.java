@@ -296,7 +296,7 @@ public class Menu {
         while (treatInput >= treatments.size() || treatInput < 0) {
 			System.out.println("\nPlease choose a treatment type you'd like to book an appointment for:");
 			for (int i = 0; i < treatments.size(); i++) {
-				System.out.println(i + ". " + treatments.get(i).getLabel());
+				System.out.println((i + 1) + ". " + treatments.get(i).getLabel());
 			}
 			if (in.hasNextInt()) {
 				treatInput = in.nextInt();
@@ -305,7 +305,7 @@ public class Menu {
 				System.out.println("Invalid input.");
 			}
         }
-		treatmentType = treatments.get(treatInput);
+		treatmentType = treatments.get(treatInput - 1);
 
         // Collect all the competent professionals needed for the treatment
 		Map<Role, List<Professional>> competentProfessionals = new HashMap<>(treatmentType.getRequiredRoles().size());
@@ -317,10 +317,12 @@ public class Menu {
 		List<Appointment> availableSlots = new ArrayList<>();
 		while (availableSlots.size() == 0) {
 			DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-uuuu HH");
-			System.out.println("\nPlease provide an interval you'd like to book the appointment in. (dd-mm-year hh)");
+			System.out.println("\nPlease provide an interval you'd like to book the appointment in. (dd-mm-year hh) or 0 to return");
 			while (true) {
 				System.out.print("From: ");
 				try {
+					String input = in.nextLine();
+					if (input.equals("0")) return;
 					from = LocalDateTime.parse(in.nextLine(), dateFormat);
 					break;
 				} catch (DateTimeParseException e) {
@@ -352,6 +354,21 @@ public class Menu {
 			}
 		}
 
+		int slotInput = -1;
+		while (slotInput < 0 || slotInput >= availableSlots.size()) {
+			System.out.println("\nChoose one of the available slots for the appointment:\n");
+			for (int i = 0; i < availableSlots.size(); i++) {
+				Appointment appointment = availableSlots.get(i);
+				System.out.println(i + ". " + appointment.getStartTime().toString());
+			}
+			if (in.hasNextInt()) {
+				slotInput = in.nextInt();
+			} else {
+				in.nextLine();
+				System.out.println("Invalid input.");
+			}
+		}
+
 		// Get input for the room
 		System.out.println("\nPlease provide a room where the treatment will take place:");
 		String input = in.nextLine();
@@ -361,13 +378,10 @@ public class Menu {
 		Appointment newAppointment = staff.bookAppointment(professionals, from, until, room, treatmentType);
 		if (newAppointment != null) {
 			try {
-				undoRedoHandler.addAction(new Action(
+				undoRedoHandler.addAction(new BookAppointmentAction(
 						"Add appointment",
 						staff,
-						staff.getClass().getMethod("deleteAppointment", long.class, long.class),
-						new Object[]{activeUser.getId(), newAppointment.getId()},
-						staff.getClass().getMethod("bookAppointment", List.class, LocalDateTime.class, LocalDateTime.class, String.class, String.class),
-						new Object[]{professionals, from, until, room, treatmentType}
+						newAppointment
 				));
 			} catch (NoSuchMethodException e) {
 				// TODO handle exception

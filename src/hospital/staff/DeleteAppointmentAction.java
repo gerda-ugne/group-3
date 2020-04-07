@@ -27,12 +27,10 @@ public class DeleteAppointmentAction extends Action {
 		super(actionName,
 				staff,
 				// For undo re-add the appointment (it will have a different ID)
-				Staff.class.getMethod("bookAppointment", List.class, LocalDateTime.class, LocalDateTime.class, String.class, String.class),
+				Staff.class.getMethod("bookAppointment", List.class, LocalDateTime.class, LocalDateTime.class, String.class, TreatmentType.class),
 				new Object[]{
 						// Get the required arguments for the bookAppointment() method from the appointment
-						appointment.getProfessionals().stream()
-								.map(User::getId)
-								.collect(Collectors.toList()),
+						appointment.getProfessionals(),
 						appointment.getStartTime(),
 						appointment.getEndTime(),
 						appointment.getRoom(),

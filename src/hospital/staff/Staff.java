@@ -4,7 +4,9 @@ import hospital.undo_redo.UndoRedoExecutor;
 import hospital.timeLogger.TimeLogger;
 
 import java.io.Serializable;
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -17,10 +19,21 @@ import java.util.stream.Collectors;
  */
 public class Staff implements UndoRedoExecutor, Serializable {
 
+	private static final Map<DayOfWeek, WorkingHours> defaultWorkingHours = new HashMap<>(7);
+	static {
+		for (DayOfWeek day : DayOfWeek.values()) {
+			defaultWorkingHours.put(day, new WorkingHours(day, LocalTime.of(8, 0), LocalTime.of(16, 0)));
+		}
+	}
+
 	/**
 	 * The set of professionals the staff is consists of.
 	 */
 	private Set<Professional> staff;
+
+	/**
+	 * The admin of the system.
+	 */
 	private Administrator admin;
 
 	/**
@@ -32,7 +45,9 @@ public class Staff implements UndoRedoExecutor, Serializable {
 		if (staff.isEmpty()) {
 			for (Role role : Role.values()) {
 				for (int i = 0; i < 5; i++) {
-					staff.add(new Professional(role.toString(), String.valueOf(i), role, role.toString() + "Office" + i));
+					Professional professional = new Professional(role.toString(), String.valueOf(i), role, role.toString() + "Office" + i);
+					professional.setWorkingHours(defaultWorkingHours);
+					staff.add(professional);
 				}
 			}
 		}
@@ -71,12 +86,13 @@ public class Staff implements UndoRedoExecutor, Serializable {
 	 */
 	public List<Appointment> searchAvailability(List<Professional> professionals, LocalDateTime from, LocalDateTime to) {
 
+		// TODO move it into Menu
 		//Records current time to calculate time taken to search availability
 		TimeLogger logTime = new TimeLogger("search for available time slots");
 
 		//Local variable for holding personal appointments of one professional at a time
 		List<List<Appointment>> personalFreeSlots = new ArrayList<>();
-		Set <Appointment> allAppointments = new HashSet<>();
+		Set <Appointment> allAppointments = new TreeSet<>(Appointment::compareTo);
 
 		//Professional availability is retrieved and recorded into a set
 		for (Professional professional:
@@ -87,10 +103,15 @@ public class Staff implements UndoRedoExecutor, Serializable {
 			allAppointments.addAll(tempList);
 		}
 
-		//The intersection of free common slots is calculated
-
-		for (List<Appointment> personalFreeSlot : personalFreeSlots) {
-			allAppointments.retainAll(personalFreeSlot);
+		// Get the intersection of all the lists
+		for (List<Appointment> list : personalFreeSlots) {
+			allAppointments = allAppointments.stream() // Go through all of the appointments
+					.filter(appointment -> list.stream() // Go through one of the personalFreeSlots
+							.filter(freeSlot -> freeSlot.compareTo(appointment) == 0) // Filter for the appointments which are in both lists
+							.findAny() // If there is any, return it
+							.orElse(null) // If there isn't, return null
+							!= null) // If the returned object is not null, the appointment is in both list, leave it in allAppointments
+					.collect(Collectors.toSet());
 		}
 
 		//Converts set into a list type object
@@ -98,6 +119,7 @@ public class Staff implements UndoRedoExecutor, Serializable {
 		//Sorts the list by start date
 		listOfAppointments.sort(Comparator.comparing(Appointment::getStartTime));
 
+		// TODO move it into menu
 		//Time is logged at the end of the method
 		logTime.calculateElapsedTime();
 
