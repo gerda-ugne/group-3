@@ -1324,15 +1324,21 @@ public class Menu {
 			List<Appointment> appointments = ((Professional) activeUser).getDiary().getAppointments();
 			int startHour = Integer.parseInt(start);
 			int endHour = Integer.parseInt(end);
+			List<Appointment> appointmentsToDelete = new ArrayList<>();
 			for(Appointment app : appointments)
 			{
 				if(app.getStartTime().getDayOfWeek()==chosenDay)
 				{
 					if((app.getStartTime().getHour()<startHour)||(app.getEndTime().getHour()>endHour))
 					{
-						appointments.remove(app);
+						appointmentsToDelete.add(app);
 					}
 				}
+			}
+
+			for(Appointment app : appointmentsToDelete)
+			{
+				appointments.remove(app);
 			}
 
 			System.out.println("Your schedule has been updated.\n");
