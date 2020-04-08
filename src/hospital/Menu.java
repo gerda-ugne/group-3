@@ -2,6 +2,8 @@ package hospital;
 
 import hospital.staff.*;
 import hospital.undo_redo.Action;
+import hospital.undo_redo.RedoNotPossibleException;
+import hospital.undo_redo.UndoNotPossibleException;
 import hospital.undo_redo.UndoRedoHandler;
 
 import java.time.DayOfWeek;
@@ -92,21 +94,22 @@ public class Menu {
 	private void showMenu() {
 
 		System.out.println("\nAppointment management:\n");
-		System.out.println("1. Display the electronic diary");
-		System.out.println("2. Backup the electronic diary");
-		System.out.println("3. Restore the latest backup of the electronic diary");
-		System.out.println("4. Undo last action");
-		System.out.println("5. Redo last action");
+		System.out.println("1. Search for an appointment");
+		System.out.println("2. Display the electronic diary");
+		System.out.println("3. Backup the electronic diary");
+		System.out.println("4. Restore the latest backup of the electronic diary");
+		System.out.println("5. Undo last action");
+		System.out.println("6. Redo last action");
 
 		System.out.println("\nTask management:\n");
-		System.out.println("6. Add a new task");
-		System.out.println("7. Remove a task");
-		System.out.println("8. Display the task list");
+		System.out.println("7. Add a new task");
+		System.out.println("8. Remove a task");
+		System.out.println("9. Display the task list");
 
 		System.out.println("\nOther:\n");
-		System.out.println("9. Change your password");
-		System.out.println("10. Change your personal details");
-		System.out.println("11. Change your working schedule");
+		System.out.println("10. Change your password");
+		System.out.println("11. Change your personal details");
+		System.out.println("12. Change your working schedule");
 		System.out.println("\n0. Log out");
 
 	}
@@ -120,17 +123,18 @@ public class Menu {
 		System.out.println("1. Add a new appointment");
 		System.out.println("2. Edit an existing appointment");
 		System.out.println("3. Remove an appointment");
-		System.out.println("4. Undo last action");
-		System.out.println("5. Redo last action");
+		System.out.println("4. Search for an appointment");
+		System.out.println("5. Undo last action");
+		System.out.println("6. Redo last action");
 		System.out.println("\nStaff management:\n");
-		System.out.println("6. Add a new staff member");
-		System.out.println("7. Remove a staff member");
+		System.out.println("7. Add a new staff member");
+		System.out.println("8. Remove a staff member");
 		System.out.println("\nTreatment type management:\n");
-		System.out.println("8. Add a new treatment type");
-		System.out.println("9. Show available treatment types");
+		System.out.println("9. Add a new treatment type");
+		System.out.println("10. Show available treatment types");
 		System.out.println("\nOther:\n");
-		System.out.println("10. Edit personal information");
-		System.out.println("11. Change password");
+		System.out.println("11. Edit personal information");
+		System.out.println("12. Change password");
 		System.out.println("\n0. Log out");
 
 
@@ -170,37 +174,55 @@ public class Menu {
 					break;
 
 				case "4":
-					//TODO add undo
+					searchAppointment();
 					break;
 
 				case "5":
-					//TODO add redo
+					try {
+						if (undoRedoHandler.undo() == null)
+						{
+							System.out.println("No actions found to undo.");
+						}
+
+					} catch (UndoNotPossibleException e) {
+						System.out.println("There is nothing to undo.");
+					}
 					break;
 
 				case "6":
-					addStaffMember();
+					try {
+						if (undoRedoHandler.redo() == null)
+						{
+							System.out.println("No actions found to redo.");
+						}
+					} catch (RedoNotPossibleException e) {
+						System.out.println("There is nothing to redo.");
+					}
 					break;
 
 				case "7":
-					removeStaffMember();
+					addStaffMember();
 					break;
 
 				case "8":
-					addTreatmentType();
+					removeStaffMember();
 					break;
 
 				case "9":
-					TreatmentType.displayTreatments();
+					addTreatmentType();
 					break;
 
 				case "10":
-					changeDetails();
+					TreatmentType.displayTreatments();
 					break;
 
 				case "11":
-					changePassword();
+					changeDetails();
 					break;
 
+				case "12":
+					changePassword();
+					break;
 				default:
 					System.out.println("Invalid user input. Please try again.");
 					break;
@@ -232,46 +254,64 @@ public class Menu {
 					break;
 
 				case 1:
-					displayAppointments(((Professional) activeUser).getDiary().sortByDate());
+					searchAppointment();
 					break;
 
 				case 2:
-					backupStaff();
+					displayAppointments(((Professional) activeUser).getDiary().sortByDate());
 					break;
 
 				case 3:
-					restoreStaff();
+					backupStaff();
 					break;
 
 				case 4:
-					// TODO undo
+					restoreStaff();
 					break;
 
 				case 5:
-					//TODO redo
+					try {
+						if (undoRedoHandler.undo() == null)
+						{
+							System.out.println("No actions found to undo.");
+						}
+					} catch (UndoNotPossibleException e) {
+						System.out.println("There is nothing to undo.");
+					}
 					break;
 
 				case 6:
-					addTask();
+					try {
+						if (undoRedoHandler.redo() == null)
+						{
+							System.out.println("No actions found to redo.");
+						}
+					} catch (RedoNotPossibleException e) {
+						System.out.println("There is nothing to redo.");
+					}
 					break;
 
 				case 7:
-					removeTask();
+					addTask();
 					break;
 
 				case 8:
-					displayTaskList();
+					removeTask();
 					break;
 
 				case 9:
-					changePassword();
+					displayTaskList();
 					break;
 
 				case 10:
-					changeDetails();
+					changePassword();
 					break;
 
 				case 11:
+					changeDetails();
+					break;
+
+				case 12:
 					editWorkingHours();
 					break;
 
@@ -288,6 +328,12 @@ public class Menu {
 	 * @param appointments The list of appointments to display
 	 */
 	private void displayAppointments(List<Appointment> appointments) {
+
+		if(appointments.isEmpty()) {
+			System.out.println("There are no appointments to show.");
+			return;
+		}
+
 		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MMM/uuuu HH");
 
 		// Table header
@@ -317,7 +363,7 @@ public class Menu {
 	}
 
 	private String generateTableRow(String cell1, String cell2, String cell3, String cell4, String cell5, String cell6) {
-		return String.format("|%4s|%15s|%15s|%30s|%12s|%30s|", cell1, cell2, cell3, cell4, cell5, cell6);
+		return String.format("|%6s|%15s|%15s|%30s|%12s|%30s|", cell1, cell2, cell3, cell4, cell5, cell6);
 	}
 
 	private void displayTableRowDivider() {
@@ -327,26 +373,26 @@ public class Menu {
 	/**
 	 * This method displays an appointment's information with the given appointment and professional's IDs
 	 */
-	private void searchAppointment() {
-
+	private void searchAppointment()
+	{
 		Scanner s = new Scanner(System.in);
-		boolean IDfound=false;
-		long inputID=-1;
-
+		boolean IDfound = false;
+		long appID=-1;
 		//get the appointment ID from user input
 		while(!IDfound)
 		{
 			System.out.println("Enter appointment ID: ");
-			//check if input is valid ID
-			if(s.hasNextLong()) {
-				inputID = s.nextLong();
+			try {
+				String input = s.nextLine();
+				appID = Long.parseLong(input);
 				IDfound=true;
 			}
-			else System.out.println("Input not valid!");
+			catch(NumberFormatException ex)
+			{
+				System.out.println("Input invalid, try again!");
+			}
 		}
-
-
-		Appointment foundAppointment = staff.searchAppointment(inputID);
+		Appointment foundAppointment = staff.searchAppointment(appID);
 		if (foundAppointment == null) System.out.println("Appointment not found.");
 		else {
 			displayAppointments(Collections.singletonList(foundAppointment));
@@ -359,6 +405,8 @@ public class Menu {
 	private void addAppointment() {
 		// The objects needed to book a new appointment
 		Scanner in = new Scanner(System.in);
+		Scanner stringSc = new Scanner(System.in);
+
 		List<Professional> professionals = new ArrayList<>();
 		LocalDateTime from = LocalDateTime.now();
 		LocalDateTime until = LocalDateTime.now();
@@ -372,6 +420,7 @@ public class Menu {
 		while (treatInput >= treatments.size() || treatInput < 0) {
 			System.out.println("\nPlease choose a treatment type you'd like to book an appointment for:");
 			TreatmentType.displayTreatments();
+
 			if (in.hasNextInt()) {
 				treatInput = in.nextInt();
 			} else {
@@ -379,7 +428,7 @@ public class Menu {
 				System.out.println("Invalid input.");
 			}
 		}
-		treatmentType = treatments.get(treatInput - 1);
+		treatmentType = treatments.get(treatInput);
 
 		// Collect all the competent professionals needed for the treatment
 		Map<Role, List<Professional>> competentProfessionals = new HashMap<>(treatmentType.getRequiredRoles().size());
@@ -394,9 +443,11 @@ public class Menu {
 			while (true) {
 				System.out.print("From: ");
 				try {
-					String input = in.nextLine();
+
+					String input = stringSc.nextLine();
 					if (input.equals("0")) return;
-					from = LocalDateTime.parse(in.nextLine(), dateFormat);
+
+					from = LocalDateTime.parse(input, dateFormat);
 					break;
 				} catch (DateTimeParseException e) {
 					System.out.println("Invalid format. Please use a day-month-year hour format in this way: dd-mm-year hh");
@@ -405,7 +456,8 @@ public class Menu {
 			while (true) {
 				System.out.print("Till: ");
 				try {
-					until = LocalDateTime.parse(in.nextLine(), dateFormat);
+					String input = stringSc.nextLine();
+					until = LocalDateTime.parse(input, dateFormat);
 					break;
 				} catch (DateTimeParseException e) {
 					System.out.println("Invalid format. Please use a day-month-year hour format in this way: dd-mm-year hh");
@@ -600,7 +652,7 @@ public class Menu {
 		//get the appointment ID from user input
 		while(!IDfound)
 		{
-			System.out.println("Enter appointment ID: ");
+			System.out.println("Enter appointment to delete ID: ");
 			//check if input is valid ID
 			if(s.hasNextLong()) {
 				appointmentId = s.nextLong();
@@ -609,9 +661,10 @@ public class Menu {
 			else System.out.println("Input not valid!");
 		}
 
-		Appointment deletedAppointment = staff.deleteAppointment(activeUser.getId(), appointmentId);
+		Appointment deletedAppointment = staff.deleteAppointment(appointmentId);
 
 		if (deletedAppointment != null) {
+			System.out.println("The appointment has been deleted successfully.");
 			try {
 				undoRedoHandler.addAction(new DeleteAppointmentAction(
 						"Delete appointment",
@@ -622,6 +675,10 @@ public class Menu {
 				// TODO handle exception
 				e.printStackTrace();
 			}
+		}
+		else
+		{
+			System.out.println("Appointment was not found, nothing to delete.");
 		}
 	}
 
@@ -649,8 +706,10 @@ public class Menu {
 			 ObjectInputStream ois = new ObjectInputStream(fin)) {
 			staff = (Staff) ois.readObject();
 		} catch (FileNotFoundException e) {
-			// TODO handle exception
-			e.printStackTrace();
+			System.out.println("The last backup could not be restored as the file could not be found.");
+		} catch (InvalidClassException e)
+		{
+			System.out.println("The last backup could not be restored as the structure of the program has been changed.");
 		} catch (IOException e) {
 			// TODO handle exception
 			e.printStackTrace();
@@ -1328,9 +1387,27 @@ public class Menu {
 				}
 			}
 
+			List<Appointment> appointments = ((Professional) activeUser).getDiary().getAppointments();
+			int startHour = Integer.parseInt(start);
+			int endHour = Integer.parseInt(end);
+			List<Appointment> appointmentsToDelete = new ArrayList<>();
+			for(Appointment app : appointments)
+			{
+				if(app.getStartTime().getDayOfWeek()==chosenDay)
+				{
+					if((app.getStartTime().getHour()<startHour)||(app.getEndTime().getHour()>endHour))
+					{
+						appointmentsToDelete.add(app);
+					}
+				}
+			}
+
+			for(Appointment app : appointmentsToDelete)
+			{
+				appointments.remove(app);
+			}
+
 			System.out.println("Your schedule has been updated.\n");
 		} while (true);
-
-
 	}
 }
