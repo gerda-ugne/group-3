@@ -317,7 +317,7 @@ public class Menu {
 	}
 
 	private String generateTableRow(String cell1, String cell2, String cell3, String cell4, String cell5, String cell6) {
-		return String.format("|%4s|%15s|%15s|%30s|%8s|%30s|", cell1, cell2, cell3, cell4, cell5, cell6);
+		return String.format("|%4s|%15s|%15s|%30s|%12s|%30s|", cell1, cell2, cell3, cell4, cell5, cell6);
 	}
 
 	private void displayTableRowDivider() {
@@ -501,8 +501,6 @@ public class Menu {
 				System.out.println("Invalid ID");
 			}
 		}
-
-		
 
 		Appointment modifiedAppointment = staff.editAppointment(activeUser.getId(), appointmentId, professionals, startTime, endTime, room, treatmentType);
 		displayAppointments( Collections.singletonList( modifiedAppointment ) );
