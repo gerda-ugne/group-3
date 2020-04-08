@@ -560,7 +560,7 @@ public class Menu {
 			else System.out.println("Input not valid!");
 		}
 
-		Appointment deletedAppointment = staff.deleteAppointment(activeUser.getId(), appointmentId);
+		Appointment deletedAppointment = staff.deleteAppointment(appointmentId);
 
 		if (deletedAppointment != null) {
 			System.out.println("The appointment has been deleted successfully.");
