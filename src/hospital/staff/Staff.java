@@ -205,57 +205,44 @@ public class Staff implements UndoRedoExecutor, Serializable {
 	 * If more than one professionals are involved in the treatment,
 	 * it checks if the modifications do not conflict with any of the professionals' electronic diary.
 	 *
-	 * @param professionalId The ID of the professional who has the appointment.
 	 * @param appointmentId The ID of the appointment to modify.
-	 * @param professionals A list of the ids of the professionals who are involved in the appointment, including the owner themself.
+	 * @param newProfessionals A list of the professionals who are involved in the appointment, including the owner themself.
 	 * @param startTime The time when the appointment starts.
 	 * @param endTime The time when the appointment ends.
 	 * @param room The name/number of the room where the appointment will take place.
-	 * @param treatmentType The type of treatment the appointment has.
 	 * @return	The modified appointment.
 	 * 			It is possible, that the modification was unsuccessful, and the returned appointment is the unmodified one.
 	 * 			The return can be null, if the appointment could not have been found.
 	 */
-	public Appointment editAppointment(long professionalId, long appointmentId, List<Long> professionals, LocalDateTime startTime, LocalDateTime endTime, String room, TreatmentType treatmentType) {
-		// TODO make it faster if have time
-		List<Professional> involvedProfessionals = new ArrayList<>();
+	public Appointment editAppointment(long appointmentId, List<Professional> newProfessionals, LocalDateTime startTime, LocalDateTime endTime, String room) {
+		List<Professional> oldProfessionals;
 
-		boolean appointmentFound = false;
-		Appointment appointmentToChange = null;
+		Appointment appointmentToChange = appointments.get(appointmentId);
 
-		//searches through all given IDs and the staff to find the matching professionals
-		for(long profID : professionals)
-		{
-			for(Professional professional : staff)
-			{
-				if(professional.getId()==profID)
-				{
-					appointmentToChange=professional.getDiary().getAppointment(appointmentId);
-					if(appointmentToChange!=null)
-					{
-						involvedProfessionals = appointmentToChange.getProfessionals();
-						appointmentFound = true;
-						break;
-					}
+		if(appointmentToChange != null) {
+			oldProfessionals = appointmentToChange.getProfessionals();
+
+			//check if all professionals have the free slot at the required time
+			List<Appointment> freeSlot = searchAvailability(newProfessionals, startTime, endTime);
+
+
+			//if they do, edit appointment's fields
+			//and remove appointment from the old professionals' diaries
+			//and add it to the new ones'
+			if (!freeSlot.isEmpty()) {
+				for (Professional oldProfessional : oldProfessionals) {
+					oldProfessional.deleteAppointment(appointmentId);
+				}
+
+				appointmentToChange.setStartTime(startTime);
+				appointmentToChange.setEndTime(endTime);
+				appointmentToChange.setProfessionals(newProfessionals);
+				appointmentToChange.setRoom(room);
+
+				for (Professional newProfessional : newProfessionals) {
+					newProfessional.addAppointment(appointmentToChange);
 				}
 			}
-			if(appointmentFound) break;
-		}
-
-		if(appointmentFound) {
-
-				//check if all professionals have the free slot at the required time
-				List<Appointment> freeSlot = searchAvailability(involvedProfessionals, startTime, endTime);
-
-				//if they do, edit appointment's fields
-				if (!freeSlot.isEmpty()) {
-					appointmentToChange.setStartTime(startTime);
-					appointmentToChange.setEndTime(endTime);
-					appointmentToChange.setProfessionals(involvedProfessionals);
-					appointmentToChange.setRoom(room);
-
-					appointmentToChange.setTreatmentType(treatmentType);
-				}
 		}
 		return appointmentToChange;
 	}
