@@ -179,7 +179,11 @@ public class Menu {
 
 				case "5":
 					try {
-						undoRedoHandler.undo();
+						if (undoRedoHandler.undo() == null)
+						{
+							System.out.println("No actions found to undo.");
+						}
+
 					} catch (UndoNotPossibleException e) {
 						System.out.println("There is nothing to undo.");
 					}
@@ -187,7 +191,10 @@ public class Menu {
 
 				case "6":
 					try {
-						undoRedoHandler.redo();
+						if (undoRedoHandler.redo() == null)
+						{
+							System.out.println("No actions found to redo.");
+						}
 					} catch (RedoNotPossibleException e) {
 						System.out.println("There is nothing to redo.");
 					}
@@ -264,7 +271,10 @@ public class Menu {
 
 				case 5:
 					try {
-						undoRedoHandler.undo();
+						if (undoRedoHandler.undo() == null)
+						{
+							System.out.println("No actions found to undo.");
+						}
 					} catch (UndoNotPossibleException e) {
 						System.out.println("There is nothing to undo.");
 					}
@@ -272,7 +282,10 @@ public class Menu {
 
 				case 6:
 					try {
-						undoRedoHandler.redo();
+						if (undoRedoHandler.redo() == null)
+						{
+							System.out.println("No actions found to redo.");
+						}
 					} catch (RedoNotPossibleException e) {
 						System.out.println("There is nothing to redo.");
 					}
