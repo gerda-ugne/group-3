@@ -179,13 +179,22 @@ public class Professional extends User {
 
 		};
 
+		checkTimeRange.test(availableSlots.get(0));
+		checkWorkingHourRange.test(availableSlots.get(0));
+
 		//Appointments are filtered to be in the provided time range
 		List<Appointment> bookedAppointments = diary.sortByDate()
 				.stream()
-				.filter(checkTimeRange.and(checkWorkingHourRange))
+				.filter(checkTimeRange)
 				.sorted()
 				.collect(Collectors.toList());
 
+		availableSlots = availableSlots.stream()
+				.filter(checkWorkingHourRange)
+				.sorted()
+				.collect(Collectors.toList());
+
+		Set<Appointment> slotsToRemove = new HashSet<>();
 		//Nested for loop: each slot is compared to the existing appointments.
 		for (Appointment slot:
 			 availableSlots) {
@@ -195,15 +204,15 @@ public class Professional extends User {
 
 				//If the start and end times match it means the slot is not available
 				// and therefore is removed from the available slots list.
-				if((slot.getStartTime().equals(bookedAppointment.getStartTime()))
-				&& slot.getEndTime().equals(bookedAppointment.getEndTime()))
+				if(slot.getStartTime().isEqual(bookedAppointment.getStartTime())
+				&& slot.getEndTime().isEqual(bookedAppointment.getEndTime()))
 				{
-					availableSlots.remove(slot);
-					break;
+					slotsToRemove.add(slot);
 				}
 			}
 
 		}
+		availableSlots.removeAll(slotsToRemove);
 
 		return availableSlots;
 	}
@@ -213,6 +222,7 @@ public class Professional extends User {
 	 * Checks if it's allowed and if there are now conflicts with the already booked appointments.
 	 *
 	 * @param appointment the new appointment to register in the professional's electronic diary.
+	 * @return true if the appointment addition was successful, false if it wasn't
 	 */
 	public boolean addAppointment(Appointment appointment) {
 		if(diary.searchIfTimeAvailable(appointment.getStartTime())) {
@@ -264,7 +274,6 @@ public class Professional extends User {
 
 	}
 
-
 	/**
 	 * Getter of the professional's electronic diary.
 	 * @return the professional's electronic diary.
@@ -273,7 +282,11 @@ public class Professional extends User {
 		return this.diary;
 	}
 
-
+	/**
+	 * Getter of an appointment from the professional's electronic diary.
+	 * @param appointmentId appointment to be found's ID
+	 * @return the needed appointment
+	 */
 	public Appointment getAppointment(long appointmentId) {
 		return diary.getAppointment(appointmentId);
 	}

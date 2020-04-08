@@ -122,7 +122,7 @@ public class Task implements Comparable<Task>, Serializable {
      * two different tasks according to their
      * due by date.
      * @param o task to be compared to
-     * @return if o > task returns 1, if o < task returns -1, if elements are equal returns - 0.
+     * @return if bigger than 0 task returns 1, if smaller task returns -1, if elements are equal returns - 0.
      */
     @Override
     public int compareTo(Task o) {

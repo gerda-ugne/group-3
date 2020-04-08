@@ -27,8 +27,8 @@ public class BookAppointmentAction extends Action {
         super(actionName,
                 staff,
                 // For undo delete the appointment
-                Staff.class.getMethod("deleteAppointment", long.class, long.class),
-                new Object[]{appointment.getProfessionals().get(0).getId(), appointment.getId()},
+                Staff.class.getMethod("deleteAppointment", long.class),
+                new Object[]{appointment.getId()},
                 // For redo re-add the appointment (it could have a different ID)
                 Staff.class.getMethod("bookAppointment", List.class, LocalDateTime.class, LocalDateTime.class, String.class, TreatmentType.class),
                 new Object[]{
@@ -42,19 +42,19 @@ public class BookAppointmentAction extends Action {
     }
 
     /**
-     * Undo the deletion of the appointment.
+     * Readd the appointment.
      *
      * @return The re-added appointment (with a new unique ID)
-     * @throws RedoNotPossibleException if the undo is not possible.
+     * @throws RedoNotPossibleException if the redo is not possible.
      */
     @Override
     public Appointment redo() throws RedoNotPossibleException {
         try {
             // Add the appointment again
-            Appointment reAddedAppointment = (Appointment) undo.invoke(executor, undoArgs);
+            Appointment reAddedAppointment = (Appointment) redo.invoke(executor, redoArgs);
             if (reAddedAppointment != null) {
                 // Modify the arguments of the redo (deleteAppointment()) with the newly generated appointment ID
-                undoArgs[1] = reAddedAppointment.getId();
+                undoArgs[0] = reAddedAppointment.getId();
                 return reAddedAppointment;
             } else {
                 throw new UndoNotPossibleException("Could not find the undeleted appointment");

@@ -1,8 +1,6 @@
 package hospital.undo_redo;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 /**
  * Represents an undoable/redoable action took in the system.

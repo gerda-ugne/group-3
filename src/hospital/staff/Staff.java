@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
  */
 public class Staff implements UndoRedoExecutor, Serializable {
 
+	//the HashMap containing a professional's default working hours
 	private static final Map<DayOfWeek, WorkingHours> defaultWorkingHours = new HashMap<>(7);
 	static {
 		for (DayOfWeek day : DayOfWeek.values()) {
@@ -36,11 +37,19 @@ public class Staff implements UndoRedoExecutor, Serializable {
 	private Administrator admin;
 
 	/**
+	 * All of the appointments
+	 */
+	private Map<Long, Appointment> appointments;
+
+	/**
 	 * Constructor for Staff class
 	 */
 	public Staff() {
 		staff = new HashSet<>();
+		// sets administrator
 		admin = new Administrator("Admin", "Chief", "Heaven");
+		appointments = new HashMap<>();
+		//if staff is empty, adds some default professionals
 		if (staff.isEmpty()) {
 			for (Role role : Role.values()) {
 				for (int i = 0; i < 5; i++) {
@@ -50,6 +59,8 @@ public class Staff implements UndoRedoExecutor, Serializable {
 				}
 			}
 		}
+
+		staff.add(new Professional("Gerda", "Pupelyte", Role.Nurse, "gg"));
 	}
 
 	/**
@@ -63,7 +74,7 @@ public class Staff implements UndoRedoExecutor, Serializable {
 	}
 
 	/**
-	 * Removes a professional from the staff, also removing them from each of their appointments
+	 * Removes a professional from the staff, also removing them from each of their appointments, adding another needed professional if any are free
 	 * @param member member to remove
 	 * @return false/true whether the member was removed
 	 */
@@ -72,15 +83,22 @@ public class Staff implements UndoRedoExecutor, Serializable {
 		ElectronicDiary diary = member.getDiary();
 		List<Appointment> appList = diary.getAppointments();
 		Role role = member.getRole();
+
+		//creates empty list of professionals
 		List<Professional> eligibleProfs = new ArrayList<>();
 		for(Professional prof : staff)
 		{
+			//if any of the staff's professionals match the role of the member that is to be removed, adds them to the new list
 			if(prof.getRole().equals(role)) eligibleProfs.add(prof);
 		}
+
+		//goes through each of the appointments in the removed professional's diary
 		for(Appointment app : appList)
 		{
+			//gets the list of involved professionals in appointment
 			List<Professional> appProfessionals=app.getProfessionals();
 			appProfessionals.remove(member);
+			//check each professional with the same role as the one that was deleted and checks if they have a free slot at the appointment's time
 			for(Professional p : eligibleProfs)
 			{
 				if(!p.searchAvailability(app.getStartTime(),app.getEndTime()).isEmpty())
@@ -89,7 +107,8 @@ public class Staff implements UndoRedoExecutor, Serializable {
 					break;
 				}
 			}
-			if(appProfessionals.isEmpty()) deleteAppointment(member.getId(),app.getId());
+			//if no more professionals are left in the appointment, appointment is deleted
+			if(appProfessionals.isEmpty()) deleteAppointment(app.getId());
 			else app.setProfessionals(appProfessionals);
 		}
 		return staff.remove(member);
@@ -187,6 +206,7 @@ public class Staff implements UndoRedoExecutor, Serializable {
 			{
 				professional.addAppointment(newAppointment);
 			}
+			appointments.put(newAppointment.getId(), newAppointment);
 			return newAppointment;
 		}
 		//if at least one of the professionals don't have a free slot at the given time, return null
@@ -198,57 +218,44 @@ public class Staff implements UndoRedoExecutor, Serializable {
 	 * If more than one professionals are involved in the treatment,
 	 * it checks if the modifications do not conflict with any of the professionals' electronic diary.
 	 *
-	 * @param professionalId The ID of the professional who has the appointment.
 	 * @param appointmentId The ID of the appointment to modify.
-	 * @param professionals A list of the ids of the professionals who are involved in the appointment, including the owner themself.
+	 * @param newProfessionals A list of the professionals who are involved in the appointment, including the owner themself.
 	 * @param startTime The time when the appointment starts.
 	 * @param endTime The time when the appointment ends.
 	 * @param room The name/number of the room where the appointment will take place.
-	 * @param treatmentType The type of treatment the appointment has.
 	 * @return	The modified appointment.
 	 * 			It is possible, that the modification was unsuccessful, and the returned appointment is the unmodified one.
 	 * 			The return can be null, if the appointment could not have been found.
 	 */
-	public Appointment editAppointment(long professionalId, long appointmentId, List<Long> professionals, LocalDateTime startTime, LocalDateTime endTime, String room, TreatmentType treatmentType) {
-		// TODO make it faster if have time
-		List<Professional> involvedProfessionals = new ArrayList<>();
+	public Appointment editAppointment(long appointmentId, List<Professional> newProfessionals, LocalDateTime startTime, LocalDateTime endTime, String room) {
+		List<Professional> oldProfessionals;
 
-		boolean appointmentFound = false;
-		Appointment appointmentToChange = null;
+		Appointment appointmentToChange = appointments.get(appointmentId);
 
-		//searches through all given IDs and the staff to find the matching professionals
-		for(long profID : professionals)
-		{
-			for(Professional professional : staff)
-			{
-				if(professional.getId()==profID)
-				{
-					appointmentToChange=professional.getDiary().getAppointment(appointmentId);
-					if(appointmentToChange!=null)
-					{
-						involvedProfessionals = appointmentToChange.getProfessionals();
-						appointmentFound = true;
-						break;
-					}
+		if(appointmentToChange != null) {
+			oldProfessionals = appointmentToChange.getProfessionals();
+
+			//check if all professionals have the free slot at the required time
+			List<Appointment> freeSlot = searchAvailability(newProfessionals, startTime, endTime);
+
+
+			//if they do, edit appointment's fields
+			//and remove appointment from the old professionals' diaries
+			//and add it to the new ones'
+			if (!freeSlot.isEmpty()) {
+				for (Professional oldProfessional : oldProfessionals) {
+					oldProfessional.deleteAppointment(appointmentId);
+				}
+
+				appointmentToChange.setStartTime(startTime);
+				appointmentToChange.setEndTime(endTime);
+				appointmentToChange.setProfessionals(newProfessionals);
+				appointmentToChange.setRoom(room);
+
+				for (Professional newProfessional : newProfessionals) {
+					newProfessional.addAppointment(appointmentToChange);
 				}
 			}
-			if(appointmentFound) break;
-		}
-
-		if(appointmentFound) {
-
-				//check if all professionals have the free slot at the required time
-				List<Appointment> freeSlot = searchAvailability(involvedProfessionals, startTime, endTime);
-
-				//if they do, edit appointment's fields
-				if (!freeSlot.isEmpty()) {
-					appointmentToChange.setStartTime(startTime);
-					appointmentToChange.setEndTime(endTime);
-					appointmentToChange.setProfessionals(involvedProfessionals);
-					appointmentToChange.setRoom(room);
-
-					appointmentToChange.setTreatmentType(treatmentType);
-				}
 		}
 		return appointmentToChange;
 	}
@@ -257,50 +264,43 @@ public class Staff implements UndoRedoExecutor, Serializable {
 	 * Deletes an appointment from one of professional's electronic diary.
 	 * It also deletes it from all the involved professionals' diaries.
 	 *
-	 * @param professionalId The ID of the professional who has the appointment.
 	 * @param appointmentId The ID of the appointment to delete.
 	 * @return The deleted appointment or null, if the deletion was unsuccessful.
 	 */
-	public Appointment deleteAppointment(long professionalId, long appointmentId) {
+	public Appointment deleteAppointment(long appointmentId) {
 		// TODO if have time make it faster
 		Appointment deletedAppointment=null;
 		boolean appointmentFound=false;
 		for (Professional professional: staff)
 			{
+				//goes through each professional's diary and searches for the appointment
 				if(professional.getDiary().getAppointment(appointmentId)!=null)
 				{
+					//if appointment hadn't been found before, assign it to deletedAppointment
 					if(!appointmentFound)
 					{
 						appointmentFound = true;
 						deletedAppointment = professional.getDiary().getAppointment(appointmentId);
 					}
+					//if appointment is found, delete it from the professional's diary
 					professional.deleteAppointment(appointmentId);
 				}
 			}
+		if (deletedAppointment != null) {
+			appointments.remove(deletedAppointment.getId());
+		}
 		return deletedAppointment;
 	}
 
 	/**
 	 * Search for an appointment in one of the professional's electronic diary.
 	 *
-	 * @param professionId The ID of the professional who has the appointment.
 	 * @param appointmentId The ID of the appointment to search for.
 	 * @return The found appointment or null if it could not have been found.
 	 */
-	public Appointment searchAppointment(long professionId, long appointmentId) {
+	public Appointment searchAppointment(long appointmentId) {
 
-		Appointment foundAppointment=null;
-
-		//searches through staff to find the first one who has the appointment
-		for (Professional professional: staff)
-		{
-			if(professional.getId()==professionId)
-			{
-				foundAppointment=professional.getDiary().getAppointment(appointmentId);
-				if(foundAppointment!=null) break;
-			}
-		}
-		return foundAppointment;
+		return appointments.get(appointmentId);
 	}
 
 	/**
