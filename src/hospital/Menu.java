@@ -4,12 +4,15 @@ import hospital.staff.*;
 import hospital.undo_redo.Action;
 import hospital.undo_redo.UndoRedoHandler;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Represents the menu in the Hospital Booking System.
@@ -19,7 +22,7 @@ public class Menu {
 	/**
 	 * The collection of employees in the hospital (doctors, nurses, etc.)
 	 */
-	private final Staff staff;
+	private Staff staff;
 
 	/**
 	 * The staff member who currently using the system. Null if nobody is logged in.
@@ -33,7 +36,7 @@ public class Menu {
 	private final UndoRedoHandler undoRedoHandler;
 
 	/**
-	 * TODO
+	 * Constructor of the Menu class.
 	 */
 	public Menu() {
 
@@ -87,27 +90,24 @@ public class Menu {
 	 * Displays the menu options
 	 */
 	private void showMenu() {
-		// TODO - implement Menu.showMenu
+
 		System.out.println("\nAppointment management:\n");
-		System.out.println("1. Add a new appointment");
-		System.out.println("2. Edit an existing appointment");
-		System.out.println("3. Remove an appointment");
+		System.out.println("1. Display the electronic diary");
+		System.out.println("2. Backup the electronic diary");
+		System.out.println("3. Restore the latest backup of the electronic diary");
 		System.out.println("4. Undo last action");
 		System.out.println("5. Redo last action");
-		System.out.println("6. Display the electronic diary");
-		System.out.println("7. Backup the electronic diary");
-		System.out.println("8. Restore the latest backup of the electronic diary");
-
 
 		System.out.println("\nTask management:\n");
-		System.out.println("9. Add a new task");
-		System.out.println("10. Remove a task");
-		System.out.println("11. Display the task list");
+		System.out.println("6. Add a new task");
+		System.out.println("7. Remove a task");
+		System.out.println("8. Display the task list");
 
 		System.out.println("\nOther:\n");
-		System.out.println("12. Change your password");
-		System.out.println("13. Change your personal details");
-		System.out.println("0. Log out");
+		System.out.println("9. Change your password");
+		System.out.println("10. Change your personal details");
+		System.out.println("11. Change your working schedule");
+		System.out.println("\n0. Log out");
 
 	}
 
@@ -116,14 +116,21 @@ public class Menu {
 	 */
 	private void showAdminMenu()
 	{
+		System.out.println("\nAppointment management:\n");
+		System.out.println("1. Add a new appointment");
+		System.out.println("2. Edit an existing appointment");
+		System.out.println("3. Remove an appointment");
+		System.out.println("4. Undo last action");
+		System.out.println("5. Redo last action");
 		System.out.println("\nStaff management:\n");
-		System.out.println("1. Add a new staff member");
-		System.out.println("2. Remove a staff member");
+		System.out.println("6. Add a new staff member");
+		System.out.println("7. Remove a staff member");
 		System.out.println("\nTreatment type management:\n");
-		System.out.println("3. Add a new treatment type");
+		System.out.println("8. Add a new treatment type");
+		System.out.println("9. Show available treatment types");
 		System.out.println("\nOther:\n");
-		System.out.println("4. Edit personal information");
-		System.out.println("5. Change password");
+		System.out.println("10. Edit personal information");
+		System.out.println("11. Change password");
 		System.out.println("\n0. Log out");
 
 
@@ -151,22 +158,49 @@ public class Menu {
 					break;
 
 				case "1":
-					addStaffMember();
+					addAppointment();
 					break;
 
 				case "2":
-					removeStaffMember();
+					editAppointment();
 					break;
 
 				case "3":
+					deleteAppointment();
+					break;
+
+				case "4":
+					//TODO add undo
+					break;
+
+				case "5":
+					//TODO add redo
+					break;
+
+				case "6":
+					addStaffMember();
+					break;
+
+				case "7":
+					removeStaffMember();
+					break;
+
+				case "8":
 					addTreatmentType();
 					break;
-				case "4":
+
+				case "9":
+					TreatmentType.displayTreatments();
+					break;
+
+				case "10":
 					changeDetails();
 					break;
-				case "5":
+
+				case "11":
 					changePassword();
 					break;
+
 				default:
 					System.out.println("Invalid user input. Please try again.");
 					break;
@@ -198,15 +232,15 @@ public class Menu {
 					break;
 
 				case 1:
-					addAppointment();
+					displayAppointments(((Professional) activeUser).getDiary().sortByDate());
 					break;
 
 				case 2:
-					editAppointment();
+					backupStaff();
 					break;
 
 				case 3:
-					deleteAppointment();
+					restoreStaff();
 					break;
 
 				case 4:
@@ -218,37 +252,27 @@ public class Menu {
 					break;
 
 				case 6:
-					displayDiary(staff, activeUser.getId());
-					break;
-
-				case 7:
-					backupStaff();
-					// TODO remove this menu item, add searchAppointment
-					break;
-
-				case 8:
-					restoreStaff();
-					// TODO remove this menu item
-					break;
-
-				case 9:
 					addTask();
 					break;
 
-				case 10:
+				case 7:
 					removeTask();
 					break;
 
-				case 11:
+				case 8:
 					displayTaskList();
 					break;
 
-				case 12:
+				case 9:
 					changePassword();
 					break;
 
-				case 13:
+				case 10:
 					changeDetails();
+					break;
+
+				case 11:
+					editWorkingHours();
 					break;
 
 				default:
@@ -259,47 +283,182 @@ public class Menu {
 	}
 
 	/**
-	 * This method displays diary.
-	 * Gets list of professionals, streams over each professional with filter
-	 * based on professionalID. flatMap makes it possible access from professional to ElectornicDiary
-	 * and from ElectronicDiary to Appointment.
+	 * Displays a list of appointments in a table.
+	 *
+	 * @param appointments The list of appointments to display
 	 */
-	private void displayDiary(Staff staff, Long professionalId) {
-		Set<Professional> professionals = staff.getStaff();
-		professionals.stream().filter(professional -> Objects.nonNull(professionalId) && professional.getId() == professionalId).
-				flatMap(professional -> professional.getDiary().getAppointments().stream()).forEach(System.out::println);
+	private void displayAppointments(List<Appointment> appointments) {
+		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MMM/uuuu HH");
+
+		// Table header
+		displayTableRowDivider();
+		System.out.println(generateTableRow("ID", "Start time", "End time", "Treatment type", "Room", "Professionals"));
+		displayTableRowDivider();
+		displayTableRowDivider();
+
+		// Table rows
+		for (Appointment appointment : appointments) {
+			List<Professional> professionals = appointment.getProfessionals();
+			// Data
+			System.out.println(generateTableRow(
+					String.valueOf(appointment.getId()),
+					appointment.getStartTime().format(dateFormat),
+					appointment.getEndTime().format(dateFormat),
+					appointment.getTreatmentType().getLabel(),
+					appointment.getRoom(),
+					professionals.get(0).getFirstName() + " " + professionals.get(0).getLastName()));
+			// Rest of the professionals
+			for (int i = 1; i < professionals.size(); i++) {
+				System.out.println(generateTableRow("", "", "", "", "",
+						professionals.get(i).getFirstName() + " " + professionals.get(i).getLastName()));
+			}
+			displayTableRowDivider();
+		}
+	}
+
+	private String generateTableRow(String cell1, String cell2, String cell3, String cell4, String cell5, String cell6) {
+		return String.format("|%4s|%15s|%15s|%30s|%8s|%30s|", cell1, cell2, cell3, cell4, cell5, cell6);
+	}
+
+	private void displayTableRowDivider() {
+		System.out.println(generateTableRow("", "", "", "", "", "").replace(' ', '-'));
 	}
 
 	/**
-	 * TODO
+	 * This method displays an appointment's information with the given appointment and professional's IDs
 	 */
 	private void searchAppointment() {
-		// TODO - implement Menu.searchAppointment
 
+		Scanner s = new Scanner(System.in);
+		boolean IDfound=false;
+		long inputID=-1;
+
+		//get the appointment ID from user input
+		while(!IDfound)
+		{
+			System.out.println("Enter appointment ID: ");
+			//check if input is valid ID
+			if(s.hasNextLong()) {
+				inputID = s.nextLong();
+				IDfound=true;
+			}
+			else System.out.println("Input not valid!");
+		}
+
+
+		Appointment foundAppointment = staff.searchAppointment(activeUser.getId(), inputID);
+		if (foundAppointment == null) System.out.println("Appointment not found.");
+		else {
+			displayAppointments(Collections.singletonList(foundAppointment));
+		}
 	}
 
 	/**
 	 * Get inputs from the user for a new appointment, verify it and adds it to the database.
 	 */
 	private void addAppointment() {
-		List<Long> professionals = new ArrayList<>();
-		LocalDateTime startTime = LocalDateTime.now();
-		LocalDateTime endTime = LocalDateTime.now();
-		String room = "";
-		String treatmentType = "<undefined>";
-		// TODO get input from user
-		Appointment newAppointment = staff.bookAppointment(professionals, startTime, endTime, room, treatmentType);
+		// The objects needed to book a new appointment
+		Scanner in = new Scanner(System.in);
+		List<Professional> professionals = new ArrayList<>();
+		LocalDateTime from = LocalDateTime.now();
+		LocalDateTime until = LocalDateTime.now();
+		String room = "<undefined>";
+		TreatmentType treatmentType;
+		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-uuuu HH");
+
+		// Get input for treatment
+		List<TreatmentType> treatments = new ArrayList<>(TreatmentType.getTreatmentTypes());
+		int treatInput = -1;
+		while (treatInput >= treatments.size() || treatInput < 0) {
+			System.out.println("\nPlease choose a treatment type you'd like to book an appointment for:");
+			TreatmentType.displayTreatments();
+			if (in.hasNextInt()) {
+				treatInput = in.nextInt();
+			} else {
+				in.nextLine();
+				System.out.println("Invalid input.");
+			}
+		}
+		treatmentType = treatments.get(treatInput - 1);
+
+		// Collect all the competent professionals needed for the treatment
+		Map<Role, List<Professional>> competentProfessionals = new HashMap<>(treatmentType.getRequiredRoles().size());
+		for (Role role : treatmentType.getRequiredRoles()) {
+			competentProfessionals.put(role, staff.getProfessionalsByRole(role));
+		}
+
+		// Get input for the time interval
+		List<Appointment> availableSlots = new ArrayList<>();
+		while (availableSlots.size() == 0) {
+			System.out.println("\nPlease provide an interval you'd like to book the appointment in. (dd-mm-year hh) or 0 to return");
+			while (true) {
+				System.out.print("From: ");
+				try {
+					String input = in.nextLine();
+					if (input.equals("0")) return;
+					from = LocalDateTime.parse(in.nextLine(), dateFormat);
+					break;
+				} catch (DateTimeParseException e) {
+					System.out.println("Invalid format. Please use a day-month-year hour format in this way: dd-mm-year hh");
+				}
+			}
+			while (true) {
+				System.out.print("Till: ");
+				try {
+					until = LocalDateTime.parse(in.nextLine(), dateFormat);
+					break;
+				} catch (DateTimeParseException e) {
+					System.out.println("Invalid format. Please use a day-month-year hour format in this way: dd-mm-year hh");
+				}
+			}
+
+			// Choose a professional for every role who has the most empty slot in the given interval.
+			LocalDateTime finalFrom = from;
+			LocalDateTime finalUntil = until;
+			professionals = competentProfessionals.values().stream()
+					.map(professionalList -> professionalList.stream()
+							.max(Comparator.comparingInt(professional -> professional.searchAvailability(finalFrom, finalUntil).size()))
+							.orElse(null))
+					.collect(Collectors.toList());
+			availableSlots = staff.searchAvailability(professionals, from, until);
+			if (availableSlots.size() == 0) {
+				System.out.println("There are no available appointments in the given interval.");
+				System.out.println("Please provide a new one.");
+			}
+		}
+
+		int slotInput = -1;
+		while (slotInput < 0 || slotInput >= availableSlots.size()) {
+			System.out.println("\nChoose one of the available slots for the appointment:\n");
+			for (int i = 0; i < availableSlots.size(); i++) {
+				Appointment appointment = availableSlots.get(i);
+				System.out.println(i + ". " + appointment.getStartTime().format(dateFormat));
+			}
+			if (in.hasNextInt()) {
+				slotInput = in.nextInt();
+				in.nextLine();
+			} else {
+				in.nextLine();
+				System.out.println("Invalid input.");
+			}
+		}
+
+		// Get input for the room
+		System.out.println("\nPlease provide a room where the treatment will take place:");
+		String input = in.nextLine();
+		if (!input.isBlank()) room = input;
+
+		// Book the appointment
+		Appointment newAppointment = staff.bookAppointment(professionals, from, until, room, treatmentType);
+		displayAppointments(Collections.singletonList(newAppointment));
 		if (newAppointment != null) {
 			try {
-				undoRedoHandler.addAction(new Action(
+				undoRedoHandler.addAction(new BookAppointmentAction(
 						"Add appointment",
 						staff,
-						staff.getClass().getMethod("deleteAppointment", long.class, long.class),
-						new Object[]{activeUser.getId(), newAppointment.getId()},
-						staff.getClass().getMethod("bookAppointment", List.class, LocalDateTime.class, LocalDateTime.class, String.class, String.class),
-						new Object[]{professionals, startTime, endTime, room, treatmentType}
+						newAppointment
 				));
-			} catch (NoSuchMethodException e) {
+			} catch (NoSuchMethodException | IllegalArgumentException e) {
 				// TODO handle exception
 				e.printStackTrace();
 			}
@@ -342,8 +501,23 @@ public class Menu {
 	 */
 	private void deleteAppointment() {
 		long appointmentId = 0;
-		// TODO get input from user
+		Scanner s = new Scanner(System.in);
+		boolean IDfound=false;
+
+		//get the appointment ID from user input
+		while(!IDfound)
+		{
+			System.out.println("Enter appointment ID: ");
+			//check if input is valid ID
+			if(s.hasNextLong()) {
+				appointmentId = s.nextLong();
+				IDfound=true;
+			}
+			else System.out.println("Input not valid!");
+		}
+
 		Appointment deletedAppointment = staff.deleteAppointment(activeUser.getId(), appointmentId);
+
 		if (deletedAppointment != null) {
 			try {
 				undoRedoHandler.addAction(new DeleteAppointmentAction(
@@ -351,7 +525,7 @@ public class Menu {
 						staff,
 						deletedAppointment
 				));
-			} catch (NoSuchMethodException e) {
+			} catch (NoSuchMethodException | IllegalArgumentException e) {
 				// TODO handle exception
 				e.printStackTrace();
 			}
@@ -380,8 +554,7 @@ public class Menu {
 	private void restoreStaff() {
 		try (FileInputStream fin = new FileInputStream("backupStaff.txt");
 			 ObjectInputStream ois = new ObjectInputStream(fin)) {
-			Staff staff = (Staff) ois.readObject();
-			displayDiary(staff, null);
+			staff = (Staff) ois.readObject();
 		} catch (FileNotFoundException e) {
 			// TODO handle exception
 			e.printStackTrace();
@@ -421,7 +594,7 @@ public class Menu {
 	private String startMenu()
 	{
 		do {
-			System.out.println("\nWelcome to hospital scheduler.\n");
+			System.out.println("\nWelcome to the hospital scheduler.\n");
 			System.out.println("Please choose one of the following options:\n");
 
 			System.out.println("1. Log-in");
@@ -442,6 +615,7 @@ public class Menu {
 
 
 	}
+
 	/**
 	 * Logs the user out of the system.
 	 */
@@ -474,7 +648,6 @@ public class Menu {
 				username = s.nextLine();
 				if(username.equals("0")) return "noUser";
 
-				//TODO add an instance of administrator to staff
 				if(username.equals(staff.getAdmin().getUsername())) activeUser = staff.getAdmin();
 				else activeUser = staff.searchByUsername(username);
 
@@ -517,7 +690,7 @@ public class Menu {
 	{
 		Scanner s = new Scanner(System.in);
 		String userInput;
-		String warning = "\nWARNING! This will change your username. Proceed with caution.\n";
+		String warning = "\nWARNING! If you're a professional, this will change your username. Proceed with caution.\n";
 
 		do {
 			System.out.println("\nPlease specify which data you want to change:");
@@ -542,8 +715,12 @@ public class Menu {
 					activeUser.setFirstName(newName);
 					System.out.println("Name changed successfully.");
 
-					activeUser.updateUsername();
-					System.out.println("Your new username is " + activeUser.getUsername());
+					//If active user is a professional, username is updated
+					if(activeUser.getClass().isInstance(Professional.class))
+					{
+						activeUser.updateUsername();
+						System.out.println("Your new username is " + activeUser.getUsername());
+					}
 
 					try {
 						undoRedoHandler.addAction(new Action(
@@ -658,7 +835,6 @@ public class Menu {
 			} catch (DateTimeParseException e) {
 				System.out.println("There was an error recording your due-by date, please try again.");
 				retry = true;
-				// TODO ask for new input if there was  a wrong one
 				continue;
 			}
 
@@ -679,6 +855,7 @@ public class Menu {
 
 				if(success) {
 					retry = false;
+					System.out.println("Task was added successfully.");
 					try {
 						undoRedoHandler.addAction(new Action(
 								"New task addition",
@@ -945,9 +1122,11 @@ public class Menu {
 				int counter = 0;
 				while(counter < numberOfProfessionals) {
 
-					System.out.println(counter + 1 + "out of " + numberOfProfessionals + ": please specify the role of the professional:");
+					System.out.println(counter+1  + " out of " + numberOfProfessionals + ": please specify the role of the professional:");
 					role = scanRole.nextLine();
 
+					//Adjusts the input to match the enum grammar
+					role = role.substring(0,1).toUpperCase() + role.substring(1).toLowerCase();
 					exists = Role.checkIfRoleExists(role);
 					if (exists) {
 						//If role exists, it's added to the requirements
@@ -965,5 +1144,100 @@ public class Menu {
 			retry = false;
 
 		} while (retry);
+
+	}
+
+	/**
+	 * Edits the working hours of the Professional
+	 */
+	public void editWorkingHours()
+	{
+		Scanner scanInt = new Scanner(System.in);
+		Scanner scanString = new Scanner(System.in);
+		String input;
+
+		DayOfWeek chosenDay = null;
+		boolean validInput = true, retry = true;
+
+		LocalTime startTime = null, endTime = null;
+		String start, end;
+
+		//TODO SOLVE APPOINTMENT CONFLICTS THAT ARISE DUE TO SCHEDULE CHANGE
+		do {
+			do {
+
+
+				System.out.println("Please choose which working day you would like to edit:");
+				System.out.println("1. Monday");
+				System.out.println("2. Tuesday");
+				System.out.println("3. Wednesday");
+				System.out.println("4. Thursday");
+				System.out.println("5. Friday");
+				System.out.println("6. Saturday");
+				System.out.println("7. Sunday");
+				System.out.println("\n0. Return");
+
+				input = scanInt.nextLine();
+
+				switch(input)
+				{
+					case "1": chosenDay = DayOfWeek.valueOf("MONDAY"); validInput = true;break;
+					case "2": chosenDay = DayOfWeek.valueOf("TUESDAY");validInput = true; break;
+					case "3": chosenDay = DayOfWeek.valueOf("WEDNESDAY");validInput = true; break;
+					case "4": chosenDay = DayOfWeek.valueOf("THURSDAY");validInput = true; break;
+					case "5": chosenDay = DayOfWeek.valueOf("FRIDAY");validInput = true; break;
+					case "6": chosenDay = DayOfWeek.valueOf("SATURDAY");validInput = true; break;
+					case "7": chosenDay = DayOfWeek.valueOf("SUNDAY");validInput = true; break;
+					case "0": return;
+					default:System.out.println("Invalid input, try again."); validInput = false;
+				}
+			} while (!validInput);
+
+
+			do {
+
+				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("H:mm");
+
+
+				System.out.println("\nPlease enter new working hour standards for the specified day in the format h:mm:\n");
+				System.out.println("Please enter your shift start time:");
+				start = scanString.nextLine();
+				System.out.println("Please enter your shift end time:");
+				end = scanString.nextLine();
+
+
+				try {
+
+					//Parsing the String
+					startTime = LocalTime.parse(start, dtf);
+					endTime = LocalTime.parse(start, dtf);
+
+					retry = false;
+				} catch (DateTimeParseException e) {
+					System.out.println("There was an error recording your shift times, please try again.");
+					retry = true;
+					continue;
+				}
+			} while (retry);
+
+			Map<DayOfWeek, WorkingHours>  newWorkingHours = ((Professional)activeUser).getWorkingHours();
+
+			for (Map.Entry<DayOfWeek, WorkingHours> entry : newWorkingHours.entrySet()) {
+
+				//If the day of the week match of the input and the working hours set,
+				if(entry.getKey().equals(chosenDay))
+				{
+					//New values are set
+					entry.getValue().setStartHour(startTime);
+					entry.getValue().setEndHour(endTime);
+
+					break;
+				}
+			}
+
+			System.out.println("Your schedule has been updated.\n");
+		} while (true);
+
+
 	}
 }

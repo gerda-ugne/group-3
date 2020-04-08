@@ -1,8 +1,8 @@
 package hospital.staff;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.io.Serializable;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Treatment type class defines default treatments
@@ -10,12 +10,12 @@ import java.util.Set;
  *
  * Singleton approach is used.
  */
-public class TreatmentType {
+public class TreatmentType implements Serializable {
 
     /**
      * Set that contains default treatments
      */
-    private static Set<TreatmentType> treatmentTypes;
+    private static final Set<TreatmentType> treatmentTypes = new HashSet<>();
     // TODO change to hashmap
 
     /**
@@ -87,8 +87,12 @@ public class TreatmentType {
     public static void displayTreatments()
     {
         int counter = 1;
-        for (TreatmentType treatment: treatmentTypes
-        ) {
+        List<TreatmentType> sortedTreatments = treatmentTypes.stream()
+                .sorted(Comparator.comparing(treatment -> treatment.label))
+                .collect(Collectors.toList());
+        for (TreatmentType treatment: sortedTreatments) {
+            //Doesn't print the placeholder treatment
+            if(treatment.label.equals("<undefined>")) continue;
             System.out.println(counter + ". " + treatment.label);
             counter ++;
 
