@@ -2,7 +2,6 @@ package hospital.staff;
 
 import hospital.undo_redo.UndoRedoExecutor;
 import hospital.timeLogger.TimeLogger;
-
 import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -61,18 +60,39 @@ public class Staff implements UndoRedoExecutor, Serializable {
 	public void addMember(Professional newMember) {
 
 		staff.add(newMember);
-
 	}
 
 	/**
-	 * Removes a professional from the staff
+	 * Removes a professional from the staff, also removing them from each of their appointments
 	 * @param member member to remove
 	 * @return false/true whether the member was removed
 	 */
 	public boolean removeMember(Professional member) {
 
+		ElectronicDiary diary = member.getDiary();
+		List<Appointment> appList = diary.getAppointments();
+		String role = member.getRole();
+		List<Professional> eligibleProfs = new ArrayList<>();
+		for(Professional prof : staff)
+		{
+			if(prof.getRole().equals(role)) eligibleProfs.add(prof);
+		}
+		for(Appointment app : appList)
+		{
+			List<Professional> appProfessionals=app.getProfessionals();
+			appProfessionals.remove(member);
+			for(Professional p : eligibleProfs)
+			{
+				if(!p.searchAvailability(app.getStartTime(),app.getEndTime()).isEmpty())
+				{
+					appProfessionals.add(p);
+					break;
+				}
+			}
+			if(appProfessionals.isEmpty()) deleteAppointment(member.getId(),app.getId());
+			else app.setProfessionals(appProfessionals);
+		}
 		return staff.remove(member);
-
 	}
 
 	/**

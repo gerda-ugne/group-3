@@ -87,6 +87,8 @@ public class TreatmentType {
         int counter = 1;
         for (TreatmentType treatment: treatmentTypes
         ) {
+            //Doesn't print the placeholder treatment
+            if(treatment.label.equals("<undefined>")) continue;
             System.out.println(counter + ". " + treatment.label);
             counter ++;
 
