@@ -45,6 +45,7 @@ public class Menu {
 	public Menu() {
 
 		//TODO handle exceptions
+		//restores staff from save file
 		staff = new Staff();
 		restoreStaff();
 
@@ -372,10 +373,23 @@ public class Menu {
 		}
 	}
 
+	/**
+	 * method to generate table row
+	 * @param cell1 first row cell
+	 * @param cell2 second row cell
+	 * @param cell3 third row cell
+	 * @param cell4 fourth row cell
+	 * @param cell5 fifth row cell
+	 * @param cell6 sixth row cell
+	 * @return the formatted table row
+	 */
 	private String generateTableRow(String cell1, String cell2, String cell3, String cell4, String cell5, String cell6) {
 		return String.format("|%6s|%15s|%15s|%30s|%12s|%30s|", cell1, cell2, cell3, cell4, cell5, cell6);
 	}
 
+	/**
+	 * method to display the table row divider
+	 */
 	private void displayTableRowDivider() {
 		System.out.println(generateTableRow("", "", "", "", "", "").replace(' ', '-'));
 	}
@@ -402,6 +416,7 @@ public class Menu {
 				System.out.println("Input invalid, try again!");
 			}
 		}
+		//get the appointment by the user input ID
 		Appointment foundAppointment = staff.searchAppointment(appID);
 		if (foundAppointment == null) System.out.println("Appointment not found.");
 		else {
@@ -474,7 +489,7 @@ public class Menu {
 				}
 			}
 
-			// Choose a professional for every role who has the most empty slot in the given interval.
+			// Choose a professional for every role who has the most empty slots in the given interval.
 			LocalDateTime finalFrom = from;
 			LocalDateTime finalUntil = until;
 			professionals = competentProfessionals.values().stream()
@@ -489,6 +504,7 @@ public class Menu {
 			}
 		}
 
+		//ask the user to choose one of the available slots
 		int slotInput = -1;
 		while (slotInput < 0 || slotInput >= availableSlots.size()) {
 			System.out.println("\nChoose one of the available slots for the appointment:\n");
@@ -615,6 +631,7 @@ public class Menu {
 			}
 		}
 
+		//ask the user to choose one of the available slots
 		int slotInput = -1;
 		while (slotInput < 0 || slotInput >= availableSlots.size()) {
 			System.out.println("\nChoose one of the available slots for the appointment:\n");
@@ -636,6 +653,7 @@ public class Menu {
 		String input = in.nextLine();
 		if (!input.isBlank()) room = input;
 
+		//display the modified appointment
 		Appointment modifiedAppointment = staff.editAppointment(appointmentId, professionals, availableSlots.get(slotInput).getStartTime(), availableSlots.get(slotInput).getEndTime(), room);
 		displayAppointments( Collections.singletonList( modifiedAppointment ) );
 		if (modifiedAppointment != null && !modifiedAppointment.equals(oldAppointment)) {
@@ -676,6 +694,7 @@ public class Menu {
 			else System.out.println("Input not valid!");
 		}
 
+		//delete the appointment with the given ID
 		Appointment deletedAppointment = staff.deleteAppointment(appointmentId);
 
 		if (deletedAppointment != null) {
@@ -812,15 +831,18 @@ public class Menu {
 				System.out.println("Your username is your first and last name combined in lowercase letters, or 'admin' by default if you're an administrator.\n");
 				System.out.println("Enter your username:");
 
+				//get the user's username
 				username = s.nextLine();
 				if(username.equals("0")) return "noUser";
 
 				if(username.equals(staff.getAdmin().getUsername())) activeUser = staff.getAdmin();
 				else activeUser = staff.searchByUsername(username);
 
+				//get the user's password
 				System.out.println("\nEnter your password:");
 				password = s.nextLine();
 
+				//check if password correct
 				isPasswordCorrect = activeUser.checkPassword(password);
 				if(isPasswordCorrect)
 				{
@@ -1419,6 +1441,9 @@ public class Menu {
 		} while (true);
 	}
 
+	/**
+	 * method to open the manual PDF
+	 */
 	public void showManual() {
 		if (Desktop.isDesktopSupported()) {
 			try {
