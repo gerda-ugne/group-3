@@ -45,6 +45,7 @@ public class UndoRedoHandler {
      * If there is no action to undo, it does nothing.
      *
      * @return the returned object from the method used to redo the action.
+     * @throws UndoNotPossibleException if its not possible
      */
     public Object undo() throws UndoNotPossibleException {
         Object returned = null;
@@ -62,6 +63,7 @@ public class UndoRedoHandler {
      * Adds the action to the top of the undoable actions stack.
      *
      * @return the returned object from the method used to redo the action.
+     * @throws RedoNotPossibleException if its not possible
      */
     public Object redo() throws RedoNotPossibleException {
         Object returned = null;

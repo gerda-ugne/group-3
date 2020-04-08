@@ -54,9 +54,9 @@ public class Menu {
 	}
 
 	/**
-	 * TODO
+	 * Entry point of the application
 	 *
-	 * @param args
+	 * @param args input arguments
 	 */
 	public static void main(String[] args){
 

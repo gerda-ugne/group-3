@@ -31,6 +31,8 @@ public class TimeLogger {
      * When object of the class is initiated,
      * start time is recorded.
      * and a task name is set.
+     *
+     * @param taskName The name of the task
      */
     public TimeLogger(String taskName)
     {
