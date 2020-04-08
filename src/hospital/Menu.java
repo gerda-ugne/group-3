@@ -6,6 +6,7 @@ import hospital.undo_redo.RedoNotPossibleException;
 import hospital.undo_redo.UndoNotPossibleException;
 import hospital.undo_redo.UndoRedoHandler;
 
+import java.awt.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -14,6 +15,7 @@ import java.time.format.DateTimeParseException;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -110,6 +112,8 @@ public class Menu {
 		System.out.println("10. Change your password");
 		System.out.println("11. Change your personal details");
 		System.out.println("12. Change your working schedule");
+
+		System.out.println("13. Help");
 		System.out.println("\n0. Log out");
 
 	}
@@ -135,6 +139,7 @@ public class Menu {
 		System.out.println("\nOther:\n");
 		System.out.println("11. Edit personal information");
 		System.out.println("12. Change password");
+		System.out.println("13. Help");
 		System.out.println("\n0. Log out");
 
 
@@ -223,6 +228,11 @@ public class Menu {
 				case "12":
 					changePassword();
 					break;
+
+				case "13":
+					showManual();
+					break;
+
 				default:
 					System.out.println("Invalid user input. Please try again.");
 					break;
@@ -315,6 +325,11 @@ public class Menu {
 					editWorkingHours();
 					break;
 
+				case 13:
+					showManual();
+					break;
+
+
 				default:
 					System.out.println("Invalid user input. Please try again.");
 					break;
@@ -328,12 +343,6 @@ public class Menu {
 	 * @param appointments The list of appointments to display
 	 */
 	private void displayAppointments(List<Appointment> appointments) {
-
-		if(appointments.isEmpty()) {
-			System.out.println("There are no appointments to show.");
-			return;
-		}
-
 		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MMM/uuuu HH");
 
 		// Table header
@@ -1282,10 +1291,10 @@ public class Menu {
 
 			do {
 
-				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH");
+				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("H:mm");
 
 
-				System.out.println("\nPlease enter new working hour standards for the specified day in the format hh:\n");
+				System.out.println("\nPlease enter new working hour standards for the specified day in the format h:mm:\n");
 				System.out.println("Please enter your shift start time:");
 				start = scanString.nextLine();
 				System.out.println("Please enter your shift end time:");
@@ -1324,24 +1333,29 @@ public class Menu {
 			List<Appointment> appointments = ((Professional) activeUser).getDiary().getAppointments();
 			int startHour = Integer.parseInt(start);
 			int endHour = Integer.parseInt(end);
-			List<Appointment> appointmentsToDelete = new ArrayList<>();
 			for(Appointment app : appointments)
 			{
 				if(app.getStartTime().getDayOfWeek()==chosenDay)
 				{
 					if((app.getStartTime().getHour()<startHour)||(app.getEndTime().getHour()>endHour))
 					{
-						appointmentsToDelete.add(app);
+						appointments.remove(app);
 					}
 				}
 			}
 
-			for(Appointment app : appointmentsToDelete)
-			{
-				appointments.remove(app);
-			}
-
 			System.out.println("Your schedule has been updated.\n");
 		} while (true);
+	}
+
+	public void showManual() {
+		if (Desktop.isDesktopSupported()) {
+			try {
+				File myFile = new File("UserManual.pdf");
+				Desktop.getDesktop().open(myFile);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }
