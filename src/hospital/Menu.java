@@ -1328,7 +1328,6 @@ public class Menu {
 		LocalTime startTime = null, endTime = null;
 		String start, end;
 
-		//TODO SOLVE APPOINTMENT CONFLICTS THAT ARISE DUE TO SCHEDULE CHANGE
 		do {
 			do {
 
@@ -1347,13 +1346,13 @@ public class Menu {
 
 				switch(input)
 				{
-					case "1": chosenDay = DayOfWeek.valueOf("MONDAY"); validInput = true;break;
-					case "2": chosenDay = DayOfWeek.valueOf("TUESDAY");validInput = true; break;
-					case "3": chosenDay = DayOfWeek.valueOf("WEDNESDAY");validInput = true; break;
-					case "4": chosenDay = DayOfWeek.valueOf("THURSDAY");validInput = true; break;
-					case "5": chosenDay = DayOfWeek.valueOf("FRIDAY");validInput = true; break;
-					case "6": chosenDay = DayOfWeek.valueOf("SATURDAY");validInput = true; break;
-					case "7": chosenDay = DayOfWeek.valueOf("SUNDAY");validInput = true; break;
+					case "1": chosenDay = DayOfWeek.MONDAY; validInput = true;break;
+					case "2": chosenDay = DayOfWeek.TUESDAY;validInput = true; break;
+					case "3": chosenDay = DayOfWeek.WEDNESDAY;validInput = true; break;
+					case "4": chosenDay = DayOfWeek.THURSDAY;validInput = true; break;
+					case "5": chosenDay = DayOfWeek.FRIDAY;validInput = true; break;
+					case "6": chosenDay = DayOfWeek.SATURDAY;validInput = true; break;
+					case "7": chosenDay = DayOfWeek.SUNDAY;validInput = true; break;
 					case "0": return;
 					default:System.out.println("Invalid input, try again."); validInput = false;
 				}
@@ -1362,10 +1361,10 @@ public class Menu {
 
 			do {
 
-				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("H:mm");
+				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH");
 
 
-				System.out.println("\nPlease enter new working hour standards for the specified day in the format h:mm:\n");
+				System.out.println("\nPlease enter new working hour standards for the specified day in the format HH:\n");
 				System.out.println("Please enter your shift start time:");
 				start = scanString.nextLine();
 				System.out.println("Please enter your shift end time:");
