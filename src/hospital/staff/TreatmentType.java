@@ -2,6 +2,7 @@ package hospital.staff;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Treatment type class defines default treatments
@@ -86,8 +87,10 @@ public class TreatmentType implements Serializable {
     public static void displayTreatments()
     {
         int counter = 1;
-        for (TreatmentType treatment: treatmentTypes
-        ) {
+        List<TreatmentType> sortedTreatments = treatmentTypes.stream()
+                .sorted(Comparator.comparing(treatment -> treatment.label))
+                .collect(Collectors.toList());
+        for (TreatmentType treatment: sortedTreatments) {
             //Doesn't print the placeholder treatment
             if(treatment.label.equals("<undefined>")) continue;
             System.out.println(counter + ". " + treatment.label);
