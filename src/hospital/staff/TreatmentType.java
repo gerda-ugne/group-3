@@ -16,7 +16,6 @@ public class TreatmentType implements Serializable {
      * Set that contains default treatments
      */
     private static final List<TreatmentType> treatmentTypes = new ArrayList<TreatmentType>();
-    // TODO change to hashmap
 
     /**
      * Label of the treatment

@@ -1282,10 +1282,10 @@ public class Menu {
 
 			do {
 
-				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("H:mm");
+				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH");
 
 
-				System.out.println("\nPlease enter new working hour standards for the specified day in the format h:mm:\n");
+				System.out.println("\nPlease enter new working hour standards for the specified day in the format hh:\n");
 				System.out.println("Please enter your shift start time:");
 				start = scanString.nextLine();
 				System.out.println("Please enter your shift end time:");
