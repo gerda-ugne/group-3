@@ -460,8 +460,6 @@ public class Menu {
 				System.out.println("Invalid input.");
 			}
 		}
-		from=availableSlots.get(slotInput).getStartTime();
-		until=availableSlots.get(slotInput).getEndTime();
 		// Get input for the room
 		System.out.println("\nPlease provide a room where the treatment will take place:");
 		String input = in.nextLine();
