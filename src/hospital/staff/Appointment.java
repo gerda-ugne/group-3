@@ -57,7 +57,7 @@ public class Appointment implements Comparable<Appointment>, Serializable {
 
 
 	/**
-	 * Creates and empty appointment without data, in which only the ID is unique.
+	 * Creates an empty appointment without data, in which only the ID is unique.
 	 */
 	public Appointment() {
 		// TODO check for existing ids or make sure that counter is restored too with the appointments (from save)
@@ -82,7 +82,6 @@ public class Appointment implements Comparable<Appointment>, Serializable {
 	 * @param professionals professionals needed for the appointment
 	 */
 	public Appointment(LocalDateTime startTime, LocalDateTime endTime, String room, List<Professional> professionals, TreatmentType treatmentType) {
-		// TODO change treatmentType from String to TreatmentType
 		this.id = counter++;
 		this.startTime = startTime;
 		this.endTime = endTime;
@@ -192,7 +191,7 @@ public class Appointment implements Comparable<Appointment>, Serializable {
 	}
 
     /**
-     * TODO
+     *
      * @param o The other appointment to compare this appointment to
      * @return  0 if the two appointment start at the same time,
      *          a negative number if the argument starts later then this appointment,
@@ -204,6 +203,10 @@ public class Appointment implements Comparable<Appointment>, Serializable {
 	}
 
 
+	/**
+	 * Formats the appointment details to make it easy to write
+	 * @return a formatted string with the Appointment details
+	 */
 	@Override
 	public String toString() {
 		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-uuuu HH");
