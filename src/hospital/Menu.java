@@ -2,6 +2,8 @@ package hospital;
 
 import hospital.staff.*;
 import hospital.undo_redo.Action;
+import hospital.undo_redo.RedoNotPossibleException;
+import hospital.undo_redo.UndoNotPossibleException;
 import hospital.undo_redo.UndoRedoHandler;
 
 import java.time.DayOfWeek;
@@ -176,11 +178,19 @@ public class Menu {
 					break;
 
 				case "5":
-					//TODO add undo
+					try {
+						undoRedoHandler.undo();
+					} catch (UndoNotPossibleException e) {
+						System.out.println("There is nothing to undo.");
+					}
 					break;
 
 				case "6":
-					//TODO add redo
+					try {
+						undoRedoHandler.redo();
+					} catch (RedoNotPossibleException e) {
+						System.out.println("There is nothing to redo.");
+					}
 					break;
 
 				case "7":
@@ -253,11 +263,19 @@ public class Menu {
 					break;
 
 				case 5:
-					// TODO undo
+					try {
+						undoRedoHandler.undo();
+					} catch (UndoNotPossibleException e) {
+						System.out.println("There is nothing to undo.");
+					}
 					break;
 
 				case 6:
-					//TODO redo
+					try {
+						undoRedoHandler.redo();
+					} catch (RedoNotPossibleException e) {
+						System.out.println("There is nothing to redo.");
+					}
 					break;
 
 				case 7:
