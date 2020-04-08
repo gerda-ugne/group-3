@@ -186,6 +186,7 @@ public class Professional extends User {
 				.sorted()
 				.collect(Collectors.toList());
 
+		Set<Appointment> slotsToRemove = new HashSet<>();
 		//Nested for loop: each slot is compared to the existing appointments.
 		for (Appointment slot:
 			 availableSlots) {
@@ -195,15 +196,16 @@ public class Professional extends User {
 
 				//If the start and end times match it means the slot is not available
 				// and therefore is removed from the available slots list.
-				if((slot.getStartTime().equals(bookedAppointment.getStartTime()))
-				&& slot.getEndTime().equals(bookedAppointment.getEndTime()))
+				if(slot.getStartTime().isEqual(bookedAppointment.getStartTime())
+				&& slot.getEndTime().isEqual(bookedAppointment.getEndTime()))
 				{
-					availableSlots.remove(slot);
+					slotsToRemove.add(slot);
 					break;
 				}
 			}
 
 		}
+		availableSlots.removeAll(slotsToRemove);
 
 		return availableSlots;
 	}
