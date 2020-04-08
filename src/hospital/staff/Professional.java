@@ -200,7 +200,6 @@ public class Professional extends User {
 				&& slot.getEndTime().isEqual(bookedAppointment.getEndTime()))
 				{
 					slotsToRemove.add(slot);
-					break;
 				}
 			}
 
