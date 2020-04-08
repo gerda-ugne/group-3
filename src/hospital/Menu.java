@@ -379,7 +379,7 @@ public class Menu {
 				System.out.println("Invalid input.");
 			}
 		}
-		treatmentType = treatments.get(treatInput - 1);
+		treatmentType = treatments.get(treatInput);
 
 		// Collect all the competent professionals needed for the treatment
 		Map<Role, List<Professional>> competentProfessionals = new HashMap<>(treatmentType.getRequiredRoles().size());
@@ -449,7 +449,7 @@ public class Menu {
 		if (!input.isBlank()) room = input;
 
 		// Book the appointment
-		Appointment newAppointment = staff.bookAppointment(professionals, from, until, room, treatmentType);
+		Appointment newAppointment = staff.bookAppointment(professionals, availableSlots.get(slotInput).getStartTime(), availableSlots.get(slotInput).getEndTime(), room, treatmentType);
 		displayAppointments(Collections.singletonList(newAppointment));
 		if (newAppointment != null) {
 			try {
@@ -507,7 +507,7 @@ public class Menu {
 		//get the appointment ID from user input
 		while(!IDfound)
 		{
-			System.out.println("Enter appointment ID: ");
+			System.out.println("Enter appointment to delete ID: ");
 			//check if input is valid ID
 			if(s.hasNextLong()) {
 				appointmentId = s.nextLong();
@@ -519,6 +519,7 @@ public class Menu {
 		Appointment deletedAppointment = staff.deleteAppointment(activeUser.getId(), appointmentId);
 
 		if (deletedAppointment != null) {
+			System.out.println("The appointment has been deleted successfully.");
 			try {
 				undoRedoHandler.addAction(new DeleteAppointmentAction(
 						"Delete appointment",

@@ -15,7 +15,7 @@ public class TreatmentType implements Serializable {
     /**
      * Set that contains default treatments
      */
-    private static final Set<TreatmentType> treatmentTypes = new HashSet<>();
+    private static final List<TreatmentType> treatmentTypes = new ArrayList<>();
     // TODO change to hashmap
 
     /**
@@ -59,7 +59,7 @@ public class TreatmentType implements Serializable {
      * Getter method for the treatment types.
      * @return treatment types
      */
-    public static Set<TreatmentType> getTreatmentTypes(){
+    public static List<TreatmentType> getTreatmentTypes(){
         return treatmentTypes;
     }
 
@@ -75,9 +75,9 @@ public class TreatmentType implements Serializable {
     /**
      * Adds a set of treatment types to the set.
      * Useful when making backups.
-     * @param toAdd treatment set to be added
+     * @param toAdd treatment list to be added
      */
-    public static void addAllTreatmentTypes(Set<TreatmentType> toAdd) {
+    public static void addAllTreatmentTypes(List<TreatmentType> toAdd) {
       treatmentTypes.addAll(toAdd);
     }
 
