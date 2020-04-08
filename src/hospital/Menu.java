@@ -339,19 +339,25 @@ public class Menu {
 	private void searchAppointment() {
 
 		Scanner s = new Scanner(System.in);
-		boolean IDfound=false;
+		boolean IDfound = false;
 		long inputID=-1;
 
 		//get the appointment ID from user input
 		while(!IDfound)
 		{
-			System.out.println("Enter appointment ID: ");
-			//check if input is valid ID
-			if(s.hasNextLong()) {
+			try {
+				System.out.println("\nEnter appointment ID: ");
+				//check if input is valid ID
 				inputID = s.nextLong();
 				IDfound=true;
+
+			} catch (InputMismatchException e) {
+				System.out.println("Input not valid!");
+				IDfound = false;
+				s.nextLine();
+
 			}
-			else System.out.println("Input not valid!");
+
 		}
 
 
