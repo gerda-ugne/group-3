@@ -339,8 +339,8 @@ public class Menu {
 	private void searchAppointment()
 	{
 		Scanner s = new Scanner(System.in);
-		boolean IDfound=false;
-		long appID=-1,profID=-1;
+		boolean IDfound = false;
+		long appID=-1;
 		//get the appointment ID from user input
 		while(!IDfound)
 		{
@@ -356,7 +356,6 @@ public class Menu {
 			}
 		}
 		Appointment foundAppointment = staff.searchAppointment(appID);
-
 		if (foundAppointment == null) System.out.println("Appointment not found.");
 		else {
 			displayAppointments(Collections.singletonList(foundAppointment));
@@ -574,6 +573,10 @@ public class Menu {
 				// TODO handle exception
 				e.printStackTrace();
 			}
+		}
+		else
+		{
+			System.out.println("Appointment was not found, nothing to delete.");
 		}
 	}
 
