@@ -37,7 +37,7 @@ public class TreatmentType implements Serializable {
         this.requiredRoles = requiredRoles;
     }
 
-
+    //adds basic treatment types to the list
     static {
         treatmentTypes.add(new TreatmentType("Routine Checkup", Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("GP"))));
         treatmentTypes.add(new TreatmentType("Emergency Appointment",Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("PhysicianAssistant"),Role.valueOf("OccupationalTherapist"))));
@@ -114,10 +114,18 @@ public class TreatmentType implements Serializable {
         return  null;
     }
 
+    /**
+     * getter method for the treatment type's label
+     * @return the treatment type's label
+     */
     public String getLabel() {
         return label;
     }
 
+    /**
+     * getter method for the treatment type's required roles
+     * @return the treatment type's required roles
+     */
     public List<Role> getRequiredRoles() {
         return requiredRoles;
     }
