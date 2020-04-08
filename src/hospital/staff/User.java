@@ -202,6 +202,10 @@ public abstract class User implements Serializable, UndoRedoExecutor {
         return encryption.checkPassword(input, encryptedPassword);
     }
 
+    /**
+     * Method to return a formatted string with the User's name and ID
+     * @return formatted string with the details
+     */
     @Override
     public String toString() {
         return firstName + " " + lastName + " (" + id + ")";
