@@ -531,13 +531,15 @@ public class Menu {
 	 */
 	private void editAppointment() {
 		long appointmentId = 0;
-		List<Long> professionals = new ArrayList<>();
-		LocalDateTime startTime = LocalDateTime.now();
-		LocalDateTime endTime = LocalDateTime.now();
+		List<Professional> professionals = new ArrayList<>();
+		LocalDateTime from = LocalDateTime.now();
+		LocalDateTime until = LocalDateTime.now();
 		String room = "";
-		TreatmentType treatmentType = TreatmentType.searchForTreatment("<undefined>");
+		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-uuuu HH");
 
 		Scanner in = new Scanner(System.in);
+		Scanner stringSc = new Scanner(System.in);
+
 		Appointment oldAppointment = null;
 
 		// Get the appointment to modify
@@ -563,19 +565,87 @@ public class Menu {
 			}
 		}
 
+		// Collect all the competent professionals needed for the treatment
+		Map<Role, List<Professional>> competentProfessionals = new HashMap<>(oldAppointment.getTreatmentType().getRequiredRoles().size());
+		for (Role role : oldAppointment.getTreatmentType().getRequiredRoles()) {
+			competentProfessionals.put(role, staff.getProfessionalsByRole(role));
+		}
 
+		// Get input for the time interval
+		List<Appointment> availableSlots = new ArrayList<>();
+		while (availableSlots.size() == 0) {
+			System.out.println("\nPlease provide an interval you'd like to book the appointment in. (dd-mm-year hh) or 0 to return");
+			while (true) {
+				System.out.print("From: ");
+				try {
 
-		Appointment modifiedAppointment = staff.editAppointment(activeUser.getId(), appointmentId, professionals, startTime, endTime, room, treatmentType);
+					String input = stringSc.nextLine();
+					if (input.equals("0")) return;
+
+					from = LocalDateTime.parse(input, dateFormat);
+					break;
+				} catch (DateTimeParseException e) {
+					System.out.println("Invalid format. Please use a day-month-year hour format in this way: dd-mm-year hh");
+				}
+			}
+			while (true) {
+				System.out.print("Till: ");
+				try {
+					String input = stringSc.nextLine();
+					until = LocalDateTime.parse(input, dateFormat);
+					break;
+				} catch (DateTimeParseException e) {
+					System.out.println("Invalid format. Please use a day-month-year hour format in this way: dd-mm-year hh");
+				}
+			}
+
+			// Choose a professional for every role who has the most empty slot in the given interval.
+			LocalDateTime finalFrom = from;
+			LocalDateTime finalUntil = until;
+			professionals = competentProfessionals.values().stream()
+					.map(professionalList -> professionalList.stream()
+							.max(Comparator.comparingInt(professional -> professional.searchAvailability(finalFrom, finalUntil).size()))
+							.orElse(null))
+					.collect(Collectors.toList());
+			availableSlots = staff.searchAvailability(professionals, from, until);
+			if (availableSlots.size() == 0) {
+				System.out.println("There are no available appointments in the given interval.");
+				System.out.println("Please provide a new one.");
+			}
+		}
+
+		int slotInput = -1;
+		while (slotInput < 0 || slotInput >= availableSlots.size()) {
+			System.out.println("\nChoose one of the available slots for the appointment:\n");
+			for (int i = 0; i < availableSlots.size(); i++) {
+				Appointment appointment = availableSlots.get(i);
+				System.out.println(i + ". " + appointment.getStartTime().format(dateFormat));
+			}
+			if (in.hasNextInt()) {
+				slotInput = in.nextInt();
+				in.nextLine();
+			} else {
+				in.nextLine();
+				System.out.println("Invalid input.");
+			}
+		}
+
+		// Get input for the room
+		System.out.println("\nPlease provide a room where the treatment will take place:");
+		String input = in.nextLine();
+		if (!input.isBlank()) room = input;
+
+		Appointment modifiedAppointment = staff.editAppointment(appointmentId, professionals, availableSlots.get(slotInput).getStartTime(), availableSlots.get(slotInput).getEndTime(), room);
 		displayAppointments( Collections.singletonList( modifiedAppointment ) );
 		if (modifiedAppointment != null && !modifiedAppointment.equals(oldAppointment)) {
 			try {
 				undoRedoHandler.addAction(new Action(
 						"Edit appointment",
 						staff,
-						staff.getClass().getMethod("editAppointment", long.class, long.class, List.class, LocalDateTime.class, LocalDateTime.class, String.class, TreatmentType.class),
-						new Object[]{activeUser.getId(), oldAppointment.getId(), oldAppointment.getProfessionals(), oldAppointment.getStartTime(), oldAppointment.getEndTime(), oldAppointment.getRoom(), oldAppointment.getTreatmentType()},
-						staff.getClass().getMethod("editAppointment", long.class, long.class, List.class, LocalDateTime.class, LocalDateTime.class, String.class, TreatmentType.class),
-						new Object[]{activeUser.getId(), oldAppointment.getId(), oldAppointment.getProfessionals(), oldAppointment.getStartTime(), oldAppointment.getEndTime(), oldAppointment.getRoom(), oldAppointment.getTreatmentType()}
+						staff.getClass().getMethod("editAppointment", long.class, List.class, LocalDateTime.class, LocalDateTime.class, String.class),
+						new Object[]{oldAppointment.getId(), oldAppointment.getProfessionals(), oldAppointment.getStartTime(), oldAppointment.getEndTime(), oldAppointment.getRoom()},
+						staff.getClass().getMethod("editAppointment", long.class, List.class, LocalDateTime.class, LocalDateTime.class, String.class),
+						new Object[]{modifiedAppointment.getId(), modifiedAppointment.getProfessionals(), modifiedAppointment.getStartTime(), modifiedAppointment.getEndTime(), modifiedAppointment.getRoom()}
 				));
 			} catch (NoSuchMethodException e) {
 				// TODO handle exception
@@ -652,7 +722,8 @@ public class Menu {
 		} catch (FileNotFoundException e) {
 			System.out.println("The last backup could not be restored as the file could not be found.");
 		} catch (InvalidClassException e)
-		{			System.out.println("The last backup could not be restored as the structure of the program has been changed.");
+		{
+			System.out.println("The last backup could not be restored as the structure of the program has been changed.");
 		} catch (IOException e) {
 			// TODO handle exception
 			e.printStackTrace();
