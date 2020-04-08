@@ -59,8 +59,8 @@ public class TreatmentType implements Serializable {
      */
     public static List<TreatmentType> getTreatmentTypes(){
 
-        List<TreatmentType> newList = new ArrayList<>();
-        newList.addAll(treatmentTypes);
+        List<TreatmentType> newList = new ArrayList<>(treatmentTypes);
+        newList.sort(Comparator.comparing(o -> o.label));
 
         return treatmentTypes;
     }
@@ -88,10 +88,7 @@ public class TreatmentType implements Serializable {
      */
     public static void displayTreatments() {
         int counter = 0;
-        List<TreatmentType> sortedTreatments = treatmentTypes.stream()
-                .sorted(Comparator.comparing(treatment -> treatment.label))
-                .collect(Collectors.toList());
-        for (TreatmentType treatment : sortedTreatments) {
+        for (TreatmentType treatment : getTreatmentTypes()) {
             System.out.println(counter + ". " + treatment.label);
             counter++;
 
