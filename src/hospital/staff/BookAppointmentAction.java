@@ -42,16 +42,16 @@ public class BookAppointmentAction extends Action {
     }
 
     /**
-     * Undo the deletion of the appointment.
+     * Readd the appointment.
      *
      * @return The re-added appointment (with a new unique ID)
-     * @throws RedoNotPossibleException if the undo is not possible.
+     * @throws RedoNotPossibleException if the redo is not possible.
      */
     @Override
     public Appointment redo() throws RedoNotPossibleException {
         try {
             // Add the appointment again
-            Appointment reAddedAppointment = (Appointment) undo.invoke(executor, undoArgs);
+            Appointment reAddedAppointment = (Appointment) redo.invoke(executor, redoArgs);
             if (reAddedAppointment != null) {
                 // Modify the arguments of the redo (deleteAppointment()) with the newly generated appointment ID
                 undoArgs[0] = reAddedAppointment.getId();
