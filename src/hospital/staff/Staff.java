@@ -56,6 +56,8 @@ public class Staff implements UndoRedoExecutor, Serializable {
 				}
 			}
 		}
+
+		staff.add(new Professional("Gerda", "Pupelyte", Role.Nurse, "gg"));
 	}
 
 	/**
