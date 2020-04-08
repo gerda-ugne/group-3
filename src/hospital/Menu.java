@@ -578,11 +578,9 @@ public class Menu {
 			 ObjectInputStream ois = new ObjectInputStream(fin)) {
 			staff = (Staff) ois.readObject();
 		} catch (FileNotFoundException e) {
-			// TODO handle exception
-			e.printStackTrace();
+			System.out.println("The last backup could not be restored as the file could not be found.");
 		} catch (InvalidClassException e)
-		{
-			System.out.println("The last backup could not be restored as the structure of the program has been changed.");
+		{			System.out.println("The last backup could not be restored as the structure of the program has been changed.");
 		} catch (IOException e) {
 			// TODO handle exception
 			e.printStackTrace();
