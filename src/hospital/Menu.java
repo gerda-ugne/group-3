@@ -355,26 +355,8 @@ public class Menu {
 				System.out.println("Input invalid, try again!");
 			}
 		}
-		Appointment foundAppointment;
-		if(activeUser.getRole().equals(Role.Administrator))
-		{
-			boolean profIDfound=false;
-			while(!profIDfound)
-			{
-				System.out.println("Enter professional ID: ");
-				try {
-					String input = s.nextLine();
-					profID = Long.parseLong(input);
-					IDfound = true;
-				} catch (NumberFormatException ex) {
-					System.out.println("Input invalid, try again!");
-				}
-			}
-			foundAppointment = staff.searchAppointment(profID, appID);
-		}
-		else foundAppointment = staff.searchAppointment(activeUser.getId(), appID);
+		Appointment foundAppointment = staff.searchAppointment(appID);
 
-		Appointment foundAppointment = staff.searchAppointment(inputID);
 		if (foundAppointment == null) System.out.println("Appointment not found.");
 		else {
 			displayAppointments(Collections.singletonList(foundAppointment));
