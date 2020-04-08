@@ -38,7 +38,7 @@ public class DeleteAppointmentAction extends Action {
 				},
 				// For redo delete the appointment again
 				Staff.class.getMethod("deleteAppointment", long.class),
-				new Object[]{appointment.getProfessionals().get(0).getId(), appointment.getId()}
+				new Object[]{appointment.getId()}
 		);
 	}
 

@@ -28,7 +28,7 @@ public class BookAppointmentAction extends Action {
                 staff,
                 // For undo delete the appointment
                 Staff.class.getMethod("deleteAppointment", long.class),
-                new Object[]{appointment.getProfessionals().get(0).getId(), appointment.getId()},
+                new Object[]{appointment.getId()},
                 // For redo re-add the appointment (it could have a different ID)
                 Staff.class.getMethod("bookAppointment", List.class, LocalDateTime.class, LocalDateTime.class, String.class, TreatmentType.class),
                 new Object[]{
