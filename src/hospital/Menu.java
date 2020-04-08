@@ -529,6 +529,8 @@ public class Menu {
 		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-uuuu HH");
 
 		Scanner in = new Scanner(System.in);
+		Scanner stringSc = new Scanner(System.in);
+
 		Appointment oldAppointment = null;
 
 		// Get the appointment to modify
@@ -567,9 +569,11 @@ public class Menu {
 			while (true) {
 				System.out.print("From: ");
 				try {
-					String input = in.nextLine();
+
+					String input = stringSc.nextLine();
 					if (input.equals("0")) return;
-					from = LocalDateTime.parse(in.nextLine(), dateFormat);
+
+					from = LocalDateTime.parse(input, dateFormat);
 					break;
 				} catch (DateTimeParseException e) {
 					System.out.println("Invalid format. Please use a day-month-year hour format in this way: dd-mm-year hh");
@@ -578,7 +582,8 @@ public class Menu {
 			while (true) {
 				System.out.print("Till: ");
 				try {
-					until = LocalDateTime.parse(in.nextLine(), dateFormat);
+					String input = stringSc.nextLine();
+					until = LocalDateTime.parse(input, dateFormat);
 					break;
 				} catch (DateTimeParseException e) {
 					System.out.println("Invalid format. Please use a day-month-year hour format in this way: dd-mm-year hh");
@@ -621,7 +626,7 @@ public class Menu {
 		String input = in.nextLine();
 		if (!input.isBlank()) room = input;
 
-		Appointment modifiedAppointment = staff.editAppointment(appointmentId, professionals, from, until, room);
+		Appointment modifiedAppointment = staff.editAppointment(appointmentId, professionals, availableSlots.get(slotInput).getStartTime(), availableSlots.get(slotInput).getEndTime(), room);
 		displayAppointments( Collections.singletonList( modifiedAppointment ) );
 		if (modifiedAppointment != null && !modifiedAppointment.equals(oldAppointment)) {
 			try {
