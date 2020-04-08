@@ -328,6 +328,12 @@ public class Menu {
 	 * @param appointments The list of appointments to display
 	 */
 	private void displayAppointments(List<Appointment> appointments) {
+
+		if(appointments.isEmpty()) {
+			System.out.println("There are no appointments to show.");
+			return;
+		}
+
 		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MMM/uuuu HH");
 
 		// Table header

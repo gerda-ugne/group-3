@@ -15,7 +15,7 @@ public class TreatmentType implements Serializable {
     /**
      * Set that contains default treatments
      */
-    private static final Set<TreatmentType> treatmentTypes = new HashSet<>();
+    private static final List<TreatmentType> treatmentTypes = new ArrayList<TreatmentType>();
     // TODO change to hashmap
 
     /**
@@ -40,7 +40,6 @@ public class TreatmentType implements Serializable {
 
 
     static {
-        treatmentTypes.add(new TreatmentType("<undefined>", null));
         treatmentTypes.add(new TreatmentType("Routine Checkup", Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("GP"))));
         treatmentTypes.add(new TreatmentType("Emergency Appointment",Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("PhysicianAssistant"),Role.valueOf("OccupationalTherapist"))));
         treatmentTypes.add(new TreatmentType("Mental Health Services",Arrays.asList(Role.valueOf("Therapist"))));
@@ -64,7 +63,7 @@ public class TreatmentType implements Serializable {
         List<TreatmentType> newList = new ArrayList<>();
         newList.addAll(treatmentTypes);
 
-        return newList;
+        return treatmentTypes;
     }
 
     /**
@@ -88,17 +87,14 @@ public class TreatmentType implements Serializable {
     /**
      * Prints all the available treatment types
      */
-    public static void displayTreatments()
-    {
-        int counter = 1;
+    public static void displayTreatments() {
+        int counter = 0;
         List<TreatmentType> sortedTreatments = treatmentTypes.stream()
                 .sorted(Comparator.comparing(treatment -> treatment.label))
                 .collect(Collectors.toList());
-        for (TreatmentType treatment: sortedTreatments) {
-            //Doesn't print the placeholder treatment
-            if(treatment.label.equals("<undefined>")) continue;
+        for (TreatmentType treatment : sortedTreatments) {
             System.out.println(counter + ". " + treatment.label);
-            counter ++;
+            counter++;
 
         }
     }
