@@ -331,22 +331,40 @@ public class Menu {
 
 		Scanner s = new Scanner(System.in);
 		boolean IDfound=false;
-		long inputID=-1;
-
+		long appID=-1,profID=-1;
 		//get the appointment ID from user input
 		while(!IDfound)
 		{
 			System.out.println("Enter appointment ID: ");
-			//check if input is valid ID
-			if(s.hasNextLong()) {
-				inputID = s.nextLong();
+			try {
+				String input = s.nextLine();
+				appID = Long.parseLong(input);
 				IDfound=true;
 			}
-			else System.out.println("Input not valid!");
+			catch(NumberFormatException ex)
+			{
+				System.out.println("Input invalid, try again!");
+			}
 		}
+		Appointment foundAppointment;
+		if(activeUser.getRole().equals(Role.Administrator))
+		{
+			boolean profIDfound=false;
+			while(!profIDfound)
+			{
+				System.out.println("Enter professional ID: ");
+				try {
+					String input = s.nextLine();
+					profID = Long.parseLong(input);
+					IDfound = true;
+				} catch (NumberFormatException ex) {
+					System.out.println("Input invalid, try again!");
+				}
+			}
+			foundAppointment = staff.searchAppointment(profID, appID);
+		}
+		else foundAppointment = staff.searchAppointment(activeUser.getId(), appID);
 
-
-		Appointment foundAppointment = staff.searchAppointment(activeUser.getId(), inputID);
 		if (foundAppointment == null) System.out.println("Appointment not found.");
 		else {
 			displayAppointments(Collections.singletonList(foundAppointment));
@@ -442,7 +460,8 @@ public class Menu {
 				System.out.println("Invalid input.");
 			}
 		}
-
+		from=availableSlots.get(slotInput).getStartTime();
+		until=availableSlots.get(slotInput).getEndTime();
 		// Get input for the room
 		System.out.println("\nPlease provide a room where the treatment will take place:");
 		String input = in.nextLine();
