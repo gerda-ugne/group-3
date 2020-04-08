@@ -359,6 +359,8 @@ public class Menu {
 	private void addAppointment() {
 		// The objects needed to book a new appointment
 		Scanner in = new Scanner(System.in);
+		Scanner stringSc = new Scanner(System.in);
+
 		List<Professional> professionals = new ArrayList<>();
 		LocalDateTime from = LocalDateTime.now();
 		LocalDateTime until = LocalDateTime.now();
@@ -372,6 +374,7 @@ public class Menu {
 		while (treatInput >= treatments.size() || treatInput < 0) {
 			System.out.println("\nPlease choose a treatment type you'd like to book an appointment for:");
 			TreatmentType.displayTreatments();
+
 			if (in.hasNextInt()) {
 				treatInput = in.nextInt();
 			} else {
@@ -394,9 +397,11 @@ public class Menu {
 			while (true) {
 				System.out.print("From: ");
 				try {
-					String input = in.nextLine();
+
+					String input = stringSc.nextLine();
 					if (input.equals("0")) return;
-					from = LocalDateTime.parse(in.nextLine(), dateFormat);
+
+					from = LocalDateTime.parse(input, dateFormat);
 					break;
 				} catch (DateTimeParseException e) {
 					System.out.println("Invalid format. Please use a day-month-year hour format in this way: dd-mm-year hh");
@@ -405,7 +410,8 @@ public class Menu {
 			while (true) {
 				System.out.print("Till: ");
 				try {
-					until = LocalDateTime.parse(in.nextLine(), dateFormat);
+					String input = stringSc.nextLine();
+					until = LocalDateTime.parse(input, dateFormat);
 					break;
 				} catch (DateTimeParseException e) {
 					System.out.println("Invalid format. Please use a day-month-year hour format in this way: dd-mm-year hh");
