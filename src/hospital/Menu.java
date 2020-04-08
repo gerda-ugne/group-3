@@ -92,21 +92,22 @@ public class Menu {
 	private void showMenu() {
 
 		System.out.println("\nAppointment management:\n");
-		System.out.println("1. Display the electronic diary");
-		System.out.println("2. Backup the electronic diary");
-		System.out.println("3. Restore the latest backup of the electronic diary");
-		System.out.println("4. Undo last action");
-		System.out.println("5. Redo last action");
+		System.out.println("1. Search for an appointment");
+		System.out.println("2. Display the electronic diary");
+		System.out.println("3. Backup the electronic diary");
+		System.out.println("4. Restore the latest backup of the electronic diary");
+		System.out.println("5. Undo last action");
+		System.out.println("6. Redo last action");
 
 		System.out.println("\nTask management:\n");
-		System.out.println("6. Add a new task");
-		System.out.println("7. Remove a task");
-		System.out.println("8. Display the task list");
+		System.out.println("7. Add a new task");
+		System.out.println("8. Remove a task");
+		System.out.println("9. Display the task list");
 
 		System.out.println("\nOther:\n");
-		System.out.println("9. Change your password");
-		System.out.println("10. Change your personal details");
-		System.out.println("11. Change your working schedule");
+		System.out.println("10. Change your password");
+		System.out.println("11. Change your personal details");
+		System.out.println("12. Change your working schedule");
 		System.out.println("\n0. Log out");
 
 	}
@@ -120,17 +121,18 @@ public class Menu {
 		System.out.println("1. Add a new appointment");
 		System.out.println("2. Edit an existing appointment");
 		System.out.println("3. Remove an appointment");
-		System.out.println("4. Undo last action");
-		System.out.println("5. Redo last action");
+		System.out.println("4. Search for an appointment");
+		System.out.println("5. Undo last action");
+		System.out.println("6. Redo last action");
 		System.out.println("\nStaff management:\n");
-		System.out.println("6. Add a new staff member");
-		System.out.println("7. Remove a staff member");
+		System.out.println("7. Add a new staff member");
+		System.out.println("8. Remove a staff member");
 		System.out.println("\nTreatment type management:\n");
-		System.out.println("8. Add a new treatment type");
-		System.out.println("9. Show available treatment types");
+		System.out.println("9. Add a new treatment type");
+		System.out.println("10. Show available treatment types");
 		System.out.println("\nOther:\n");
-		System.out.println("10. Edit personal information");
-		System.out.println("11. Change password");
+		System.out.println("11. Edit personal information");
+		System.out.println("12. Change password");
 		System.out.println("\n0. Log out");
 
 
@@ -170,37 +172,40 @@ public class Menu {
 					break;
 
 				case "4":
-					//TODO add undo
+					searchAppointment();
 					break;
 
 				case "5":
-					//TODO add redo
+					//TODO add undo
 					break;
 
 				case "6":
-					addStaffMember();
+					//TODO add redo
 					break;
 
 				case "7":
-					removeStaffMember();
+					addStaffMember();
 					break;
 
 				case "8":
-					addTreatmentType();
+					removeStaffMember();
 					break;
 
 				case "9":
-					TreatmentType.displayTreatments();
+					addTreatmentType();
 					break;
 
 				case "10":
-					changeDetails();
+					TreatmentType.displayTreatments();
 					break;
 
 				case "11":
-					changePassword();
+					changeDetails();
 					break;
 
+				case "12":
+					changePassword();
+					break;
 				default:
 					System.out.println("Invalid user input. Please try again.");
 					break;
@@ -232,46 +237,50 @@ public class Menu {
 					break;
 
 				case 1:
-					displayAppointments(((Professional) activeUser).getDiary().sortByDate());
+					searchAppointment();
 					break;
 
 				case 2:
-					backupStaff();
+					displayAppointments(((Professional) activeUser).getDiary().sortByDate());
 					break;
 
 				case 3:
-					restoreStaff();
+					backupStaff();
 					break;
 
 				case 4:
-					// TODO undo
+					restoreStaff();
 					break;
 
 				case 5:
-					//TODO redo
+					// TODO undo
 					break;
 
 				case 6:
-					addTask();
+					//TODO redo
 					break;
 
 				case 7:
-					removeTask();
+					addTask();
 					break;
 
 				case 8:
-					displayTaskList();
+					removeTask();
 					break;
 
 				case 9:
-					changePassword();
+					displayTaskList();
 					break;
 
 				case 10:
-					changeDetails();
+					changePassword();
 					break;
 
 				case 11:
+					changeDetails();
+					break;
+
+				case 12:
 					editWorkingHours();
 					break;
 
