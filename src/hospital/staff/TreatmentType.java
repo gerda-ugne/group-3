@@ -1,5 +1,6 @@
 package hospital.staff;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -8,7 +9,7 @@ import java.util.*;
  *
  * Singleton approach is used.
  */
-public class TreatmentType {
+public class TreatmentType implements Serializable {
 
     /**
      * Set that contains default treatments

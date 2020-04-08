@@ -232,7 +232,7 @@ public class Menu {
 					break;
 
 				case 1:
-					displayDiary(staff, activeUser.getId());
+					displayAppointments(((Professional) activeUser).getDiary().sortByDate());
 					break;
 
 				case 2:
@@ -252,7 +252,6 @@ public class Menu {
 					break;
 
 				case 6:
-
 					addTask();
 					break;
 
@@ -284,15 +283,45 @@ public class Menu {
 	}
 
 	/**
-	 * This method displays diary.
-	 * Gets list of professionals, streams over each professional with filter
-	 * based on professionalID. flatMap makes it possible access from professional to ElectornicDiary
-	 * and from ElectronicDiary to Appointment.
+	 * Displays a list of appointments in a table.
+	 *
+	 * @param appointments The list of appointments to display
 	 */
-	private void displayDiary(Staff staff, Long professionalId) {
-		Set<Professional> professionals = staff.getStaff();
-		professionals.stream().filter(professional -> Objects.nonNull(professionalId) && professional.getId() == professionalId).
-				flatMap(professional -> professional.getDiary().getAppointments().stream()).forEach(System.out::println);
+	private void displayAppointments(List<Appointment> appointments) {
+		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MMM/uuuu HH");
+
+		// Table header
+		displayTableRowDivider();
+		System.out.println(generateTableRow("ID", "Start time", "End time", "Treatment type", "Room", "Professionals"));
+		displayTableRowDivider();
+		displayTableRowDivider();
+
+		// Table rows
+		for (Appointment appointment : appointments) {
+			List<Professional> professionals = appointment.getProfessionals();
+			// Data
+			System.out.println(generateTableRow(
+					String.valueOf(appointment.getId()),
+					appointment.getStartTime().format(dateFormat),
+					appointment.getEndTime().format(dateFormat),
+					appointment.getTreatmentType().getLabel(),
+					appointment.getRoom(),
+					professionals.get(0).getFirstName() + " " + professionals.get(0).getLastName()));
+			// Rest of the professionals
+			for (int i = 1; i < professionals.size(); i++) {
+				System.out.println(generateTableRow("", "", "", "", "",
+						professionals.get(i).getFirstName() + " " + professionals.get(i).getLastName()));
+			}
+			displayTableRowDivider();
+		}
+	}
+
+	private String generateTableRow(String cell1, String cell2, String cell3, String cell4, String cell5, String cell6) {
+		return String.format("|%4s|%15s|%15s|%30s|%8s|%30s|", cell1, cell2, cell3, cell4, cell5, cell6);
+	}
+
+	private void displayTableRowDivider() {
+		System.out.println(generateTableRow("", "", "", "", "", "").replace(' ', '-'));
 	}
 
 	/**
@@ -320,8 +349,7 @@ public class Menu {
 		Appointment foundAppointment = staff.searchAppointment(activeUser.getId(), inputID);
 		if (foundAppointment == null) System.out.println("Appointment not found.");
 		else {
-			System.out.println("Appointment details:");
-			System.out.println(foundAppointment.toString());
+			displayAppointments(Collections.singletonList(foundAppointment));
 		}
 	}
 
@@ -424,6 +452,7 @@ public class Menu {
 
 		// Book the appointment
 		Appointment newAppointment = staff.bookAppointment(professionals, from, until, room, treatmentType);
+		displayAppointments(Collections.singletonList(newAppointment));
 		if (newAppointment != null) {
 			try {
 				undoRedoHandler.addAction(new BookAppointmentAction(
@@ -528,7 +557,6 @@ public class Menu {
 		try (FileInputStream fin = new FileInputStream("backupStaff.txt");
 			 ObjectInputStream ois = new ObjectInputStream(fin)) {
 			staff = (Staff) ois.readObject();
-			displayDiary(staff, null);
 		} catch (FileNotFoundException e) {
 			// TODO handle exception
 			e.printStackTrace();

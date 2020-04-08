@@ -75,10 +75,7 @@ public class Action {
 			Class<?>[] redoArgTypes = redo.getParameterTypes();
 			// Try to find the redo method
 			executor.getClass().getMethod(redo.getName(), redoArgTypes);
-			// Check the arguments
-			if (!Arrays.equals(redoArgTypes, Arrays.stream(redoArgs).map(Object::getClass).toArray())) {
-				throw new IllegalArgumentException(errorMessage);
-			}
+			// TODO validate arguments
 		} catch (NoSuchMethodException e) {
 			throw new IllegalArgumentException(errorMessage);
 		}

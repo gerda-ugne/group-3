@@ -71,7 +71,7 @@ public class Staff implements UndoRedoExecutor, Serializable {
 
 		ElectronicDiary diary = member.getDiary();
 		List<Appointment> appList = diary.getAppointments();
-		String role = member.getRole();
+		Role role = member.getRole();
 		List<Professional> eligibleProfs = new ArrayList<>();
 		for(Professional prof : staff)
 		{
@@ -155,7 +155,7 @@ public class Staff implements UndoRedoExecutor, Serializable {
 	public List<Professional> getProfessionalsByRole(Role role)
 	{
 
-		return new ArrayList<>(staff).stream()
+		return staff.stream()
 				.filter(professional -> professional.getRole().equals(role))
 				.collect(Collectors.toList());
 
