@@ -336,32 +336,44 @@ public class Menu {
 	/**
 	 * This method displays an appointment's information with the given appointment and professional's IDs
 	 */
-	private void searchAppointment() {
-
+	private void searchAppointment()
+	{
 		Scanner s = new Scanner(System.in);
-		boolean IDfound = false;
-		long inputID=-1;
-
+		boolean IDfound=false;
+		long appID=-1,profID=-1;
 		//get the appointment ID from user input
 		while(!IDfound)
 		{
+			System.out.println("Enter appointment ID: ");
 			try {
-				System.out.println("\nEnter appointment ID: ");
-				//check if input is valid ID
-				inputID = s.nextLong();
+				String input = s.nextLine();
+				appID = Long.parseLong(input);
 				IDfound=true;
-
-			} catch (InputMismatchException e) {
-				System.out.println("Input not valid!");
-				IDfound = false;
-				s.nextLine();
-
 			}
-
+			catch(NumberFormatException ex)
+			{
+				System.out.println("Input invalid, try again!");
+			}
 		}
+		Appointment foundAppointment;
+		if(activeUser.getRole().equals(Role.Administrator))
+		{
+			boolean profIDfound=false;
+			while(!profIDfound)
+			{
+				System.out.println("Enter professional ID: ");
+				try {
+					String input = s.nextLine();
+					profID = Long.parseLong(input);
+					IDfound = true;
+				} catch (NumberFormatException ex) {
+					System.out.println("Input invalid, try again!");
+				}
+			}
+			foundAppointment = staff.searchAppointment(profID, appID);
+		}
+		else foundAppointment = staff.searchAppointment(activeUser.getId(), appID);
 
-
-		Appointment foundAppointment = staff.searchAppointment(activeUser.getId(), inputID);
 		if (foundAppointment == null) System.out.println("Appointment not found.");
 		else {
 			displayAppointments(Collections.singletonList(foundAppointment));
