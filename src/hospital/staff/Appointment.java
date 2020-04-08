@@ -22,7 +22,7 @@ public class Appointment implements Comparable<Appointment>, Serializable {
 	/**
 	 * Static counter used to generate unique IDs for every appointment.
 	 */
-	private static long counter = 0;
+	private static long counter = 1;
 
 	/**
 	 * The unique ID of the appointment

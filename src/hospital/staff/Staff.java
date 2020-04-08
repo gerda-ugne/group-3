@@ -36,11 +36,17 @@ public class Staff implements UndoRedoExecutor, Serializable {
 	private Administrator admin;
 
 	/**
+	 * All of the appointments
+	 */
+	private Map<Long, Appointment> appointments;
+
+	/**
 	 * Constructor for Staff class
 	 */
 	public Staff() {
 		staff = new HashSet<>();
 		admin = new Administrator("Admin", "Chief", "Heaven");
+		appointments = new HashMap<>();
 		if (staff.isEmpty()) {
 			for (Role role : Role.values()) {
 				for (int i = 0; i < 5; i++) {
@@ -187,6 +193,7 @@ public class Staff implements UndoRedoExecutor, Serializable {
 			{
 				professional.addAppointment(newAppointment);
 			}
+			appointments.put(newAppointment.getId(), newAppointment);
 			return newAppointment;
 		}
 		//if at least one of the professionals don't have a free slot at the given time, return null
@@ -277,30 +284,19 @@ public class Staff implements UndoRedoExecutor, Serializable {
 					professional.deleteAppointment(appointmentId);
 				}
 			}
+		appointments.remove(Objects.requireNonNull(deletedAppointment).getId());
 		return deletedAppointment;
 	}
 
 	/**
 	 * Search for an appointment in one of the professional's electronic diary.
 	 *
-	 * @param professionId The ID of the professional who has the appointment.
 	 * @param appointmentId The ID of the appointment to search for.
 	 * @return The found appointment or null if it could not have been found.
 	 */
-	public Appointment searchAppointment(long professionId, long appointmentId) {
+	public Appointment searchAppointment(long appointmentId) {
 
-		Appointment foundAppointment=null;
-
-		//searches through staff to find the first one who has the appointment
-		for (Professional professional: staff)
-		{
-			if(professional.getId()==professionId)
-			{
-				foundAppointment=professional.getDiary().getAppointment(appointmentId);
-				if(foundAppointment!=null) break;
-			}
-		}
-		return foundAppointment;
+		return appointments.get(appointmentId);
 	}
 
 	/**

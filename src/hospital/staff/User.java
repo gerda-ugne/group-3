@@ -14,7 +14,7 @@ public abstract class User implements Serializable, UndoRedoExecutor {
     /**
      * Static counter to generate unique IDs
      */
-    private static long counter = 0;
+    private static long counter = 1;
 
     /**
      * The first name of the user.
