@@ -638,21 +638,6 @@ public class Menu {
 
 		Appointment modifiedAppointment = staff.editAppointment(appointmentId, professionals, availableSlots.get(slotInput).getStartTime(), availableSlots.get(slotInput).getEndTime(), room);
 		displayAppointments( Collections.singletonList( modifiedAppointment ) );
-		if (modifiedAppointment != null && !modifiedAppointment.equals(oldAppointment)) {
-			try {
-				undoRedoHandler.addAction(new Action(
-						"Edit appointment",
-						staff,
-						staff.getClass().getMethod("editAppointment", long.class, List.class, LocalDateTime.class, LocalDateTime.class, String.class),
-						new Object[]{oldAppointment.getId(), oldAppointment.getProfessionals(), oldAppointment.getStartTime(), oldAppointment.getEndTime(), oldAppointment.getRoom()},
-						staff.getClass().getMethod("editAppointment", long.class, List.class, LocalDateTime.class, LocalDateTime.class, String.class),
-						new Object[]{modifiedAppointment.getId(), modifiedAppointment.getProfessionals(), modifiedAppointment.getStartTime(), modifiedAppointment.getEndTime(), modifiedAppointment.getRoom()}
-				));
-			} catch (NoSuchMethodException e) {
-				// TODO handle exception
-				e.printStackTrace();
-			}
-		}
 	}
 
 	/**
