@@ -2,7 +2,6 @@ package hospital.staff;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Treatment type class defines default treatments
