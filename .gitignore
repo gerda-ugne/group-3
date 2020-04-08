@@ -1,3 +1,4 @@
 # Default ignored files
 group-3.iml
-README.md
+/.idea/
+/out/
