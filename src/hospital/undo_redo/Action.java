@@ -2,6 +2,7 @@ package hospital.undo_redo;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * Represents an undoable/redoable action took in the system.
@@ -64,12 +65,9 @@ public class Action {
 			Class<?>[] undoArgTypes = undo.getParameterTypes();
 			// Try to find the undo method
 			executor.getClass().getMethod(undo.getName(), undoArgTypes);
-			// Check the arguments
-			if (!Arrays.equals(undoArgTypes, Arrays.stream(undoArgs).map(Object::getClass).toArray())) {
-				throw new IllegalArgumentException(errorMessage);
-			}
+			// TODO validate arguments
 		} catch (NoSuchMethodException e) {
-			throw new IllegalArgumentException(errorMessage);
+			throw new IllegalArgumentException(errorMessage, e);
 		}
 		errorMessage = "The executor has no method given as the redo method and with the given arguments";
 		// Check if the redo method and its redoArgs are correct

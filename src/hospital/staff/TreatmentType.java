@@ -41,7 +41,7 @@ public class TreatmentType {
         treatmentTypes.add(new TreatmentType("<undefined>", null));
         treatmentTypes.add(new TreatmentType("Routine Checkup", Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("GP"))));
         treatmentTypes.add(new TreatmentType("Emergency Appointment",Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("PhysicianAssistant"),Role.valueOf("OccupationalTherapist"))));
-        treatmentTypes.add(new TreatmentType("Mental Health Services", Collections.singletonList(Role.valueOf("Therapist"))));
+        treatmentTypes.add(new TreatmentType("Mental Health Services",Arrays.asList(Role.valueOf("Therapist"))));
         treatmentTypes.add(new TreatmentType("Vaccinations",Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("Nurse"))));
         treatmentTypes.add(new TreatmentType("Eye care",Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("Optometrist"))));
         treatmentTypes.add(new TreatmentType("X-ray scan",Arrays.asList(Role.valueOf("Nurse"),Role.valueOf("GP"))));
