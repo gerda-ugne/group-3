@@ -371,9 +371,7 @@ public class Menu {
 		int treatInput = -1;
 		while (treatInput >= treatments.size() || treatInput < 0) {
 			System.out.println("\nPlease choose a treatment type you'd like to book an appointment for:");
-			for (int i = 0; i < treatments.size(); i++) {
-				System.out.println((i + 1) + ". " + treatments.get(i).getLabel());
-			}
+			TreatmentType.displayTreatments();
 			if (in.hasNextInt()) {
 				treatInput = in.nextInt();
 			} else {
