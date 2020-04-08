@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
  */
 public class Staff implements UndoRedoExecutor, Serializable {
 
+	//the HashMap containing a professional's default working hours
 	private static final Map<DayOfWeek, WorkingHours> defaultWorkingHours = new HashMap<>(7);
 	static {
 		for (DayOfWeek day : DayOfWeek.values()) {
@@ -45,8 +46,10 @@ public class Staff implements UndoRedoExecutor, Serializable {
 	 */
 	public Staff() {
 		staff = new HashSet<>();
+		// sets administrator
 		admin = new Administrator("Admin", "Chief", "Heaven");
 		appointments = new HashMap<>();
+		//if staff is empty, adds some default professionals
 		if (staff.isEmpty()) {
 			for (Role role : Role.values()) {
 				for (int i = 0; i < 5; i++) {
@@ -71,7 +74,7 @@ public class Staff implements UndoRedoExecutor, Serializable {
 	}
 
 	/**
-	 * Removes a professional from the staff, also removing them from each of their appointments
+	 * Removes a professional from the staff, also removing them from each of their appointments, adding another needed professional if any are free
 	 * @param member member to remove
 	 * @return false/true whether the member was removed
 	 */
@@ -80,15 +83,22 @@ public class Staff implements UndoRedoExecutor, Serializable {
 		ElectronicDiary diary = member.getDiary();
 		List<Appointment> appList = diary.getAppointments();
 		Role role = member.getRole();
+
+		//creates empty list of professionals
 		List<Professional> eligibleProfs = new ArrayList<>();
 		for(Professional prof : staff)
 		{
+			//if any of the staff's professionals match the role of the member that is to be removed, adds them to the new list
 			if(prof.getRole().equals(role)) eligibleProfs.add(prof);
 		}
+
+		//goes through each of the appointments in the removed professional's diary
 		for(Appointment app : appList)
 		{
+			//gets the list of involved professionals in appointment
 			List<Professional> appProfessionals=app.getProfessionals();
 			appProfessionals.remove(member);
+			//check each professional with the same role as the one that was deleted and checks if they have a free slot at the appointment's time
 			for(Professional p : eligibleProfs)
 			{
 				if(!p.searchAvailability(app.getStartTime(),app.getEndTime()).isEmpty())
@@ -97,6 +107,7 @@ public class Staff implements UndoRedoExecutor, Serializable {
 					break;
 				}
 			}
+			//if no more professionals are left in the appointment, appointment is deleted
 			if(appProfessionals.isEmpty()) deleteAppointment(app.getId());
 			else app.setProfessionals(appProfessionals);
 		}
@@ -262,13 +273,16 @@ public class Staff implements UndoRedoExecutor, Serializable {
 		boolean appointmentFound=false;
 		for (Professional professional: staff)
 			{
+				//goes through each professional's diary and searches for the appointment
 				if(professional.getDiary().getAppointment(appointmentId)!=null)
 				{
+					//if appointment hadn't been found before, assign it to deletedAppointment
 					if(!appointmentFound)
 					{
 						appointmentFound = true;
 						deletedAppointment = professional.getDiary().getAppointment(appointmentId);
 					}
+					//if appointment is found, delete it from the professional's diary
 					professional.deleteAppointment(appointmentId);
 				}
 			}
