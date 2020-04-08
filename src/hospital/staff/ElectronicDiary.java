@@ -35,6 +35,7 @@ public class ElectronicDiary implements Serializable {
 	 * Adds a new appointment to the diary.
 	 *
 	 * @param newAppointment The appointment to add into the diary
+	 * @return true if addition was successful, false if it wasn't
 	 */
 	public boolean addAppointment(Appointment newAppointment) {
 		//gets appointment start time
@@ -54,9 +55,12 @@ public class ElectronicDiary implements Serializable {
 	 * Deletes an appointment from the diary.
 	 *
 	 * @param appointmentId the ID of the appointment to delete.
+	 * @return true if deletion was successful, false if it wasn't
 	 */
 	public boolean deleteAppointment(long appointmentId) {
+		//gets the appointment by ID
 		Appointment appointmentToDelete = getAppointment(appointmentId);
+		//if appointment isn't null (appointment was found) remove it from diary
 		if (appointmentToDelete != null) {
 			return appointments.remove(appointmentToDelete);
 		}
@@ -67,6 +71,7 @@ public class ElectronicDiary implements Serializable {
 	 * Return an appointment from the diary.
 	 *
 	 * @param appointmentId The ID of the appointment to retrieve.
+	 * @return the found appointment, or null if no such appointment exists
 	 */
 	public Appointment getAppointment(long appointmentId) {
 		for(Appointment appointment : appointments) {
@@ -100,7 +105,6 @@ public class ElectronicDiary implements Serializable {
 		//End time of an appointment is calculated
 		LocalDateTime endTime = from.plus(Appointment.TREATMENT_DURATION);
 
-		List<Appointment> appointments = getAppointments();
 		for(Appointment appointment: appointments)
 		{
 			//Gets each appointment's start and end times

@@ -222,6 +222,7 @@ public class Professional extends User {
 	 * Checks if it's allowed and if there are now conflicts with the already booked appointments.
 	 *
 	 * @param appointment the new appointment to register in the professional's electronic diary.
+	 * @return true if the appointment addition was successful, false if it wasn't
 	 */
 	public boolean addAppointment(Appointment appointment) {
 		if(diary.searchIfTimeAvailable(appointment.getStartTime())) {
@@ -273,7 +274,6 @@ public class Professional extends User {
 
 	}
 
-
 	/**
 	 * Getter of the professional's electronic diary.
 	 * @return the professional's electronic diary.
@@ -282,7 +282,11 @@ public class Professional extends User {
 		return this.diary;
 	}
 
-
+	/**
+	 * Getter of an appointment from the professional's electronic diary.
+	 * @param appointmentId appointment to be found's ID
+	 * @return the needed appointment
+	 */
 	public Appointment getAppointment(long appointmentId) {
 		return diary.getAppointment(appointmentId);
 	}
