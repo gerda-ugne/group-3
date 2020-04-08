@@ -97,7 +97,7 @@ public class Staff implements UndoRedoExecutor, Serializable {
 					break;
 				}
 			}
-			if(appProfessionals.isEmpty()) deleteAppointment(member.getId(),app.getId());
+			if(appProfessionals.isEmpty()) deleteAppointment(app.getId());
 			else app.setProfessionals(appProfessionals);
 		}
 		return staff.remove(member);
@@ -266,11 +266,10 @@ public class Staff implements UndoRedoExecutor, Serializable {
 	 * Deletes an appointment from one of professional's electronic diary.
 	 * It also deletes it from all the involved professionals' diaries.
 	 *
-	 * @param professionalId The ID of the professional who has the appointment.
 	 * @param appointmentId The ID of the appointment to delete.
 	 * @return The deleted appointment or null, if the deletion was unsuccessful.
 	 */
-	public Appointment deleteAppointment(long professionalId, long appointmentId) {
+	public Appointment deleteAppointment(long appointmentId) {
 		// TODO if have time make it faster
 		Appointment deletedAppointment=null;
 		boolean appointmentFound=false;
