@@ -374,6 +374,7 @@ public class Menu {
 		}
 		else foundAppointment = staff.searchAppointment(activeUser.getId(), appID);
 
+		Appointment foundAppointment = staff.searchAppointment(inputID);
 		if (foundAppointment == null) System.out.println("Appointment not found.");
 		else {
 			displayAppointments(Collections.singletonList(foundAppointment));
@@ -508,9 +509,37 @@ public class Menu {
 		LocalDateTime endTime = LocalDateTime.now();
 		String room = "";
 		TreatmentType treatmentType = TreatmentType.searchForTreatment("<undefined>");
-		// TODO get input from user
-		Appointment oldAppointment = staff.searchAppointment(activeUser.getId(), appointmentId);
+
+		Scanner in = new Scanner(System.in);
+		Appointment oldAppointment = null;
+
+		// Get the appointment to modify
+		while (true) {
+			System.out.println("Please enter the ID of the appointment you'd like to modify, or 0 to return");
+			try {
+				appointmentId = Long.parseLong(in.nextLine());
+				if (appointmentId < 0) {
+					throw new NumberFormatException();
+				} else if (appointmentId == 0) {
+					return;
+				}
+				oldAppointment = staff.searchAppointment(appointmentId);
+				if (oldAppointment == null) {
+					System.out.println("No appointment found with this ID.");
+				} else {
+					System.out.println("The appointment:");
+					displayAppointments(Collections.singletonList(oldAppointment));
+					break;
+				}
+			} catch (NumberFormatException e) {
+				System.out.println("Invalid ID");
+			}
+		}
+
+
+
 		Appointment modifiedAppointment = staff.editAppointment(activeUser.getId(), appointmentId, professionals, startTime, endTime, room, treatmentType);
+		displayAppointments( Collections.singletonList( modifiedAppointment ) );
 		if (modifiedAppointment != null && !modifiedAppointment.equals(oldAppointment)) {
 			try {
 				undoRedoHandler.addAction(new Action(
