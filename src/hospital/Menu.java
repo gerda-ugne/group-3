@@ -1302,9 +1302,21 @@ public class Menu {
 				}
 			}
 
+			List<Appointment> appointments = ((Professional) activeUser).getDiary().getAppointments();
+			int startHour = Integer.parseInt(start);
+			int endHour = Integer.parseInt(end);
+			for(Appointment app : appointments)
+			{
+				if(app.getStartTime().getDayOfWeek()==chosenDay)
+				{
+					if((app.getStartTime().getHour()<startHour)||(app.getEndTime().getHour()>endHour))
+					{
+						appointments.remove(app);
+					}
+				}
+			}
+
 			System.out.println("Your schedule has been updated.\n");
 		} while (true);
-
-
 	}
 }
