@@ -1,5 +1,6 @@
 package hospital.staff;
 
+import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 
@@ -11,7 +12,7 @@ import java.time.LocalTime;
  * in the Professional class.
  *
  */
-public class WorkingHours {
+public class WorkingHours implements Serializable {
 
 	/**
 	 * The day of the week when the working hour is defined
