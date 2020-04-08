@@ -580,6 +580,9 @@ public class Menu {
 		} catch (FileNotFoundException e) {
 			// TODO handle exception
 			e.printStackTrace();
+		} catch (InvalidClassException e)
+		{
+			System.out.println("The last backup could not be restored as the structure of the program has been changed.");
 		} catch (IOException e) {
 			// TODO handle exception
 			e.printStackTrace();
