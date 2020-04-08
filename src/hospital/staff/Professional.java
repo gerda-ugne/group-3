@@ -179,10 +179,18 @@ public class Professional extends User {
 
 		};
 
+		checkTimeRange.test(availableSlots.get(0));
+		checkWorkingHourRange.test(availableSlots.get(0));
+
 		//Appointments are filtered to be in the provided time range
 		List<Appointment> bookedAppointments = diary.sortByDate()
 				.stream()
-				.filter(checkTimeRange.and(checkWorkingHourRange))
+				.filter(checkTimeRange)
+				.sorted()
+				.collect(Collectors.toList());
+
+		availableSlots = availableSlots.stream()
+				.filter(checkWorkingHourRange)
 				.sorted()
 				.collect(Collectors.toList());
 
