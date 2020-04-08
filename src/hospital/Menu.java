@@ -179,9 +179,10 @@ public class Menu {
 
 				case "5":
 					try {
-						if (undoRedoHandler.undo() == null)
-						{
+						if (undoRedoHandler.undo() == null) {
 							System.out.println("No actions found to undo.");
+						} else {
+
 						}
 
 					} catch (UndoNotPossibleException e) {

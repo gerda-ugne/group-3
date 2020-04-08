@@ -52,6 +52,7 @@ public class UndoRedoHandler {
             Action lastAction = doneActions.pop();
             returned = lastAction.undo();
             undoneActions.add(lastAction);
+            System.out.println(lastAction.actionName + " has been undone.");
         }
         return returned;
     }
@@ -68,6 +69,7 @@ public class UndoRedoHandler {
             Action lastUndone = undoneActions.pop();
             returned = lastUndone.redo();
             doneActions.add(lastUndone);
+            System.out.println(lastUndone.actionName + " has been redone.");
         }
         return returned;
     }
